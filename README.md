@@ -50,6 +50,18 @@ A full-stack project management and collaboration tool built with the MERN stack
 
 ---
 
+### Future README Improvement
+
+## Installation
+
+## Environment Variables
+
+## API Documentation
+
+## Deployment
+
+---
+
 ## 📝 License
 
 Distributed under the MIT License. See `LICENSE` for more information.

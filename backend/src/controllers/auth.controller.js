@@ -36,8 +36,6 @@ const registerUser = asyncHandler(async (req, res) => {
   return res
     .status(201)
     .json(new ApiResponse(201, "User registered successfully!", user));
-
-  throw new ApiError(500, "Some error occurs while registering user!");
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -66,11 +64,11 @@ const loginUser = asyncHandler(async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
+  user.password = undefined; //Is will not send the password while login
+
   return res
     .status(200)
     .json(new ApiResponse(200, "User logged in successfully!", user));
-
-  throw new AoiError(500, "Some error occurs while login!");
 });
 
 const logoutUser = async (req, res) => {

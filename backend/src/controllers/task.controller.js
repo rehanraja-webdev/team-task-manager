@@ -3,6 +3,7 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import Task from "../models/task.model.js";
+import Activity from "../models/activity.model.js";
 
 const createTask = asyncHandler(async (req, res) => {
   const { title, description, projectId, assignedTo } = req.body;
@@ -27,7 +28,7 @@ const createTask = asyncHandler(async (req, res) => {
   });
 
   if (!assignedMember) {
-    throw new Error(400, "Assigned user must be a project member!");
+    throw new ApiError(400, "Assigned user must be a project member!");
   }
 
   const task = await Task.create({
@@ -35,6 +36,12 @@ const createTask = asyncHandler(async (req, res) => {
     description,
     project: projectId,
     assignedTo,
+  });
+
+  await Activity.create({
+    task: task._id,
+    user: req.user._id,
+    action: "Task Created",
   });
 
   res
@@ -63,15 +70,19 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
   }
 
   if (task.assignedTo.toString() !== req.user._id.toString()) {
-    throw new ApiError("Only assigned member can update task status");
+    throw new ApiError(403, "Only assigned member can update task status");
   }
 
   task.status = status;
   await task.save();
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, "Task updated successfully", task));
+  await Activity.create({
+    task: task._id,
+    user: req.user._id,
+    action: `Changed status to ${status}`,
+  });
+
+  res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
 });
 
 export default { createTask, getProjectTasks, updateTaskStatus };

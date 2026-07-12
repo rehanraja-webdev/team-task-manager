@@ -4,6 +4,8 @@ import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import Task from "../models/task.model.js";
 import Activity from "../models/activity.model.js";
+import mongoose from "mongoose";
+import validateObjectId from "../utils/validateObjectId.js";
 
 const createTask = asyncHandler(async (req, res) => {
   const { title, description, projectId, assignedTo } = req.body;
@@ -13,7 +15,6 @@ const createTask = asyncHandler(async (req, res) => {
   if (!project) {
     throw new ApiError(404, "Project not found!");
   }
-
   const user = req.user;
   const isMember = project.members.some((member) => {
     return member.user.equals(user._id);
@@ -116,6 +117,10 @@ const getProjectTasks = asyncHandler(async (req, res) => {
 });
 
 const updateTaskStatus = asyncHandler(async (req, res) => {
+  if (!validateObjectId(req.params.taskId)) {
+    throw new ApiError(400, "Invalid task ID!");
+  }
+
   const { status } = req.body;
   const task = await Task.findById(req.params.taskId);
 

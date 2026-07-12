@@ -1,10 +1,11 @@
 import express from "express";
 import taskController from "../controllers/task.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
+import validateTask from "../middlewares/validateTask.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, taskController.createTask);
+router.post("/", authMiddleware, validateTask, taskController.createTask);
 
 router.get(
   "/project/:projectId",

@@ -3,7 +3,7 @@ import ApiError from "../utils/ApiError.js";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Fixed typo: changed cd to cb
+    cb(null, "uploads/");
   },
 
   filename: (req, file, cb) => {
@@ -14,7 +14,6 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   fileFilter: function (req, file, cb) {
-    // Fixed typo: changed cd to cb
     const allowedTypes = [
       "image/jpeg",
       "image/jpg",

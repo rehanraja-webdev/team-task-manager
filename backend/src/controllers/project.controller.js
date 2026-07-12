@@ -19,10 +19,15 @@ const createProject = asyncHandler(async (req, res) => {
 });
 
 const getProjects = asyncHandler(async (req, res) => {
-  const projects = await Project.find({ owner: req.user._id }).populate(
-    "owner",
-    "fullname email",
-  );
+  const { search } = req.query;
+
+  const projects = await Project.find({
+    owner: req.user._id,
+    name: {
+      $regex: search,
+      $options: "i",
+    },
+  }).populate("owner", "fullname email");
 
   return res
     .status(200)

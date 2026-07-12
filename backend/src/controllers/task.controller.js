@@ -50,15 +50,69 @@ const createTask = asyncHandler(async (req, res) => {
 });
 
 const getProjectTasks = asyncHandler(async (req, res) => {
-  const tasks = await Task.find({ project: req.params.projectId })
-    .populate("assignedTo", "fullname email")
-    .populate("project", "name");
+  //It will get the variable from the url search query (eg: ..?status = done)
+  const {
+    status,
+    priority,
+    search,
+    assignedTo,
+    page = 1,
+    limit = 5,
+  } = req.query;
 
-  if (tasks.length === 0) {
-    throw new ApiError(404, "No task found!");
+  const filter = { project: req.params.projectId };
+
+  //add query in filter one by one if found
+  if (status) {
+    filter.status = status;
   }
 
-  res.status(200).json(new ApiResponse(200, "All Task Fetched!", tasks));
+  if (priority) {
+    filter.priority = priority;
+  }
+
+  if (search) {
+    filter.title = {
+      $regex: search,
+      $options: "i",
+    };
+  }
+
+  if (assignedTo) {
+    filter.assignedTo = assignedTo;
+  }
+
+  const skip = (Number(page) - 1) * Number(limit);
+
+  let sortOption = { createdAt: -1 };
+
+  if (req.query.sort === "oldest") {
+    sortOption.createdAt = 1;
+  }
+
+  //if no query if found, then it will find task by (project: req.params.projectId). Otherwise it will push the query in the filter object.
+
+  const tasks = await Task.find(filter)
+    .populate("assignedTo", "fullname email")
+    .populate("project", "name")
+    .sort(sortOption)
+    .skip(skip)
+    .limit(Number(limit));
+
+  if (tasks.length === 0) {
+    res.json({ tasks, totalTasks: 0 });
+  }
+
+  const totalTasks = await Task.countDocuments(filter);
+
+  res.status(200).json(
+    new ApiResponse(200, "All Task Fetched!", {
+      tasks,
+      totalTasks,
+      currentPage: Number(page),
+      totalPages: Math.ceil(totalTasks / limit),
+    }),
+  );
 });
 
 const updateTaskStatus = asyncHandler(async (req, res) => {

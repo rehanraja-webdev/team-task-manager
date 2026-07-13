@@ -8,6 +8,7 @@ import taskRoutes from "./routes/task.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
 import activityRoutes from "./routes/activity.routes.js";
 import attachmentRoutes from "./routes/attachment.routes.js";
+import dashboardRoutes from './routes/dashboard.routes.js'
 import path from "path";
 
 const app = express();
@@ -22,6 +23,8 @@ app.use("/api/comments", commentRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/attachments", attachmentRoutes);
 app.use("uploads", express.static("uploads"));
+
+app.use("/api/dashboard", dashboardRoutes)
 app.use(errorHandler);
 
 app.get("/api/health", (req, res) => {

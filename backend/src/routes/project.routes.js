@@ -5,12 +5,17 @@ import authorizeRoles from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, projectController.createProject);
+router.post(
+  "/",
+  authMiddleware,
+  authorizeRoles("super-admin", "admin"),
+  projectController.createProject,
+);
 
 router.delete(
   "/:projectId",
   authMiddleware,
-  authorizeRoles("admin"),
+  authorizeRoles("super-admin", "admin"),
   projectController.deleteProject,
 );
 

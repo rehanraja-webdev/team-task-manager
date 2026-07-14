@@ -6,6 +6,11 @@ import User from "../models/user.model.js";
 
 const createProject = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
+
+  if (req.user.role !== "admin") {
+    throw new ApiError(403, "Only admin can create project");
+  }
+
   const project = await Project.create({
     name,
     description,

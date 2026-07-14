@@ -18,13 +18,29 @@ const createProject = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, "project created successfully!", project));
 });
 
+const deleteProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.projectId);
+
+  if (!project) {
+    throw new ApiError(404, "No Project found!");
+  }
+
+  if (project.owner._id.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, "Access denied!");
+  }
+
+  await project.deleteOne();
+
+  res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
+});
+
 const getProjects = asyncHandler(async (req, res) => {
   const { search } = req.query;
 
   const projects = await Project.find({
     owner: req.user._id,
     name: {
-      $regex: search,
+      $regex: search || "",
       $options: "i",
     },
   }).populate("owner", "fullname email");
@@ -80,4 +96,10 @@ const getProjectMembers = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "All members fetched!", project.members));
 });
 
-export default { createProject, getProjects, addMember, getProjectMembers };
+export default {
+  createProject,
+  deleteProject,
+  getProjects,
+  addMember,
+  getProjectMembers,
+};

@@ -3,6 +3,7 @@ import Project from "../models/project.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import User from "../models/user.model.js";
+import cache from "../utils/cache.js";
 
 const createProject = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
@@ -18,6 +19,8 @@ const createProject = asyncHandler(async (req, res) => {
     members: [{ user: req.user._id, role: req.user.role }],
   });
 
+  cache.delete(`projects_${req.user._id}`);
+  cache.delete(`dashboard_${req.user._id}`);
   return res
     .status(201)
     .json(new ApiResponse(201, "project created successfully!", project));
@@ -35,11 +38,26 @@ const deleteProject = asyncHandler(async (req, res) => {
   }
 
   await project.deleteOne();
+  cache.delete(`dashboard_${req.user._id}`);
 
   res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
 });
 
 const getProjects = asyncHandler(async (req, res) => {
+  const cacheKey = `projects_${req.user._id}_${search || ""}`;
+
+  const cached = cache.get(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log("Cache Hit:", cacheKey);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Projects fetched from cache!", cached.data));
+  } else {
+    console.log("Cache Miss:", cacheKey);
+    cache.delete(cacheKey);
+  }
+
   const { search } = req.query;
 
   const projects = await Project.find({
@@ -49,6 +67,9 @@ const getProjects = asyncHandler(async (req, res) => {
       $options: "i",
     },
   }).populate("owner", "fullname email");
+
+  //set data and expiresAt in cache after fetching data from the database
+  cache.set(cacheKey, projects);
 
   return res
     .status(200)

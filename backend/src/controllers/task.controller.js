@@ -6,6 +6,7 @@ import Task from "../models/task.model.js";
 import Activity from "../models/activity.model.js";
 import mongoose from "mongoose";
 import validateObjectId from "../utils/validateObjectId.js";
+import cache from "../utils/cache.js";
 
 const createTask = asyncHandler(async (req, res) => {
   const { title, description, projectId, assignedTo } = req.body;
@@ -44,6 +45,8 @@ const createTask = asyncHandler(async (req, res) => {
     user: req.user._id,
     action: "Task Created",
   });
+
+  cache.delete(`dashboard_${req.user._id}`);
 
   res
     .status(201)
@@ -140,6 +143,8 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     user: req.user._id,
     action: `Changed status to ${status}`,
   });
+
+  cache.delete(`dashboard_${req.user._id}`);
 
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
 });

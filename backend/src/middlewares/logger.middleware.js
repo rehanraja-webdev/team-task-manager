@@ -20,7 +20,7 @@ const logger = (req, res, next) => {
         `${req.method} ${req.originalUrl} ` +
         `IP: ${req.ip} ` +
         `User: ${userId} ` +
-        `${res.statusCode} - ${duration}ms`,
+        `StatusCode: ${res.statusCode} - Response Time: ${duration}ms`,
     );
 
   });

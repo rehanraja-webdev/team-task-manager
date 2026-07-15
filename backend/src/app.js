@@ -26,7 +26,7 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/activities", activityRoutes);
 app.use("/api/attachments", attachmentRoutes);
-app.use("uploads", express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/admin", adminRoutes);

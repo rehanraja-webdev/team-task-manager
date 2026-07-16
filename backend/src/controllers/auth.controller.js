@@ -4,6 +4,7 @@ import generateToken from "../utils/generateToken.js";
 import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
+import jobQueue from "../utils/jobQueue.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -22,6 +23,12 @@ const registerUser = asyncHandler(async (req, res) => {
     fullname,
     email,
     password: hashPassword,
+  });
+
+  jobQueue.addJob({
+    to: user.email,
+    subject: "Welcome to TeamTask",
+    attempts: 0,
   });
 
   const token = generateToken(user._id);

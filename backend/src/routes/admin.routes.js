@@ -11,4 +11,11 @@ router.get(
   authorizeRoles("super-admin", "admin"),
   adminController.getAllUsers,
 );
+
+router.get(
+  "/queue",
+  authMiddleware,
+  authorizeRoles("super-admin", "admin"),
+  adminController.getQueueStats,
+);
 export default router;

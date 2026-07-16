@@ -9,7 +9,7 @@ import validateObjectId from "../utils/validateObjectId.js";
 import cache from "../utils/cache.js";
 
 const createTask = asyncHandler(async (req, res) => {
-  const { title, description, projectId, assignedTo } = req.body;
+  const { title, description, dueDate, projectId, assignedTo } = req.body;
 
   const project = await Project.findById(projectId);
 
@@ -38,6 +38,7 @@ const createTask = asyncHandler(async (req, res) => {
     description,
     project: projectId,
     assignedTo,
+    dueDate,
   });
 
   await Activity.create({

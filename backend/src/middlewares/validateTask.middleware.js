@@ -13,7 +13,7 @@ const validateTask = (req, res, next) => {
   if (!projectId || !validateObjectId(projectId)) {
     throw new ApiError(400, "Project id is required!");
   }
-  if (!assignedTo || validateObjectId(assignedTo)) {
+  if (!assignedTo || !validateObjectId(assignedTo)) {
     throw new ApiError(400, "assignedTo is required!");
   }
   next();

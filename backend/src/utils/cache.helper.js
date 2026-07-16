@@ -11,4 +11,8 @@ const getCache = (key) => {
   return cache.get(key);
 };
 
-export default { setCache, getCache };
+const deleteCache = (key) => {
+  return cache.delete(key);
+};
+
+export default { setCache, getCache, deleteCache };

@@ -4,6 +4,7 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import User from "../models/user.model.js";
 import cache from "../utils/cache.js";
+import cacheHelper from "../utils/cache.helper.js";
 
 const createProject = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
@@ -19,8 +20,8 @@ const createProject = asyncHandler(async (req, res) => {
     members: [{ user: req.user._id, role: req.user.role }],
   });
 
-  cache.delete(`projects_${req.user._id}`);
-  cache.delete(`dashboard_${req.user._id}`);
+  cacheHelper.deleteCache(`projects_${req.user._id}`);
+  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
   return res
     .status(201)
     .json(new ApiResponse(201, "project created successfully!", project));
@@ -33,20 +34,21 @@ const deleteProject = asyncHandler(async (req, res) => {
     throw new ApiError(404, "No Project found!");
   }
 
-  if (project.owner._id.toString() !== req.user._id.toString()) {
+  if (project.owner.toString() !== req.user._id.toString()) {
     throw new ApiError(403, "Access denied!");
   }
 
   await project.deleteOne();
-  cache.delete(`dashboard_${req.user._id}`);
+  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
 
   res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
 });
 
 const getProjects = asyncHandler(async (req, res) => {
-  const cacheKey = `projects_${req.user._id}_${search || ""}`;
+  const { search } = req.query;
+  const cacheKey = `projects_${req.user._id}`;
 
-  const cached = cache.get(cacheKey);
+  const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
     console.log("Cache Hit:", cacheKey);
@@ -55,10 +57,8 @@ const getProjects = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, "Projects fetched from cache!", cached.data));
   } else {
     console.log("Cache Miss:", cacheKey);
-    cache.delete(cacheKey);
+    cacheHelper.deleteCache(cacheKey);
   }
-
-  const { search } = req.query;
 
   const projects = await Project.find({
     owner: req.user._id,
@@ -68,8 +68,8 @@ const getProjects = asyncHandler(async (req, res) => {
     },
   }).populate("owner", "fullname email");
 
-  //set data and expiresAt in cache after fetching data from the database
-  cache.set(cacheKey, projects);
+  //set data in cache after fetching data from the database
+  cacheHelper.setCache(cacheKey, projects);
 
   return res
     .status(200)
@@ -83,7 +83,7 @@ const addMember = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Project not found!");
   }
 
-  const member = await User.findOne({ email });
+  const member = await User.findOne({ email: email.toLowerCase() });
 
   if (!member) {
     throw new ApiError(404, "User not found!");
@@ -116,6 +116,10 @@ const getProjectMembers = asyncHandler(async (req, res) => {
     path: "members.user",
     select: "fullname email role",
   });
+
+  if (!project) {
+    throw new ApiError(404, "Project not found!");
+  }
 
   res
     .status(200)

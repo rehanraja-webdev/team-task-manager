@@ -7,6 +7,7 @@ import Activity from "../models/activity.model.js";
 import mongoose from "mongoose";
 import validateObjectId from "../utils/validateObjectId.js";
 import cache from "../utils/cache.js";
+import { getIO } from "../socket/socket.js";
 
 const createTask = asyncHandler(async (req, res) => {
   const { title, description, dueDate, projectId, assignedTo } = req.body;
@@ -138,6 +139,11 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
 
   task.status = status;
   await task.save();
+
+  getIO().to(task.project.toString()).emit("taskUpdated", {
+    taskId: task._id,
+    status: task.status,
+  });
 
   await Activity.create({
     task: task._id,

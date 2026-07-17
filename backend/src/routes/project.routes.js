@@ -19,6 +19,16 @@ router.delete(
   projectController.deleteProject,
 );
 
+/**
+ * @swagger
+ * /api/projects/:
+ *  get:
+ *    summary: Get All Projects
+ *    tags: [Projects]
+ *    response:
+ *      200:
+ *        description: All Projects fetched successfully
+ */
 router.get("/", authMiddleware, projectController.getProjects);
 
 router.post("/:projectId/members", authMiddleware, projectController.addMember);

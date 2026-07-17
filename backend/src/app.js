@@ -14,6 +14,8 @@ import path from "path";
 import logger from "./middlewares/logger.middleware.js";
 import rateLimiter from "./middlewares/rateLimit.middleware.js";
 import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 
 const app = express();
 
@@ -26,6 +28,7 @@ app.use(
 app.use(cookieParser());
 app.use(helmet());
 app.use(logger);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", rateLimiter);
 
 app.use("/api/auth", authRoutes);

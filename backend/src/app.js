@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/auth.routes.js";
-import projectRoutes from "./routes/project.routes.js";
+import authRoutes from "./routes/v1/auth.routes.js";
+import projectRoutes from "./routes/v1/project.routes.js";
 import errorHandler from "./middlewares/error.middleware.js";
 import taskRoutes from "./routes/task.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
@@ -31,8 +31,8 @@ app.use(logger);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", rateLimiter);
 
-app.use("/api/auth", authRoutes);
-app.use("/api/projects", projectRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/activities", activityRoutes);

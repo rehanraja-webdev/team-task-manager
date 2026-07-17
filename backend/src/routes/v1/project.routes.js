@@ -1,7 +1,7 @@
 import express from "express";
-import projectController from "../controllers/project.controller.js";
-import authMiddleware from "../middlewares/auth.middleware.js";
-import authorizeRoles from "../middlewares/role.middleware.js";
+import projectController from "../../controllers/project.controller.js";
+import authMiddleware from "../../middlewares/auth.middleware.js";
+import authorizeRoles from "../../middlewares/role.middleware.js";
 
 const router = express.Router();
 

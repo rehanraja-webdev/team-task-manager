@@ -5,7 +5,10 @@ const activitySchema = new Schema(
     task: {
       type: Schema.Types.ObjectId,
       ref: "Task",
-      required: "true",
+    },
+    project: {
+      type: Schema.Types.ObjectId,
+      ref: "Project",
     },
     user: {
       type: Schema.Types.ObjectId,

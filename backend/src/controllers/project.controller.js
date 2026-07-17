@@ -5,26 +5,65 @@ import ApiResponse from "../utils/ApiResponse.js";
 import User from "../models/user.model.js";
 import cache from "../utils/cache.js";
 import cacheHelper from "../utils/cache.helper.js";
+import Activity from "../models/activity.model.js";
+import mongoose from "mongoose";
 
 const createProject = asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const { name, description } = req.body;
 
-  if (req.user.role !== "admin") {
-    throw new ApiError(403, "Only admin can create project");
+    if (req.user.role !== "admin") {
+      throw new ApiError(403, "Only admin can create project");
+    }
+
+    const project = await Project.create(
+      [
+        {
+          name,
+          description,
+          owner: req.user._id,
+          members: [
+            {
+              user: req.user._id,
+              role: req.user.role,
+            },
+          ],
+        },
+      ],
+      { session },
+    );
+
+    const createdProject = project[0];
+
+    await Activity.create(
+      [
+        {
+          project: createdProject._id,
+          user: req.user._id,
+          action: `Created Project ${createdProject.name}`,
+        },
+      ],
+      { session },
+    );
+
+    cacheHelper.deleteCache(`projects_${req.user._id}`);
+    cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+
+    await session.commitTransaction();
+
+    return res
+      .status(201)
+      .json(
+        new ApiResponse(201, "Project created successfully!", createdProject),
+      );
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
   }
-
-  const project = await Project.create({
-    name,
-    description,
-    owner: req.user._id,
-    members: [{ user: req.user._id, role: req.user.role }],
-  });
-
-  cacheHelper.deleteCache(`projects_${req.user._id}`);
-  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  return res
-    .status(201)
-    .json(new ApiResponse(201, "project created successfully!", project));
 });
 
 const deleteProject = asyncHandler(async (req, res) => {

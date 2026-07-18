@@ -11,7 +11,7 @@ const validateRegister = (req, res, next) => {
     });
   }
 
-  if (!validator.isEmail(email)) {
+  if (!email || !validator.isEmail(email)) {
     return res.status(400).json({ success: false, message: "Invalid Email" });
   }
 

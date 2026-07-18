@@ -48,7 +48,11 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email: email.toLowerCase() }).select(
+  if (!email || !password) {
+    throw new ApiError(400, "Email and password are required");
+  }
+
+  const user = await User.findOne({ email: email?.toLowerCase() }).select(
     "+password",
   );
 

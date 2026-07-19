@@ -15,15 +15,18 @@ const TaskSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Project",
       required: true,
+      index: true,
     },
     assignedTo: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
     dueDate: {
       type: Date,
       required: true,
+      index: true,
     },
     priority: {
       type: String,
@@ -38,6 +41,8 @@ const TaskSchema = new Schema(
   },
   { timestamps: true },
 );
+
+TaskSchema.index({ project: 1, status: 1 });
 
 const Task = mongoose.model("Task", TaskSchema);
 

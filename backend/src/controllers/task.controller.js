@@ -93,7 +93,11 @@ const getProjectTasks = asyncHandler(async (req, res) => {
   let sortOption = { createdAt: -1 };
 
   if (req.query.sort === "oldest") {
-    sortOption.createdAt = 1;
+    sortOption = { createdAt: 1 };
+  }
+
+  if (req.query.sort === "priority") {
+    sortOption = { priority: 1 };
   }
 
   //if no query if found, then it will find task by (project: req.params.projectId). Otherwise it will push the query in the filter object.

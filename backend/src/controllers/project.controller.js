@@ -14,8 +14,8 @@ const createProject = asyncHandler(async (req, res) => {
   try {
     const { name, description } = req.body;
 
-    if (req.user.role !== "admin") {
-      throw new ApiError(403, "Only admin can create project");
+    if (!name || !description) {
+      throw new ApiError(400, "All fields required!");
     }
 
     const project = await Project.create(

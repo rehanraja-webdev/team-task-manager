@@ -11,10 +11,10 @@ beforeAll(async () => {
 
 describe("Project Routes", () => {
   let agent;
+  const email = `test${Date.now()}@gmail.com`;
 
   beforeAll(async () => {
     agent = request.agent(app);
-    const email = `test${Date.now()}@gmail.com`;
 
     await agent.post("/api/v1/auth/register").send({
       fullname: "Test User",
@@ -30,7 +30,15 @@ describe("Project Routes", () => {
     });
   });
 
-  test("Create Project", async () => {
+  test("Create project with missing fields will fail", async () => {
+    const res = await agent.post("/api/v1/projects/").send({});
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toBe("All fields required!");
+  });
+
+  test("Only Admin Can Create Project", async () => {
     const res = await agent.post("/api/v1/projects").send({
       name: "TeamTask",
       description: "Testing Project",
@@ -47,6 +55,21 @@ describe("Project Routes", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toBe("Projects Find Successfully!");
     expect(res.body.success).toBe(true);
+  });
+
+  test("Member cann't create project", async () => {
+    await User.findOneAndUpdate({ email }, { role: "member" });
+
+    const res = await agent.post("/api/v1/projects").send({
+      name: "TeamTask",
+      description: "Test TeamTask",
+    });
+
+    expect(res.statusCode).toBe(403);
+    expect(res.body.success).toBe(false);
+    expect(res.body.message).toBe(
+      "You don't hava permission to perform this action!",
+    );
   });
 });
 

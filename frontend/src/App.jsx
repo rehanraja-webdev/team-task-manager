@@ -3,8 +3,10 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import Toaster from "react-hot-toast";
 
 const App = () => {
+  <Toaster />;
   return (
     <BrowserRouter>
       <Routes>

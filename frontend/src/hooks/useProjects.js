@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { createAProject, getProjects } from "../services/project.service";
+import {
+  createAProject,
+  deleteProjectById,
+  getProjects,
+} from "../services/project.service";
 import toast from "react-hot-toast";
 
 const useProjects = () => {
@@ -36,11 +40,24 @@ const useProjects = () => {
     }
   };
 
+  const deleteProject = async (id) => {
+    try {
+      const data = await deleteProjectById(id);
+
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     projects,
     loading,
     fetchProjects,
     createProject,
+    deleteProject,
   };
 };
 

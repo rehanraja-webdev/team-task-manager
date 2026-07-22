@@ -9,13 +9,15 @@ import {
   LogOut,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const Sidebar = () => {
+  const { logout, user } = useAuth();
   const menuItems = [
     {
       name: "Dashboard",
       icon: LayoutDashboard,
-      path: "/dashboard",
+      path: "",
     },
     {
       name: "Projects",
@@ -76,7 +78,8 @@ const Sidebar = () => {
             return (
               <li key={item.name}>
                 <NavLink
-                  to={item.path}
+                  to={`/dashboard${item.path}`}
+                  end
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-200
                     ${
@@ -125,19 +128,24 @@ const Sidebar = () => {
         <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4">
           <div className="flex items-center gap-3 mb-4">
             <img
-              src="https://ui-avatars.com/api/?name=Rehan"
+              src={`https://ui-avatars.com/api/?name=${user.fullname.split(" ")[0]}`}
               alt="profile"
               className="w-10 h-10 rounded-full"
             />
 
             <div>
-              <h4 className="text-white font-medium">Rehan</h4>
+              <h4 className="text-white font-medium">
+                {user?.fullname.split(" ")[0]}
+              </h4>
 
-              <p className="text-xs text-slate-500">Admin</p>
+              <p className="text-xs text-slate-500">{user?.role}</p>
             </div>
           </div>
 
-          <button className="w-full flex items-center justify-center gap-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-xl py-3 transition-all">
+          <button
+            onClick={logout}
+            className="w-full flex items-center justify-center gap-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-xl py-3 transition-all"
+          >
             <LogOut size={18} />
             Logout
           </button>

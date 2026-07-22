@@ -10,12 +10,12 @@ export const loginUser = async (data) => {
   return response.data;
 };
 
-export const logoutUser = async (data) => {
-  const response = await api.post("/v1/auth/logout", data);
+export const logoutUser = async () => {
+  const response = await api.post("/v1/auth/logout");
   return response.data;
 };
 
-export const getUser = async (data) => {
-  const response = await api.get("/v1/auth/me", data);
+export const getUser = async () => {
+  const response = await api.get("/v1/auth/me");
   return response.data;
 };

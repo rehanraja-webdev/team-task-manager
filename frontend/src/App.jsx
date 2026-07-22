@@ -5,6 +5,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./pages/dashboard/Dashboard";
 import MainLayout from "./layouts/MainLayout";
+import Projects from "./pages/Projects";
 
 const App = () => {
   return (
@@ -15,8 +16,9 @@ const App = () => {
         <Route path="/register" element={<Register />} />
 
         <Route element={<ProtectedRoute />}>
-          <Route element={<MainLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<MainLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="projects" element={<Projects />} />
           </Route>
         </Route>
       </Routes>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import {
   Search,
   Mail,
@@ -34,7 +35,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 pl-6">
+    <div className="min-h-screen bg-slate-950 ">
       {/* Header */}
       <div className="flex justify-between items-center bg-slate-900 rounded-2xl p-4 border border-slate-800 mb-8">
         <div className="flex items-center gap-3 bg-slate-950 px-4 py-3 rounded-full border border-slate-800 md:w-80 w-52">

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createContext, useEffect, useState } from "react";
 import { getUser, loginUser, logoutUser } from "../services/auth.service";
 

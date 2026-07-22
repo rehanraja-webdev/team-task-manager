@@ -16,28 +16,24 @@ const ProjectCard = ({ project }) => {
         <button className="text-slate-400 hover:text-white text-xl">⋮</button>
       </div>
 
-      {/* Owner */}
-      <div className="mt-5">
-        <p className="text-xs text-slate-500 uppercase">Owner</p>
-
-        <p className="text-slate-200 mt-1">{project.owner?.fullname}</p>
-      </div>
-
-      {/* Members */}
-      <div className="mt-5 flex items-center justify-between">
+      {/* Owner & Members*/}
+      <div className="mt-5 space-y-6 sm:flex sm:justify-between">
         <div>
-          <p className="text-xs text-slate-500 uppercase">Team Members</p>
+          <p className="text-xs text-slate-500 uppercase">Owner</p>
 
-          <p className="text-slate-200 mt-1">{memberCount} Members</p>
+          <p className="text-slate-200 mt-1">{project.owner?.fullname}</p>
         </div>
+        <div>
+          <div>
+            <p className="text-xs text-slate-500 uppercase">Team Members</p>
 
-        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 text-white font-medium">
-          {memberCount}
+            <p className="text-slate-200 mt-1">{memberCount} Members</p>
+          </div>
         </div>
       </div>
 
       {/* Dates */}
-      <div className="mt-5 border-t border-slate-800 pt-4">
+      <div className="border-t border-slate-800 pt-4">
         <div className="flex justify-between text-sm">
           <span className="text-slate-500">Created</span>
 

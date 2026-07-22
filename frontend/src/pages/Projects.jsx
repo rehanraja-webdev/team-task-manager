@@ -40,7 +40,7 @@ const Projects = () => {
         </select>
       </div>
 
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid xl:grid-cols-2 gap-6">
         {projects.map((project) => (
           <ProjectCard key={project._id} project={project} />
         ))}

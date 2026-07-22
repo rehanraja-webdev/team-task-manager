@@ -7,10 +7,15 @@ import {
   Clock,
   ListTodo,
 } from "lucide-react";
-import profileImg from "../assets/profile.png";
+
+import profileImg from "../../assets/profile.png";
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import api from "../../api/axios";
 import toast from "react-hot-toast";
+import StatCard from "./StatCard";
+import ProgressBar from "./ProgressBar";
+import ActivityItem from "./ActivityItem";
+import OverviewItem from "./OverviewItem";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -175,65 +180,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
-};
-
-const StatCard = ({ title, value, icon }) => {
-  return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
-      <div className="flex justify-between items-center">
-        <div>
-          <p className="text-slate-400">{title}</p>
-
-          <h2 className="text-4xl font-bold text-white mt-2">{value}</h2>
-        </div>
-
-        <div className="text-indigo-400">{icon}</div>
-      </div>
-    </div>
-  );
-};
-
-const ProgressBar = ({ title, value = 0, total = 0 }) => {
-  const percentage = total ? Math.round((value / total) * 100) : 0;
-
-  return (
-    <div>
-      <div className="flex justify-between mb-2">
-        <span className="text-slate-300">{title}</span>
-
-        <span className="text-slate-400">{percentage}%</span>
-      </div>
-
-      <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-indigo-500"
-          style={{
-            width: `${percentage}%`,
-          }}
-        />
-      </div>
-    </div>
-  );
-};
-
-const OverviewItem = ({ label, value }) => {
-  return (
-    <div className="flex justify-between items-center bg-slate-950 p-4 rounded-xl">
-      <span className="text-slate-400">{label}</span>
-
-      <span className="text-white font-semibold">{value}</span>
-    </div>
-  );
-};
-
-const ActivityItem = ({ text, time }) => {
-  return (
-    <div className="border-l-2 border-indigo-500 pl-4">
-      <p className="text-slate-200">{text}</p>
-
-      <span className="text-slate-500 text-sm">{time}</span>
     </div>
   );
 };

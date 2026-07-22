@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Toaster from "react-hot-toast";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 const App = () => {
   <Toaster />;

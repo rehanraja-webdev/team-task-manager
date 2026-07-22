@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import Dashboard from "./pages/dashboard/Dashboard";
 import MainLayout from "./layouts/MainLayout";
 import Projects from "./pages/Projects";
+import CreateProject from "./pages/CreateProject";
 
 const App = () => {
   return (
@@ -19,6 +20,8 @@ const App = () => {
           <Route path="/dashboard" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
+
+            <Route path="projects/create" element={<CreateProject />} />
           </Route>
         </Route>
       </Routes>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getProjects } from "../services/project.service";
+import { createAProject, getProjects } from "../services/project.service";
+import toast from "react-hot-toast";
 
 const useProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -11,7 +12,7 @@ const useProjects = () => {
 
       setProjects(data);
     } catch (error) {
-      console.error(error);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -22,10 +23,24 @@ const useProjects = () => {
     fetchProjects();
   }, []);
 
+  const createProject = async (formData) => {
+    try {
+      const data = await createAProject(formData);
+
+      setProjects(data);
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     projects,
     loading,
     fetchProjects,
+    createProject,
   };
 };
 

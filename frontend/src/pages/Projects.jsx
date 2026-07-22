@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router";
 import ProjectCard from "../components/common/ProjectCard";
 import useProjects from "../hooks/useProjects";
 
 const Projects = () => {
   const { projects, loading } = useProjects();
+  const navigate = useNavigate();
 
   if (projects.length === 0) {
     return <p>No projects found.</p>;
@@ -21,7 +23,10 @@ const Projects = () => {
           </p>
         </div>
 
-        <button className="bg-indigo-600 hover:bg-indigo-700 px-5 py-3 rounded-xl text-white">
+        <button
+          onClick={()=>navigate("create")}
+          className="bg-indigo-600 hover:bg-indigo-700 px-5 py-3 rounded-xl text-white"
+        >
           + New Project
         </button>
       </div>

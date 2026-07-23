@@ -3,6 +3,7 @@ import {
   createAProject,
   deleteProjectById,
   getProjects,
+  addNewMember,
 } from "../services/project.service";
 import toast from "react-hot-toast";
 
@@ -46,7 +47,18 @@ const useProjects = () => {
 
       toast.success(data.message);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addMember = async (id, email) => {
+    try {
+      const data = await addNewMember(id, email);
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.response?.data.message);
     } finally {
       setLoading(false);
     }
@@ -58,6 +70,7 @@ const useProjects = () => {
     fetchProjects,
     createProject,
     deleteProject,
+    addMember,
   };
 };
 

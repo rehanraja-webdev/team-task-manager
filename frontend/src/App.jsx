@@ -7,6 +7,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import MainLayout from "./layouts/MainLayout";
 import Projects from "./pages/Projects";
 import CreateProject from "./pages/CreateProject";
+import AddProjectMember from "./pages/AddProjectMember";
 
 const App = () => {
   return (
@@ -21,6 +22,10 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
 
+            <Route
+              path="projects/:projectId/add-member"
+              element={<AddProjectMember />}
+            />
             <Route path="projects/create" element={<CreateProject />} />
           </Route>
         </Route>

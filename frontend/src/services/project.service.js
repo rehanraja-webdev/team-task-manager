@@ -19,3 +19,8 @@ export const deleteProjectById = async (id) => {
   const response = await api.delete(`/v1/projects/${id}`);
   return response.data;
 };
+
+export const addNewMember = async (id, email) => {
+  const response = await api.post(`/v1/projects/${id}/member`, {email});
+  return response.data;
+};

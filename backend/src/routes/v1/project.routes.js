@@ -85,6 +85,27 @@ router.get("/", authMiddleware, projectController.getProjects);
 
 /**
  * @swagger
+ * /api/v1/projects/{projectId}:
+ *   get:
+ *     summary: Get Project
+ *     tags: [Projects]
+ *     parameters:
+ *       - in: path
+ *         name: projectId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the project
+ *     responses:
+ *       200:
+ *         description: Project fetched successfully
+ *       404:
+ *         description: Project not found
+ */
+router.get("/:projectId", authMiddleware, projectController.getProject);
+
+/**
+ * @swagger
  * /api/v1/projects/{projectId}/member:
  *   post:
  *     summary: Add project member

@@ -66,6 +66,18 @@ const createProject = asyncHandler(async (req, res) => {
   }
 });
 
+const getProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params?.projectId);
+
+  if (!project) {
+    throw new ApiError(404, "Project not found");
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Project Find Successfully", project));
+});
+
 const deleteProject = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.projectId);
 
@@ -167,6 +179,7 @@ const getProjectMembers = asyncHandler(async (req, res) => {
 
 export default {
   createProject,
+  getProject,
   deleteProject,
   getProjects,
   addMember,

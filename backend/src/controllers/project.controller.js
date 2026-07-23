@@ -67,13 +67,37 @@ const createProject = asyncHandler(async (req, res) => {
 });
 
 const getProject = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params?.projectId);
+  const cacheKey = `project_${req.params.projectId}`;
+  const cached = cacheHelper.getCache(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log("Cache Hit:", cacheKey);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Project fetched from cache!", cached.data));
+  } else {
+    console.log("Cache Miss:", cacheKey);
+    cacheHelper.deleteCache(cacheKey);
+  }
+
+  const project = await Project.findById(req.params?.projectId)
+    .populate("owner", "fullname role")
+    .populate("members.user", "fullname role");
 
   if (!project) {
     throw new ApiError(404, "Project not found");
   }
 
-  res
+  const isMember =
+    project.owner._id.equals(req.user._id) ||
+    project.members.some((member) => member.user._id.equals(req.user._id));
+
+  if (!isMember) {
+    throw new ApiError(403, "Access denied");
+  }
+
+  cacheHelper.setCache(cacheKey, project);
+  return res
     .status(200)
     .json(new ApiResponse(200, "Project Find Successfully", project));
 });
@@ -155,6 +179,8 @@ const addMember = asyncHandler(async (req, res) => {
   project.members.push({ user: member._id, role: member.role || "member" });
 
   await project.save();
+
+  cacheHelper.deleteCache(`project_${req.params.projectId}`);
 
   return res
     .status(200)

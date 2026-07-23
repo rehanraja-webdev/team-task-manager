@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import useProjects from "../hooks/useProjects";
 import { useNavigate, useParams } from "react-router-dom";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const AddProjectMember = () => {
   const { addMember, loading } = useProjects();
@@ -17,7 +18,7 @@ const AddProjectMember = () => {
     navigate(-1);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <>

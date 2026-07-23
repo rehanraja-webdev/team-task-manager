@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import ProjectCard from "../components/common/ProjectCard";
 import useProjects from "../hooks/useProjects";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const Projects = () => {
   const { projects, loading } = useProjects();
@@ -9,9 +10,11 @@ const Projects = () => {
   if (projects.length === 0) {
     return <p>No projects found.</p>;
   }
+
   if (loading) {
-    return <p>Loading...</p>;
+    return <LoadingSpinner />;
   }
+  
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -24,7 +27,7 @@ const Projects = () => {
         </div>
 
         <button
-          onClick={()=>navigate("create")}
+          onClick={() => navigate("create")}
           className="bg-indigo-600 hover:bg-indigo-700 px-5 py-3 rounded-xl text-white"
         >
           + New Project

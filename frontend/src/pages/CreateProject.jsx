@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import useProjects from "../hooks/useProjects";
 import { useNavigate } from "react-router";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const CreateProject = () => {
   const { createProject, loading } = useProjects();
@@ -16,12 +17,9 @@ const CreateProject = () => {
     const description = descriptionRef.current.value;
 
     createProject({ name, description });
-    navigate("/dashboard/projects");
+    navigate(-1);
   };
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="max-w-2xl mx-auto p-8 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl">

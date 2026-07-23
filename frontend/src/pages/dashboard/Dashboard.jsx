@@ -9,6 +9,7 @@ import {
   ListTodo,
 } from "lucide-react";
 
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 import profileImg from "../../assets/profile.png";
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
@@ -20,6 +21,7 @@ import OverviewItem from "./OverviewItem";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const getDashboard = async () => {
     try {
@@ -27,12 +29,16 @@ const Dashboard = () => {
       setStats(res.data.data);
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to fetch dashboard");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     getDashboard();
   }, []);
+
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-slate-950 ">

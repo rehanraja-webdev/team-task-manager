@@ -1,11 +1,11 @@
 import { useState } from "react";
-import useProjects from "../../hooks/useProjects";
+import OptionsModal from "./OptionsModal";
 
 const ProjectCard = ({ project }) => {
   const memberCount = project.members?.length || 0;
   const [showMenu, setShowMenu] = useState(false);
 
-  const { deleteProject } = useProjects();
+
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-indigo-500 transition-all duration-300">
@@ -19,18 +19,17 @@ const ProjectCard = ({ project }) => {
           </p>
         </div>
 
-        <div>
+        <div className="relative">
           {showMenu && (
             <OptionsModal
               id={project._id}
-              deleteProject={deleteProject}
               showMenu={showMenu}
               onClose={() => setShowMenu(false)}
             />
           )}
           <button
             onClick={() => setShowMenu(true)}
-            className="text-slate-400 cursor-pointer hover:text-white text-xl"
+            className="text-slate-400 cursor-pointer hover:text-white text-xl w-8 h-8 bg-slate-950 rounded-full hover:outline-1 hover:outline-purple-600"
           >
             ⋮
           </button>
@@ -72,46 +71,6 @@ const ProjectCard = ({ project }) => {
         </div>
       </div>
     </div>
-  );
-};
-
-const OptionsModal = ({ showMenu, onClose, id, deleteProject }) => {
-  if (!showMenu) return null;
-
-  const handleDelete = () => {
-    const confirmed = confirm("Do you want to delete this project?");
-
-    if (!confirmed) return;
-    deleteProject(id);
-    onClose();
-  };
-
-  return (
-    <>
-      <div
-        className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[1px]"
-        onClick={onClose}
-      />
-
-      <div className="absolute right-16 z-50 w-56 p-2 flex flex-col space-y-1 bg-slate-800 border border-slate-700 rounded-xl shadow-xl text-white">
-        <button
-          onClick={() => {
-            console.log("View Details");
-            onClose();
-          }}
-          className="w-full px-4 py-2 text-left text-sm text-slate-200 hover:bg-slate-700 hover:text-white rounded-lg transition"
-        >
-          View project details
-        </button>
-
-        <button
-          onClick={handleDelete}
-          className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition"
-        >
-          Delete Project
-        </button>
-      </div>
-    </>
   );
 };
 

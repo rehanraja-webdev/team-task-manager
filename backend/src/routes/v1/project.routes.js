@@ -7,7 +7,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/projects:
+ * /api/v1/projects:
  *   post:
  *     summary: Create project
  *     tags: [Projects]
@@ -44,7 +44,7 @@ router.post(
 
 /**
  * @swagger
- * /api/projects/{projectId}:
+ * /api/v1/projects/{projectId}:
  *   delete:
  *     summary: Delete a project
  *     description: Delete a project with project ID
@@ -71,7 +71,7 @@ router.delete(
 
 /**
  * @swagger
- * /api/projects:
+ * /api/v1/projects:
  *   get:
  *     summary: Get All Projects
  *     tags: [Projects]
@@ -85,7 +85,7 @@ router.get("/", authMiddleware, projectController.getProjects);
 
 /**
  * @swagger
- * /api/projects/{projectId}/members:
+ * /api/v1/projects/{projectId}/member:
  *   post:
  *     summary: Add project member
  *     tags: [Projects]
@@ -106,11 +106,11 @@ router.get("/", authMiddleware, projectController.getProjects);
  *       404:
  *         description: User not found
  */
-router.post("/:projectId/members", authMiddleware, projectController.addMember);
+router.post("/:projectId/member", authMiddleware, projectController.addMember);
 
 /**
  * @swagger
- * /api/projects/{projectId}/members:
+ * /api/v1/projects/{projectId}/members:
  *   get:
  *     summary: Get All Project Members
  *     tags: [Projects]

@@ -24,7 +24,7 @@ const CreateProject = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl">
+    <div className="max-w-2xl mx-auto p-8 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl">
       {/* Header */}
       <h1 className="font-bold text-3xl sm:text-4xl text-white tracking-tight">
         Create <span className="text-purple-500">New Project</span>

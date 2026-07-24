@@ -22,7 +22,7 @@ const AddProjectMember = () => {
 
   return (
     <>
-      <div className="bg-slate-900 p-6 rounded-3xl">
+      <div className="bg-slate-900 p-6 rounded-3xl max-w-2xl m-auto">
         <h1 className="text-4xl text-white font-bold mb-5">
           Add <span className="text-purple-500">Project Member</span>
         </h1>

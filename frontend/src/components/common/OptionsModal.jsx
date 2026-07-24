@@ -23,10 +23,7 @@ const OptionsModal = ({ showMenu, onClose, id }) => {
 
       <div className="absolute right-10 z-50 w-56 p-2 flex flex-col space-y-1 bg-slate-800 border border-slate-700 rounded-xl shadow-xl text-white">
         <button
-          onClick={() => {
-            console.log("View Details");
-            onClose();
-          }}
+          onClick={() => navigate(id)}
           className="w-full px-4 py-2 text-left text-sm text-slate-200 hover:bg-slate-700 hover:text-white rounded-lg transition"
         >
           View project details

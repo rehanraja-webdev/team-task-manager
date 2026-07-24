@@ -4,7 +4,6 @@ import { getProject, getProjectTasks } from "../services/project.service";
 import toast from "react-hot-toast";
 
 const useProject = (projectId) => {
-  console.log("useProject", projectId);
   const [loading, setLoading] = useState(true);
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);

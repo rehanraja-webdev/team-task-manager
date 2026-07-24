@@ -1,4 +1,4 @@
-import mongoose, { mongo, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const TaskSchema = new Schema(
   {
@@ -23,6 +23,11 @@ const TaskSchema = new Schema(
       ref: "User",
       required: true,
       index: true,
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     dueDate: {
       type: Date,

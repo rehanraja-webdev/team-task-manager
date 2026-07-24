@@ -17,9 +17,9 @@ const createTask = asyncHandler(async (req, res) => {
   if (!project) {
     throw new ApiError(404, "Project not found!");
   }
-  const user = req.user;
+
   const isMember = project.members.some((member) => {
-    return member.user.equals(user._id);
+    return member.user.equals(req.user._id);
   });
 
   if (!isMember) {
@@ -40,6 +40,8 @@ const createTask = asyncHandler(async (req, res) => {
     project: projectId,
     assignedTo,
     dueDate,
+    priority,
+    createdBy: req.user._id,
   });
 
   await Activity.create({
@@ -160,4 +162,19 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
 });
 
-export default { createTask, getProjectTasks, updateTaskStatus };
+const getTask = asyncHandler(async (req, res) => {
+  const task = await Task.findById(req.params.taskId)
+    .populate("assignedTo", "fullname email")
+    .populate("project", "name")
+    .populate("createdBy", "fullname");
+
+  if (!task) {
+    throw new ApiError(404, "Task not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Task fetched successfully", task));
+});
+
+export default { createTask, getProjectTasks, getTask, updateTaskStatus };

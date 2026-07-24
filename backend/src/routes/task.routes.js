@@ -77,6 +77,12 @@ router.get(
   taskController.getProjectTasks,
 );
 
+router.get(
+  "/:taskId",
+  authMiddleware,
+  taskController.getTask,
+);
+
 /**
  * @swagger
  * /api/tasks/{taskId}/status:

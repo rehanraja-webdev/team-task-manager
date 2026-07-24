@@ -1,14 +1,13 @@
 import {
-  CalendarDays,
-  User,
   Flag,
   Circle,
   Clock3,
   CircleCheckBig,
   TrendingUp,
   TriangleAlert,
+  ArrowBigRight,
 } from "lucide-react";
-import formatDate from "../../../utils/formatDate";
+import { NavLink } from "react-router-dom";
 
 const TaskCard = ({ task }) => {
   const statusConfig = {
@@ -60,7 +59,7 @@ const TaskCard = ({ task }) => {
   };
 
   return (
-    <div className="bg-slate-900 border border-b-4 border-b-amber-600/80 border-slate-800 rounded-2xl p-6 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300">
+    <div className="bg-slate-900 border border-b-4 border-b-amber-600/80 border-slate-800 rounded-2xl p-6 ">
       {/* Header */}
       <div className="flex justify-between ">
         <span
@@ -87,48 +86,14 @@ const TaskCard = ({ task }) => {
         </p>
       </div>
 
-      {/* Assigned User */}
-      <div className="mt-6 flex items-center gap-4 bg-slate-800/60 rounded-xl p-4 border border-slate-700">
-        <div className="h-11 w-11 rounded-full bg-purple-600/20 flex items-center justify-center">
-          <User className="text-purple-400" size={20} />
-        </div>
-
-        <div>
-          <p className="text-white font-medium">{task.assignedTo.fullname}</p>
-
-          <p className="text-sm text-slate-400">{task.assignedTo.email}</p>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="mt-6 border-t border-slate-800 pt-5 flex justify-between">
-        <div className="flex items-start gap-3">
-          <CalendarDays size={18} className="text-slate-500 mt-1" />
-
-          <div>
-            <p className="text-xs uppercase tracking-wide text-slate-500">
-              Created
-            </p>
-
-            <p className="text-sm text-white mt-1">
-              {formatDate(task.createdAt)}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-start gap-3">
-          <Clock3 size={18} className="text-slate-500 mt-1" />
-
-          <div>
-            <p className="text-xs uppercase tracking-wide text-slate-500">
-              Updated
-            </p>
-
-            <p className="text-sm text-white mt-1">
-              {formatDate(task.updatedAt)}
-            </p>
-          </div>
-        </div>
+      <div className="flex justify-end">
+        <NavLink
+          to={`tasks/${task._id}`}
+          className="mt-6 flex gap-2 px-6 py-3 border rounded-2xl hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
+        >
+          <span>View Task</span>
+          <ArrowBigRight />
+        </NavLink>
       </div>
     </div>
   );

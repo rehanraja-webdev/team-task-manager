@@ -9,6 +9,7 @@ import Projects from "./pages/Projects";
 import CreateProject from "./pages/CreateProject";
 import AddProjectMember from "./pages/AddProjectMember";
 import ProjectDetails from "./pages/ProjectDetails";
+import TaskDetails from "./pages/TaskDetails";
 
 const App = () => {
   return (
@@ -23,12 +24,16 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
 
+            <Route path="projects/create" element={<CreateProject />} />
+            <Route path="projects/:projectId" element={<ProjectDetails />} />
             <Route
               path="projects/:projectId/add-member"
               element={<AddProjectMember />}
             />
-            <Route path="projects/create" element={<CreateProject />} />
-            <Route path="projects/:projectId" element={<ProjectDetails />} />
+            <Route
+              path="projects/:projectId/tasks/:taskId"
+              element={<TaskDetails />}
+            />
           </Route>
         </Route>
       </Routes>

@@ -20,7 +20,7 @@ const TaskList = ({ projectId }) => {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 2xl:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">
         {tasks.map((task) => (
           <TaskCard key={task._id} task={task} />
         ))}

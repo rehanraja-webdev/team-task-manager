@@ -1,5 +1,5 @@
 import { useState } from "react";
-import OptionsModal from "./OptionsModal";
+import ProjectOptionsModal from "./ProjectOptionsModal";
 
 const ProjectCard = ({ project }) => {
   const memberCount = project.members?.length || 0;
@@ -21,7 +21,7 @@ const ProjectCard = ({ project }) => {
 
         <div className="relative">
           {showMenu && (
-            <OptionsModal
+            <ProjectOptionsModal
               id={project._id}
               showMenu={showMenu}
               onClose={() => setShowMenu(false)}

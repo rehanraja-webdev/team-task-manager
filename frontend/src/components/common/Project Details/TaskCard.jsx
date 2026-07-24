@@ -60,7 +60,7 @@ const TaskCard = ({ task }) => {
   };
 
   return (
-    <div className="bg-slate-900 border border-b-4 border-b-amber-600 border-slate-800 rounded-2xl p-6 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300">
+    <div className="bg-slate-900 border border-b-4 border-b-amber-600/80 border-slate-800 rounded-2xl p-6 hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300">
       {/* Header */}
       <div className="flex justify-between ">
         <span

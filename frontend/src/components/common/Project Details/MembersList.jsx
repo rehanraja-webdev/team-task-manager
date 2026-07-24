@@ -1,10 +1,10 @@
-import { User, Users } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { User, Users, Plus } from "lucide-react";
 
 const MembersList = ({ project }) => {
   return (
-    <div className="bg-slate-900 rounded-3xl p-8 ">
+    <div className="bg-slate-900 rounded-3xl p-8 mt-6">
       <div className="flex items-center gap-3 border-b border-slate-800 pb-5 mb-8">
-        
         <div className="p-3 rounded-xl bg-purple-600/15">
           <Users className="text-purple-500 size={24} " />
         </div>
@@ -12,6 +12,19 @@ const MembersList = ({ project }) => {
         <div>
           <h1 className="text-2xl text-white font-bold">Project Members</h1>
           <p className="text-slate-400 text-sm">All members of this project</p>
+        </div>
+
+        <div className="ml-auto">
+          <NavLink
+            to="add-member"
+            className="flex border p-3 px-6 rounded-2xl  border-slate-800 bg-purple-600/15 text-purple-500 hover:border-purple-500"
+          >
+            {" "}
+            <Plus />{" "}
+            <span className="hidden lg:inline-block font-bold ml-1">
+              Add Member
+            </span>
+          </NavLink>
         </div>
       </div>
 

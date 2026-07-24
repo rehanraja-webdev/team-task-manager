@@ -1,7 +1,7 @@
 import useProjects from "../../hooks/useProjects";
 import { useNavigate } from "react-router";
 
-const OptionsModal = ({ showMenu, onClose, id }) => {
+const ProjectOptionsModal = ({ showMenu, onClose, id }) => {
   const { deleteProject } = useProjects();
   const navigate = useNavigate();
   if (!showMenu) return null;
@@ -30,13 +30,6 @@ const OptionsModal = ({ showMenu, onClose, id }) => {
         </button>
 
         <button
-          onClick={() => navigate(`${id}/add-member`)}
-          className="w-full px-4 py-2 text-left text-sm text-slate-200 hover:bg-slate-700 hover:text-white rounded-lg transition"
-        >
-          Add new member
-        </button>
-
-        <button
           onClick={handleDelete}
           className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition"
         >
@@ -46,4 +39,4 @@ const OptionsModal = ({ showMenu, onClose, id }) => {
     </>
   );
 };
-export default OptionsModal;
+export default ProjectOptionsModal;

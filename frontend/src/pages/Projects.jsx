@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import ProjectCard from "../components/common/ProjectCard";
 import useProjects from "../hooks/useProjects";
 import LoadingSpinner from "../components/common/LoadingSpinner";

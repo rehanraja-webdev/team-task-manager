@@ -8,6 +8,7 @@ import MainLayout from "./layouts/MainLayout";
 import Projects from "./pages/Projects";
 import CreateProject from "./pages/CreateProject";
 import AddProjectMember from "./pages/AddProjectMember";
+import ProjectDetails from "./pages/ProjectDetails";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
               element={<AddProjectMember />}
             />
             <Route path="projects/create" element={<CreateProject />} />
+            <Route path="projects/:projectId" element={<ProjectDetails />} />
           </Route>
         </Route>
       </Routes>

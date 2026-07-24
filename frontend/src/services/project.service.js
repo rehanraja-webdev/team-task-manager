@@ -5,14 +5,19 @@ export const getProjects = async () => {
   return response.data.data;
 };
 
+export const getProject = async (projectId) => {
+  const response = await api.get(`/v1/projects/${projectId}`);
+  return response.data.data;
+};
+
+export const getProjectTasks = async (projectId) => {
+  const response = await api.get(`/tasks/project/${projectId}`);
+  return response.data.data;
+};
+
 export const createAProject = async (formData) => {
   const response = await api.post("/v1/projects", formData);
   return response.data;
-};
-
-export const getProject = async (id) => {
-  const response = await api.get(`/v1/projects/${id}`);
-  return response.data.data;
 };
 
 export const deleteProjectById = async (id) => {
@@ -21,6 +26,6 @@ export const deleteProjectById = async (id) => {
 };
 
 export const addNewMember = async (id, email) => {
-  const response = await api.post(`/v1/projects/${id}/member`, {email});
+  const response = await api.post(`/v1/projects/${id}/member`, { email });
   return response.data;
 };

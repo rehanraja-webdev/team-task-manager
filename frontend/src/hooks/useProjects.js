@@ -17,7 +17,7 @@ const useProjects = () => {
 
       setProjects(data);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data.message);
     } finally {
       setLoading(false);
     }
@@ -35,7 +35,7 @@ const useProjects = () => {
       setProjects(data);
       toast.success(data.message);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data.message);
     } finally {
       setLoading(false);
     }

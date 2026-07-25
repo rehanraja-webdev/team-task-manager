@@ -1,13 +1,19 @@
 import api from "../api/axios";
 
+export const createATask = async (formData) => {
+  const res = await api.post("/tasks/", formData);
+
+  return res.data;
+};
+
 export const deleteTaskById = async (taskId) => {
-  const res = await api.delete(`tasks/${taskId}`);
+  const res = await api.delete(`/tasks/${taskId}`);
 
   return res.data;
 };
 
 export const getTaskDetails = async (taskId) => {
-  const res = await api.get(`tasks/${taskId}`);
+  const res = await api.get(`/tasks/${taskId}`);
 
   return res.data.data;
 };

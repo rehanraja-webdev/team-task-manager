@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  createATask,
   getTaskDetails,
   getTaskActivities,
   getTaskComments,
@@ -13,6 +14,16 @@ const useTask = (taskId) => {
   const [comments, setComments] = useState([]);
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const createTask = async (formData) => {
+    try {
+      await createATask(formData);
+    } catch (error) {
+      toast.error(error.response?.data.message || "Failed to create task!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!taskId) return;
@@ -44,7 +55,7 @@ const useTask = (taskId) => {
     setLoading(true);
     try {
       await deleteTaskById(taskId);
-      toast.success("Task deleted successfully!")
+      toast.success("Task deleted successfully!");
     } catch (error) {
       toast.error(error.response?.data.message || "Unable to delete task");
     } finally {
@@ -63,7 +74,15 @@ const useTask = (taskId) => {
     }
   };
 
-  return { task, deleteTask, activities, comments, addComment, loading };
+  return {
+    task,
+    activities,
+    comments,
+    loading,
+    createTask,
+    deleteTask,
+    addComment,
+  };
 };
 
 export default useTask;

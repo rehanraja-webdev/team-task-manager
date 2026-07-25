@@ -1,6 +1,7 @@
 import { ClipboardList, FolderPlus, Plus } from "lucide-react";
 import TaskCard from "./TaskCard";
 import useProjectTasks from "../../../hooks/useProjectTasks";
+import { NavLink } from "react-router";
 
 const TaskList = ({ projectId }) => {
   const { tasks } = useProjectTasks(projectId);
@@ -17,6 +18,16 @@ const TaskList = ({ projectId }) => {
           <h1 className="font-bold text-2xl">Task List</h1>
           <p className="text-sm text-slate-400">All tasks of this project</p>
         </div>
+
+        <div className="ml-auto">
+          <NavLink
+            to="tasks/new"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
+          >
+            <Plus className="size-4 stroke-[2.5]" />
+            <span className="hidden lg:inline-block">Create Task</span>
+          </NavLink>
+        </div>
       </div>
 
       {/* Task Content / Empty State */}
@@ -29,8 +40,8 @@ const TaskList = ({ projectId }) => {
             No tasks created yet
           </h3>
           <p className="text-sm text-slate-400 max-w-110 mt-1">
-            Currently this project has no task . Get started by
-            creating a new task.
+            Currently this project has no task . Get started by creating a new
+            task.
           </p>
         </div>
       ) : (

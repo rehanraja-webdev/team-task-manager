@@ -6,19 +6,16 @@ import toast from "react-hot-toast";
 const useProject = (projectId) => {
   const [loading, setLoading] = useState(true);
   const [project, setProject] = useState(null);
-  const [tasks, setTasks] = useState([]);
+  const [members, setMembers] = useState([]);
 
   const fetchProjectDetails = async () => {
     if (!projectId) return;
 
     try {
-      const [projectRes, taskRes] = await Promise.all([
-        getProject(projectId),
-        getProjectTasks(projectId),
-      ]);
+      const projectRes = await getProject(projectId);
 
       setProject(projectRes);
-      setTasks(taskRes?.tasks || []);
+      setMembers(projectRes.members);
     } catch (error) {
       toast.error(error.response?.data.message || "Something went wrong!");
     } finally {
@@ -31,9 +28,9 @@ const useProject = (projectId) => {
   }, [projectId]);
 
   return {
-    loading,
     project,
-    tasks,
+    members,
+    loading,
     reloadProject: fetchProjectDetails,
   };
 };

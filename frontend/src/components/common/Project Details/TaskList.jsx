@@ -1,9 +1,9 @@
-import { ClipboardList, FolderPlus } from "lucide-react";
-import useProject from "../../../hooks/useProject";
+import { ClipboardList, FolderPlus, Plus } from "lucide-react";
 import TaskCard from "./TaskCard";
+import useProjectTasks from "../../../hooks/useProjectTasks";
 
 const TaskList = ({ projectId }) => {
-  const { tasks } = useProject(projectId);
+  const { tasks } = useProjectTasks(projectId);
 
   return (
     <div className="bg-slate-900 p-8 rounded-3xl text-white">

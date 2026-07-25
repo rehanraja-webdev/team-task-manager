@@ -12,7 +12,7 @@ export const getProject = async (projectId) => {
 
 export const getProjectTasks = async (projectId) => {
   const response = await api.get(`/tasks/project/${projectId}`);
-  return response.data.data;
+  return response.data.data || [];
 };
 
 export const createAProject = async (formData) => {

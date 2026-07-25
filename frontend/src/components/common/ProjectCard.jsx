@@ -5,8 +5,6 @@ const ProjectCard = ({ project }) => {
   const memberCount = project.members?.length || 0;
   const [showMenu, setShowMenu] = useState(false);
 
-
-
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-indigo-500 transition-all duration-300">
       {/* Header */}

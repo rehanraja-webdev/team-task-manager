@@ -1,12 +1,17 @@
 /*eslint-disable*/
 import { useEffect, useState } from "react";
 import { getProjectTasks } from "../services/project.service";
+import toast from "react-hot-toast";
 
 const useProjectTasks = (projectId) => {
   const [tasks, setTasks] = useState([]);
   const fetchTasks = async () => {
-    const res = await getProjectTasks(projectId);
-    setTasks(res.tasks);
+    try {
+      const res = await getProjectTasks(projectId);
+      setTasks(res.tasks);
+    } catch (error) {
+      toast.error("Failed to load tasks");
+    }
   };
 
   useEffect(() => {

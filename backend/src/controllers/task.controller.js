@@ -112,7 +112,7 @@ const getProjectTasks = asyncHandler(async (req, res) => {
     .limit(Number(limit));
 
   if (tasks.length === 0) {
-    res.json({ tasks, totalTasks: 0 });
+    return res.json({ message: "No tasks available", totalTasks: 0 });
   }
 
   const totalTasks = await Task.countDocuments(filter);

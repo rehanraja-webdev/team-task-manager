@@ -18,7 +18,7 @@ const useProject = (projectId) => {
       ]);
 
       setProject(projectRes);
-      setTasks(taskRes.tasks);
+      setTasks(taskRes?.tasks || []);
     } catch (error) {
       toast.error(error.response?.data.message || "Something went wrong!");
     } finally {

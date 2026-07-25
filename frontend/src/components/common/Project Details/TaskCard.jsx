@@ -5,7 +5,7 @@ import {
   CircleCheckBig,
   TrendingUp,
   TriangleAlert,
-  ArrowBigRight,
+  ArrowRight,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -89,10 +89,10 @@ const TaskCard = ({ task }) => {
       <div className="flex justify-end">
         <NavLink
           to={`tasks/${task._id}`}
-          className="mt-6 flex gap-2 px-6 py-3 border rounded-2xl hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300"
+          className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-300 bg-slate-800/60 border border-slate-700/50 hover:bg-slate-800 hover:text-purple-400 hover:border-purple-500/40 hover:shadow-md hover:shadow-purple-500/5 active:scale-[0.98] transition-all duration-200"
         >
           <span>View Task</span>
-          <ArrowBigRight />
+          <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
         </NavLink>
       </div>
     </div>

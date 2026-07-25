@@ -17,13 +17,10 @@ const MembersList = ({ project }) => {
         <div className="ml-auto">
           <NavLink
             to="add-member"
-            className="flex border p-3 px-6 rounded-2xl  border-slate-800 bg-purple-600/15 text-purple-500 hover:border-purple-500"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
           >
-            {" "}
-            <Plus />{" "}
-            <span className="hidden lg:inline-block font-bold ml-1">
-              Add Member
-            </span>
+            <Plus className="size-4 stroke-[2.5]" />
+            <span className="hidden lg:inline-block">Add Member</span>
           </NavLink>
         </div>
       </div>

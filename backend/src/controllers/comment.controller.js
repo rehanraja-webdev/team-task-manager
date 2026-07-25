@@ -36,10 +36,6 @@ const getTaskComments = asyncHandler(async (req, res) => {
     "fullname email",
   );
 
-  if (comments.length === 0) {
-    throw new ApiError(404, "No comments found!");
-  }
-
   res.status(200).json(new ApiResponse(200, "All comments fetched!", comments));
 });
 

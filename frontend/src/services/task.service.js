@@ -11,3 +11,15 @@ export const getTaskActivities = async (taskId) => {
 
   return res.data.data;
 };
+
+export const getTaskComments = async (taskId) => {
+  const res = await api.get(`/comments/${taskId}`);
+
+  return res.data.data;
+};
+
+export const createTaskComment = async (taskId, data) => {
+  const res = await api.post(`/comments/${taskId}`, data);
+
+  return res.data;
+};

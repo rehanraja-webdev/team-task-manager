@@ -11,6 +11,7 @@ import AddProjectMember from "./pages/AddProjectMember";
 import ProjectDetails from "./pages/ProjectDetails";
 import TaskDetails from "./pages/TaskDetails";
 import CreateTask from "./pages/CreateTask";
+import Users from "./pages/Users";
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/dashboard" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
+            <Route path="users" element={<Users />} />
 
             <Route path="projects/create" element={<CreateProject />} />
             <Route path="projects/:projectId" element={<ProjectDetails />} />

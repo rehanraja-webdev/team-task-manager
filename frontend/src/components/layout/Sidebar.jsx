@@ -35,9 +35,9 @@ const Sidebar = () => {
       path: "/analytics",
     },
     {
-      name: "Team",
+      name: "Users",
       icon: Users,
-      path: "/team",
+      path: "/users",
     },
   ];
 

@@ -82,7 +82,7 @@ const getProject = asyncHandler(async (req, res) => {
 
   const project = await Project.findById(req.params?.projectId)
     .populate("owner", "fullname role")
-    .populate("members.user", "fullname role");
+    .populate("members.user", "fullname email role");
 
   if (!project) {
     throw new ApiError(404, "Project not found");

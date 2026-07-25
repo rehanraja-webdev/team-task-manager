@@ -10,7 +10,8 @@ import cache from "../utils/cache.js";
 import { getIO } from "../socket/socket.js";
 
 const createTask = asyncHandler(async (req, res) => {
-  const { title, description, dueDate, projectId, assignedTo } = req.body;
+  const { title, description, projectId, assignedTo, priority, dueDate } =
+    req.body;
 
   const project = await Project.findById(projectId);
 
@@ -39,6 +40,7 @@ const createTask = asyncHandler(async (req, res) => {
     description,
     project: projectId,
     assignedTo,
+    priority,
     dueDate,
     createdBy: req.user._id,
   });
@@ -63,10 +65,7 @@ const deleteTask = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid task ID!");
   }
 
-  if (
-    !task.createdBy.equals(req.user._id) ||
-    req.user.role !== "admin"
-  ) {
+  if (!task.createdBy.equals(req.user._id) || req.user.role !== "admin") {
     throw new ApiError(403, "You are not allowed to delete the task!");
   }
 

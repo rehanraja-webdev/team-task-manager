@@ -4,6 +4,7 @@ import {
   getTaskActivities,
   getTaskComments,
   createTaskComment,
+  deleteTaskById,
 } from "../services/task.service";
 import toast from "react-hot-toast";
 
@@ -39,6 +40,18 @@ const useTask = (taskId) => {
     taskDetails();
   }, [taskId]);
 
+  const deleteTask = async (taskId) => {
+    setLoading(true);
+    try {
+      await deleteTaskById(taskId);
+      toast.success("Task deleted successfully!")
+    } catch (error) {
+      toast.error(error.response?.data.message || "Unable to delete task");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const addComment = async (taskId, data) => {
     setLoading(true);
     try {
@@ -50,7 +63,7 @@ const useTask = (taskId) => {
     }
   };
 
-  return { task, activities, comments, addComment, loading };
+  return { task, deleteTask, activities, comments, addComment, loading };
 };
 
 export default useTask;

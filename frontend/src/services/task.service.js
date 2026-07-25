@@ -1,5 +1,11 @@
 import api from "../api/axios";
 
+export const deleteTaskById = async (taskId) => {
+  const res = await api.delete(`tasks/${taskId}`);
+
+  return res.data;
+};
+
 export const getTaskDetails = async (taskId) => {
   const res = await api.get(`tasks/${taskId}`);
 

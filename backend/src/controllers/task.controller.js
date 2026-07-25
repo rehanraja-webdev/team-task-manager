@@ -40,7 +40,6 @@ const createTask = asyncHandler(async (req, res) => {
     project: projectId,
     assignedTo,
     dueDate,
-    priority,
     createdBy: req.user._id,
   });
 
@@ -55,6 +54,26 @@ const createTask = asyncHandler(async (req, res) => {
   res
     .status(201)
     .json(new ApiResponse(201, "Task created successfully!", task));
+});
+
+const deleteTask = asyncHandler(async (req, res) => {
+  const task = await Task.findById(req.params.taskId);
+
+  if (!task) {
+    throw new ApiError(400, "Invalid task ID!");
+  }
+
+  if (
+    !task.createdBy.equals(req.user._id) ||
+    req.user.role !== "admin"
+  ) {
+    throw new ApiError(403, "You are not allowed to delete the task!");
+  }
+
+  await task.deleteOne();
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Task deleted successfully"));
 });
 
 const getProjectTasks = asyncHandler(async (req, res) => {
@@ -177,4 +196,10 @@ const getTask = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Task fetched successfully", task));
 });
 
-export default { createTask, getProjectTasks, getTask, updateTaskStatus };
+export default {
+  createTask,
+  getProjectTasks,
+  getTask,
+  deleteTask,
+  updateTaskStatus,
+};

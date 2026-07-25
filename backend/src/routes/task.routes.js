@@ -83,6 +83,12 @@ router.get(
   taskController.getTask,
 );
 
+router.delete(
+  "/:taskId",
+  authMiddleware,
+  taskController.deleteTask,
+);
+
 /**
  * @swagger
  * /api/tasks/{taskId}/status:

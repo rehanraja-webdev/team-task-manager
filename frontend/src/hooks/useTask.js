@@ -1,29 +1,35 @@
 import { useEffect, useState } from "react";
-import { getTaskDetails } from "../services/task.service";
+import { getTaskDetails, getTaskActivities } from "../services/task.service";
 import toast from "react-hot-toast";
 
 const useTask = (taskId) => {
   const [task, setTask] = useState(null);
+  const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!taskId) return;
 
-    const getTask = async () => {
+    const taskDetails = async () => {
       try {
-        const taskRes = await getTaskDetails(taskId);
+        const [taskRes, activitiesRes] = await Promise.all([
+          getTaskDetails(taskId),
+          getTaskActivities(taskId),
+        ]);
+
         setTask(taskRes);
+        setActivities(activitiesRes);
       } catch (error) {
-        toast.error(error.message || "Error fetching task");
+        toast.error(error.response?.data.message || "Error fetching task details");
       } finally {
         setLoading(false);
       }
     };
 
-    getTask();
+    taskDetails();
   }, [taskId]);
 
-  return { task, loading };
+  return { task, activities, loading };
 };
 
 export default useTask;

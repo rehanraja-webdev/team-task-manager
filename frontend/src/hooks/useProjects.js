@@ -30,9 +30,9 @@ const useProjects = () => {
 
   const createProject = async (formData) => {
     try {
+      setLoading(true);
       const data = await createAProject(formData);
 
-      setProjects(data);
       toast.success(data.message);
     } catch (error) {
       toast.error(error.response?.data.message);
@@ -43,6 +43,7 @@ const useProjects = () => {
 
   const deleteProject = async (id) => {
     try {
+      setLoading(true);
       const data = await deleteProjectById(id);
 
       toast.success(data.message);
@@ -67,7 +68,7 @@ const useProjects = () => {
   return {
     projects,
     loading,
-    fetchProjects,
+    reloadProjects: fetchProjects,
     createProject,
     deleteProject,
     addMember,

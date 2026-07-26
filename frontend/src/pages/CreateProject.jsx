@@ -1,11 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import useProjects from "../hooks/useProjects";
 import { useNavigate } from "react-router";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const CreateProject = () => {
-  const { createProject } = useProjects();
-  const [creating, setCreating] = useState(false);
+  const { createProject, reloadProjects, loading } = useProjects();
   const nameRef = useRef(null);
   const descriptionRef = useRef(null);
 
@@ -14,19 +13,15 @@ const CreateProject = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      setCreating(true);
-      const name = nameRef.current.value;
-      const description = descriptionRef.current.value;
+    const name = nameRef.current.value;
+    const description = descriptionRef.current.value;
 
-      await createProject({ name, description });
-      navigate(-1);
-    } finally {
-      setCreating(false);
-    }
+    await createProject({ name, description });
+    navigate(-1);
+    await reloadProjects();
   };
-  if (creating) return <LoadingSpinner />;
 
+  if (loading) return <LoadingSpinner />;
   return (
     <div className="max-w-2xl mx-auto p-8 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl">
       {/* Header */}

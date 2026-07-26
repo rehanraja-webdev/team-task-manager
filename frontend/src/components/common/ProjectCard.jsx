@@ -1,14 +1,13 @@
-import { useState } from "react";
-import ProjectOptionsModal from "./ProjectOptionsModal";
+import { NavLink } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const ProjectCard = ({ project }) => {
   const memberCount = project.members?.length || 0;
-  const [showMenu, setShowMenu] = useState(false);
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-indigo-500 transition-all duration-300">
       {/* Header */}
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-center">
         <div>
           <h3 className="text-xl font-semibold text-white">{project.name}</h3>
 
@@ -17,20 +16,14 @@ const ProjectCard = ({ project }) => {
           </p>
         </div>
 
-        <div className="relative">
-          {showMenu && (
-            <ProjectOptionsModal
-              id={project._id}
-              showMenu={showMenu}
-              onClose={() => setShowMenu(false)}
-            />
-          )}
-          <button
-            onClick={() => setShowMenu(true)}
-            className="text-slate-400 cursor-pointer hover:text-white text-xl w-8 h-8 bg-slate-950 rounded-full hover:outline-1 hover:outline-purple-600"
+        <div className="">
+          <NavLink
+            to={project._id}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-300 bg-slate-800/60 border border-slate-700/50 hover:bg-slate-800 hover:text-purple-400 hover:border-purple-500/40 hover:shadow-md hover:shadow-purple-500/5 active:scale-[0.98] transition-all duration-200"
           >
-            ⋮
-          </button>
+            <span>View Project</span>
+            <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+          </NavLink>
         </div>
       </div>
 

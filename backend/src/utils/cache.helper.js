@@ -15,4 +15,12 @@ const deleteCache = (key) => {
   return cache.delete(key);
 };
 
-export default { setCache, getCache, deleteCache };
+const deleteByPrefix = (prefix) => {
+  for (const key of cache.keys()) {
+    if (key.startsWith(prefix)) {
+      cache.delete(key);
+    }
+  }
+};
+
+export default { setCache, getCache, deleteCache, deleteByPrefix };

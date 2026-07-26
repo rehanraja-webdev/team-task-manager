@@ -115,6 +115,7 @@ const deleteProject = asyncHandler(async (req, res) => {
 
   await project.deleteOne();
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+  cacheHelper.deleteCache(`projects_${req.user._id}`);
 
   res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
 });
@@ -180,7 +181,7 @@ const addMember = asyncHandler(async (req, res) => {
 
   await project.save();
 
-  cacheHelper.deleteCache(`project_${req.params.projectId}`);
+  cacheHelper.deleteCache(`project_${req.user._id}`);
 
   return res
     .status(200)

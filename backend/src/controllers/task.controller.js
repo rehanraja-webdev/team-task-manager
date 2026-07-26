@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import validateObjectId from "../utils/validateObjectId.js";
 import cache from "../utils/cache.js";
 import { getIO } from "../socket/socket.js";
+import cacheHelper from "../utils/cache.helper.js";
 
 const createTask = asyncHandler(async (req, res) => {
   const { title, description, projectId, assignedTo, priority, dueDate } =
@@ -51,7 +52,8 @@ const createTask = asyncHandler(async (req, res) => {
     action: "Task Created",
   });
 
-  cache.delete(`dashboard_${req.user._id}`);
+  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`tasks${req.user._id}`);
 
   res
     .status(201)
@@ -60,6 +62,18 @@ const createTask = asyncHandler(async (req, res) => {
 
 const getTasks = asyncHandler(async (req, res) => {
   const { view } = req.query;
+  const cacheKey = `tasks${req.user._id}_${view}`;
+  const cached = cacheHelper.getCache(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log("Cache Hit:", cacheKey);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "From cache", cached.data));
+  } else {
+    console.log("Cache Miss:", cacheKey);
+    cacheHelper.deleteCache(cacheKey);
+  }
 
   let filter = {};
 
@@ -83,6 +97,7 @@ const getTasks = asyncHandler(async (req, res) => {
     .populate("assignedTo", "fullname email")
     .populate("project", "name");
 
+  cacheHelper.setCache(cacheKey, tasks);
   return res
     .status(200)
     .json(new ApiResponse(200, "Tasks fetched successfully.", tasks));
@@ -100,6 +115,10 @@ const deleteTask = asyncHandler(async (req, res) => {
   }
 
   await task.deleteOne();
+
+  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`tasks${req.user._id}`);
+
   return res
     .status(200)
     .json(new ApiResponse(200, "Task deleted successfully"));
@@ -205,7 +224,8 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     action: `Changed status to ${status}`,
   });
 
-  cache.delete(`dashboard_${req.user._id}`);
+  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`tasks${req.user._id}`);
 
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
 });

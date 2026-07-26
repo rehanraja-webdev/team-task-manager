@@ -54,6 +54,8 @@ const router = express.Router();
  */
 router.post("/", authMiddleware, validateTask, taskController.createTask);
 
+router.get("/assigned", authMiddleware, taskController.getAssignedTasks);
+
 /**
  * @swagger
  * /api/tasks/project/{projectId}:
@@ -77,17 +79,9 @@ router.get(
   taskController.getProjectTasks,
 );
 
-router.get(
-  "/:taskId",
-  authMiddleware,
-  taskController.getTask,
-);
+router.get("/:taskId", authMiddleware, taskController.getTask);
 
-router.delete(
-  "/:taskId",
-  authMiddleware,
-  taskController.deleteTask,
-);
+router.delete("/:taskId", authMiddleware, taskController.deleteTask);
 
 /**
  * @swagger

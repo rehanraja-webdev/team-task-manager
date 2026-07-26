@@ -58,6 +58,16 @@ const createTask = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, "Task created successfully!", task));
 });
 
+const getAssignedTasks = asyncHandler(async (req, res) => {
+  const tasks = await Task.find({ assignedTo: req.user._id })
+    .populate("createdBy", "fullname email")
+    .populate("project", "name");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Assigned task fetched!", tasks));
+});
+
 const deleteTask = asyncHandler(async (req, res) => {
   const task = await Task.findById(req.params.taskId);
 
@@ -197,6 +207,7 @@ const getTask = asyncHandler(async (req, res) => {
 
 export default {
   createTask,
+  getAssignedTasks,
   getProjectTasks,
   getTask,
   deleteTask,

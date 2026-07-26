@@ -58,14 +58,34 @@ const createTask = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, "Task created successfully!", task));
 });
 
-const getAssignedTasks = asyncHandler(async (req, res) => {
-  const tasks = await Task.find({ assignedTo: req.user._id })
+const getTasks = asyncHandler(async (req, res) => {
+  const { view } = req.query;
+
+  let filter = {};
+
+  if (view === "assigned") {
+    filter = { assignedTo: req.user._id };
+  } else if (view === "created") {
+    filter = { createdBy: req.user._id };
+  } else if (view === "all") {
+    if (req.user.role !== "admin") {
+      throw new ApiError(403, "Only admins can view all tasks.");
+    }
+
+    filter = {};
+  } else {
+    // Default behavior
+    filter = req.user.role === "admin" ? {} : { assignedTo: req.user._id };
+  }
+
+  const tasks = await Task.find(filter)
     .populate("createdBy", "fullname email")
+    .populate("assignedTo", "fullname email")
     .populate("project", "name");
 
   return res
     .status(200)
-    .json(new ApiResponse(200, "Assigned task fetched!", tasks));
+    .json(new ApiResponse(200, "Tasks fetched successfully.", tasks));
 });
 
 const deleteTask = asyncHandler(async (req, res) => {
@@ -207,7 +227,7 @@ const getTask = asyncHandler(async (req, res) => {
 
 export default {
   createTask,
-  getAssignedTasks,
+  getTasks,
   getProjectTasks,
   getTask,
   deleteTask,

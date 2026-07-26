@@ -54,7 +54,11 @@ const router = express.Router();
  */
 router.post("/", authMiddleware, validateTask, taskController.createTask);
 
-router.get("/assigned", authMiddleware, taskController.getAssignedTasks);
+router.get(
+  "/",
+  authMiddleware,
+  taskController.getTasks,
+);
 
 /**
  * @swagger

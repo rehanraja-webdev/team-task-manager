@@ -17,7 +17,7 @@ const getDashboardStats = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, "From cache", cached.data));
   } else {
     console.log("Cache Miss:", cacheKey);
-    cache.delete(cacheKey);
+    cacheHelper.deleteCache(cacheKey);
   }
 
   // if (cache.has(cacheKey)) {

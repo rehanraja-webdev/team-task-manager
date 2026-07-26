@@ -6,9 +6,8 @@ export const createATask = async (formData) => {
   return res.data;
 };
 
-export const getAssignedTasks = async () => {
-  const res = await api.get("/tasks/assigned");
-  console.log(res);
+export const getTasks = async (view = "assigned") => {
+  const res = await api.get(`/tasks?view=${view}`);
   return res.data.data;
 };
 

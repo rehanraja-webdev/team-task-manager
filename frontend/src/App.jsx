@@ -12,6 +12,7 @@ import ProjectDetails from "./pages/ProjectDetails";
 import TaskDetails from "./pages/TaskDetails";
 import CreateTask from "./pages/CreateTask";
 import Users from "./pages/Users";
+import Tasks from "./pages/Tasks";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
             <Route path="users" element={<Users />} />
+            <Route path="tasks" element={<Tasks />} />
 
             <Route path="projects/create" element={<CreateProject />} />
             <Route path="projects/:projectId" element={<ProjectDetails />} />

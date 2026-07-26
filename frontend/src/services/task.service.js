@@ -6,6 +6,12 @@ export const createATask = async (formData) => {
   return res.data;
 };
 
+export const getAssignedTasks = async () => {
+  const res = await api.get("/tasks/assigned");
+  console.log(res);
+  return res.data.data;
+};
+
 export const deleteTaskById = async (taskId) => {
   const res = await api.delete(`/tasks/${taskId}`);
 

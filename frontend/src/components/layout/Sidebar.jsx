@@ -55,7 +55,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="sticky top-6 h-[calc(100vh-3rem)] md:w-72 w-52 bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col">
+    <aside className="sticky top-6 h-[calc(100vh-3rem)] lg:w-72 md:w-60 w-52 bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col">
       {/* Logo */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">

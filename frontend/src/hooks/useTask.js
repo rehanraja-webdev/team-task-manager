@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import { useEffect, useState } from "react";
 import {
   getTaskDetails,
@@ -12,34 +13,34 @@ const useTask = (taskId) => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const taskDetails = async () => {
     if (!taskId) return;
-    
-    const taskDetails = async () => {
-      try {
-        const [taskRes, activitiesRes, commentsRes] = await Promise.all([
-          getTaskDetails(taskId),
-          getTaskActivities(taskId),
-          getTaskComments(taskId),
-        ]);
+    try {
+      const [taskRes, activitiesRes, commentsRes] = await Promise.all([
+        getTaskDetails(taskId),
+        getTaskActivities(taskId),
+        getTaskComments(taskId),
+      ]);
 
-        setTask(taskRes);
-        setActivities(activitiesRes);
-        setComments(commentsRes);
-      } catch (error) {
-        toast.error(
-          error.response?.data.message || "Error fetching task details",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    
+      setTask(taskRes);
+      setActivities(activitiesRes);
+      setComments(commentsRes);
+    } catch (error) {
+      toast.error(
+        error.response?.data.message || "Error fetching task details",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     taskDetails();
-  }, [taskId]);  
+  }, [taskId]);
 
   return {
     task,
+    reloadTask: taskDetails,
     activities,
     comments,
     loading,

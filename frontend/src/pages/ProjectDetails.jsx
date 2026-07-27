@@ -13,21 +13,14 @@ const ProjectDetails = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div>
+    <div className="flex flex-col space-y-6">
       <ProjectHeader />
 
-      <div className=" mt-6 gap-6">
-        {project && (
-          <>
-            <ProjectInfoCard project={project} />
-            <MembersList project={project} />
-          </>
-        )}
-      </div>
+      <ProjectInfoCard project={project} />
+      
+      <MembersList project={project} />
 
-      <div className=" mt-6 ">
-        <TaskList projectId={projectId} />
-      </div>
+      <TaskList projectId={projectId} />
     </div>
   );
 };

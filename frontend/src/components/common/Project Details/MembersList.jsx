@@ -3,7 +3,7 @@ import { User, Users, Plus } from "lucide-react";
 
 const MembersList = ({ project }) => {
   return (
-    <div className="bg-slate-900 rounded-3xl p-8 mt-6">
+    <div className="bg-slate-900 rounded-3xl p-8">
       <div className="flex items-center gap-3 border-b border-slate-800 pb-5 mb-8">
         <div className="p-3 rounded-xl bg-purple-600/15">
           <Users className="text-purple-500 size={24} " />

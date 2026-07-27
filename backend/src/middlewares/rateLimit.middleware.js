@@ -4,7 +4,7 @@ const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
 
   max: (req) => {
-    return req.user?.role === "admin" ? 500 : 100;
+    return req.user?.role === "admin" ? 5000 : 1000;
   },
 
   //no limit for admin
@@ -27,7 +27,7 @@ const rateLimiter = rateLimit({
 export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
 
-  max: 5,
+  max: 50,
   skipSuccessfulRequests: true, //will not count for successfull request
   message: {
     success: false,

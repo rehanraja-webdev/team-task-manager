@@ -1,4 +1,4 @@
-import TaskCard from "../common/Project Details/TaskCard";
+import TaskCard from "../common/TaskCard";
 
 const TaskGrid = ({ tasks }) => {
   return (

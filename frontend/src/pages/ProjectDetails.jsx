@@ -1,26 +1,27 @@
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import ProjectHeader from "../components/common/Project Details/ProjectHeader";
-import ProjectInfoCard from "../components/common/Project Details/ProjectInfoCard";
-import MembersList from "../components/common/Project Details/MembersList";
-import TaskList from "../components/common/Project Details/TaskList";
+import ProjectHeader from "../components/Project Details/ProjectHeader";
+import ProjectInfoCard from "../components/Project Details/ProjectInfoCard";
+import MembersList from "../components/Project Details/MembersList";
+import TaskList from "../components/Project Details/TaskList";
 import useProject from "../hooks/useProject";
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
-  const { loading, project } = useProject(projectId);
-
+  const { project, tasks, loading } = useProject(projectId);
   if (loading) return <LoadingSpinner />;
+  console.log(loading)
+
 
   return (
     <div className="flex flex-col space-y-6">
       <ProjectHeader />
 
       <ProjectInfoCard project={project} />
-      
-      <MembersList project={project} />
 
-      <TaskList projectId={projectId} />
+      <MembersList members={project.members} />
+
+      <TaskList tasks={tasks} />
     </div>
   );
 };

@@ -1,11 +1,8 @@
 import { ClipboardList, FolderPlus, Plus } from "lucide-react";
-import TaskCard from "./TaskCard";
-import useProjectTasks from "../../../hooks/useProjectTasks";
+import TaskCard from "../common/TaskCard";
 import { NavLink } from "react-router-dom";
 
-const TaskList = ({ projectId }) => {
-  const { tasks } = useProjectTasks(projectId);
-
+const TaskList = ({ tasks }) => {
   return (
     <div className="bg-slate-900 p-8 rounded-3xl text-white">
       {/* Task List Header */}

@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { User, Users, Plus } from "lucide-react";
 
-const MembersList = ({ project }) => {
+const MembersList = ({ members }) => {
   return (
     <div className="bg-slate-900 rounded-3xl p-8">
       <div className="flex items-center gap-3 border-b border-slate-800 pb-5 mb-8">
@@ -26,7 +26,7 @@ const MembersList = ({ project }) => {
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {project.members.map((member) => (
+        {members.map((member) => (
           <MemberCard
             key={member.user._id}
             member={member}

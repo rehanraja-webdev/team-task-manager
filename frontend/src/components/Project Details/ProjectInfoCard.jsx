@@ -5,10 +5,10 @@ import {
   Trash2,
   Pencil,
 } from "lucide-react";
-import formatDate from "../../../utils/formatDate";
-import useProjects from "../../../hooks/useProjects";
+import formatDate from "../../utils/formatDate";
+import useProjects from "../../hooks/useProjects";
 import { useNavigate } from "react-router";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 const ProjectInfoCard = ({ project }) => {
   const { deleteProject, reloadProjects, loading } = useProjects();

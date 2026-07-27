@@ -24,7 +24,7 @@ const useTaskActions = () => {
   const updateTaskStatus = async (taskId, status) => {
     try {
       setLoading(true);
-      const updateRes = await changeTaskStatus(taskId, { status });
+      const updateRes = await changeTaskStatus(taskId, status);
       toast.success(updateRes.message || `Task status updated to ${status}`);
     } catch (error) {
       toast.error(error.response?.data?.message);
@@ -49,8 +49,9 @@ const useTaskActions = () => {
     try {
       setLoading(true);
       await createTaskComment(taskId, data);
+      toast.success("Comment added!");
     } catch (error) {
-      toast.error(error.response?.data.message || "Failed to Add Comment");
+      toast.error(error.response?.data?.message || "Failed to Add Comment");
     } finally {
       setLoading(false);
     }

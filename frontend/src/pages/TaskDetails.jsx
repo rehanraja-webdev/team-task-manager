@@ -9,7 +9,7 @@ import useTask from "../hooks/useTask";
 const TaskDetails = () => {
   const { taskId } = useParams();
 
-  const { task, activities, comments, loading } = useTask(taskId);
+  const { task, activities, comments, reloadTask, loading } = useTask(taskId);
 
   if (loading) return <LoadingSpinner />;
 
@@ -21,7 +21,7 @@ const TaskDetails = () => {
 
       <ActivityTimeline activities={activities} />
 
-      <CommentList comments={comments} />
+      <CommentList comments={comments} reloadTask={reloadTask} />
     </div>
   );
 };

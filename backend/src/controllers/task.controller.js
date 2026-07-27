@@ -234,7 +234,7 @@ const getTask = asyncHandler(async (req, res) => {
   const task = await Task.findById(req.params.taskId)
     .populate("assignedTo", "fullname email")
     .populate("project", "name")
-    .populate("createdBy", "fullname");
+    .populate("createdBy", "fullname email");
 
   if (!task) {
     throw new ApiError(404, "Task not found");

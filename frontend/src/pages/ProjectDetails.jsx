@@ -9,8 +9,8 @@ import useProject from "../hooks/useProject";
 const ProjectDetails = () => {
   const { projectId } = useParams();
   const { project, members, loading } = useProject(projectId);
-  if (loading) return <LoadingSpinner />;
 
+  if (loading) return <LoadingSpinner />;
   return (
     <div className="flex flex-col space-y-6">
       <ProjectHeader />

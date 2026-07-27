@@ -1,6 +1,10 @@
 /* eslint-disable*/
 import { useEffect, useState } from "react";
-import { getProject, getProjectTasks } from "../services/project.service";
+import {
+  getProject,
+  getProjectMembers,
+  getProjectTasks,
+} from "../services/project.service";
 import toast from "react-hot-toast";
 
 const useProject = (projectId) => {
@@ -12,10 +16,13 @@ const useProject = (projectId) => {
     if (!projectId) return;
 
     try {
-      const projectRes = await getProject(projectId);
+      const [projectRes, memberRes] = await Promise.all([
+        getProject(projectId),
+        getProjectMembers(projectId),
+      ]);
 
       setProject(projectRes);
-      setMembers(projectRes.members);
+      setMembers(memberRes);
     } catch (error) {
       toast.error(error.response?.data.message || "Something went wrong!");
     } finally {

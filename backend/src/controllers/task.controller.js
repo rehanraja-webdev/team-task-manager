@@ -54,6 +54,7 @@ const createTask = asyncHandler(async (req, res) => {
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
   cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
+  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
 
   res
     .status(201)
@@ -117,6 +118,8 @@ const deleteTask = asyncHandler(async (req, res) => {
   await task.deleteOne();
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
+  cacheHelper.deleteCache(`task_${req.user._id}_${req.params.taskId}`);
   cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
 
   return res
@@ -125,6 +128,19 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 const getProjectTasks = asyncHandler(async (req, res) => {
+  const cacheKey = `project_tasks_${req.params.projectId}`;
+  const cached = cacheHelper.getCache(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log("Cache Hit:", cacheKey);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "From cache", cached.data));
+  } else {
+    console.log("Cache Miss:", cacheKey);
+    cacheHelper.deleteCache(cacheKey);
+  }
+
   //It will get the variable from the url search query (eg: ..?status = done)
   const {
     status,
@@ -184,6 +200,13 @@ const getProjectTasks = asyncHandler(async (req, res) => {
 
   const totalTasks = await Task.countDocuments(filter);
 
+  cacheHelper.setCache(cacheKey, {
+    tasks,
+    totalTasks,
+    currentPage: Number(page),
+    totalPages: Math.ceil(totalTasks / limit),
+  });
+
   res.status(200).json(
     new ApiResponse(200, "All Task Fetched!", {
       tasks,
@@ -225,12 +248,27 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
   });
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
+  cacheHelper.deleteCache(`task_${req.user._id}_${req.params.taskId}`);
   cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
 
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
 });
 
 const getTask = asyncHandler(async (req, res) => {
+  const cacheKey = `task_${req.user._id}_${req.params.taskId}`;
+  const cached = cacheHelper.getCache(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log("Cache Hit:", cacheKey);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "From cache", cached.data));
+  } else {
+    console.log("Cache Miss:", cacheKey);
+    cacheHelper.deleteCache(cacheKey);
+  }
+
   const task = await Task.findById(req.params.taskId)
     .populate("assignedTo", "fullname email")
     .populate("project", "name")
@@ -239,6 +277,8 @@ const getTask = asyncHandler(async (req, res) => {
   if (!task) {
     throw new ApiError(404, "Task not found");
   }
+
+  cacheHelper.setCache(cacheKey, task);
 
   return res
     .status(200)

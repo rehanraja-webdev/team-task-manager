@@ -53,7 +53,7 @@ const createTask = asyncHandler(async (req, res) => {
   });
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`tasks${req.user._id}`);
+  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
 
   res
     .status(201)
@@ -62,7 +62,7 @@ const createTask = asyncHandler(async (req, res) => {
 
 const getTasks = asyncHandler(async (req, res) => {
   const { view } = req.query;
-  const cacheKey = `tasks${req.user._id}_${view}`;
+  const cacheKey = `tasks_${req.user._id}_${view}`;
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
@@ -117,7 +117,7 @@ const deleteTask = asyncHandler(async (req, res) => {
   await task.deleteOne();
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`tasks${req.user._id}`);
+  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
 
   return res
     .status(200)
@@ -207,7 +207,7 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
   }
 
   if (task.assignedTo.toString() !== req.user._id.toString()) {
-    throw new ApiError(403, "Only assigned member can update task status");
+    throw new ApiError(403, "You can't update the task status!");
   }
 
   task.status = status;
@@ -225,7 +225,7 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
   });
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`tasks${req.user._id}`);
+  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
 
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
 });

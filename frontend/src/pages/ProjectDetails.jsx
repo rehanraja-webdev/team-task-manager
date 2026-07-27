@@ -8,10 +8,8 @@ import useProject from "../hooks/useProject";
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
-  const { project, tasks, loading } = useProject(projectId);
+  const { project, members, loading } = useProject(projectId);
   if (loading) return <LoadingSpinner />;
-  console.log(loading)
-
 
   return (
     <div className="flex flex-col space-y-6">
@@ -19,9 +17,9 @@ const ProjectDetails = () => {
 
       <ProjectInfoCard project={project} />
 
-      <MembersList members={project.members} />
+      <MembersList members={members} />
 
-      <TaskList tasks={tasks} />
+      <TaskList projectId={projectId} />
     </div>
   );
 };

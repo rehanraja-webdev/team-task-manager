@@ -9,15 +9,15 @@ import {
   ListTodo,
 } from "lucide-react";
 
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import profileImg from "../../assets/profile.png";
 import { useEffect, useState } from "react";
-import api from "../../api/axios";
+import LoadingSpinner from "../components/common/LoadingSpinner";
+import profileImg from "../assets/profile.png";
+import api from "../api/axios";
 import toast from "react-hot-toast";
-import StatCard from "./StatCard";
-import ProgressBar from "./ProgressBar";
-import ActivityItem from "./ActivityItem";
-import OverviewItem from "./OverviewItem";
+import StatCard from "../components/common/StatCard";
+import ProgressBar from "../components/dashboard/ProgressBar";
+import ActivityItem from "../components/dashboard/ActivityItem";
+import OverviewItem from "../components/dashboard/OverviewItem";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);

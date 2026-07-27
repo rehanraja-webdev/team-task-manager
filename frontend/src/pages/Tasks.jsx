@@ -3,7 +3,7 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import useTasks from "../hooks/useTasks";
 import TasksHeader from "../components/tasks/TasksHeader";
 import TaskTabs from "../components/tasks/TaskTabs";
-import StatCard from "./dashboard/StatCard";
+import StatCard from "../components/common/StatCard";
 import { Circle, CircleCheckBig, Clock3, ListTodo } from "lucide-react";
 import TaskFilters from "../components/tasks/TaskFilters";
 import TaskGrid from "../components/tasks/TaskGrid";

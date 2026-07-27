@@ -22,6 +22,7 @@ const TaskHeader = ({ task }) => {
         <Modal
           modalActive={modalActive}
           task={task}
+          action="status"
           onClose={() => setModalActive(false)}
         />
       )}

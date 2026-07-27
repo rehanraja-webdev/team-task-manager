@@ -1,7 +1,11 @@
-import { MessageCircle, CalendarDays } from "lucide-react";
+import { MessageCircle, CalendarDays, Plus } from "lucide-react";
 import formatDate from "../../utils/formatDate";
+import { useState } from "react";
+import Modal from "../common/Modal";
 
-const CommentList = ({ comments = [] }) => {
+const CommentList = ({ reloadTask, comments = [] }) => {
+  const [modalActive, setModalActive] = useState(false);
+
   return (
     <div className="bg-slate-900 rounded-3xl p-6 border border-slate-800">
       <div className="flex items-center gap-3 mb-6">
@@ -15,6 +19,24 @@ const CommentList = ({ comments = [] }) => {
           <p className="text-slate-400 text-sm">
             {comments.length} Comment{comments.length !== 1 && "s"}
           </p>
+        </div>
+
+        <div className="ml-auto">
+          {modalActive && (
+            <Modal
+              modalActive={modalActive}
+              reloadTask={reloadTask}
+              action="comment"
+              onClose={() => setModalActive(false)}
+            />
+          )}
+          <button
+            onClick={() => setModalActive(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
+          >
+            <Plus className="size-4 stroke-[2.5]" />
+            <span className="hidden md:inline-block">Add Comment</span>
+          </button>
         </div>
       </div>
 

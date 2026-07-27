@@ -11,6 +11,11 @@ export const getTasks = async (view = "assigned") => {
   return res.data.data;
 };
 
+export const changeTaskStatus = async (taskId, status) => {
+  const res = await api.patch(`/tasks/${taskId}/status`, status);
+  return res.data;
+};
+
 export const deleteTaskById = async (taskId) => {
   const res = await api.delete(`/tasks/${taskId}`);
 

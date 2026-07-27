@@ -1,7 +1,7 @@
 import { ClipboardList, FolderPlus, Plus } from "lucide-react";
 import TaskCard from "./TaskCard";
 import useProjectTasks from "../../../hooks/useProjectTasks";
-import { NavLink } from "react-router";
+import { NavLink } from "react-router-dom";
 
 const TaskList = ({ projectId }) => {
   const { tasks } = useProjectTasks(projectId);

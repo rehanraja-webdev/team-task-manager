@@ -67,7 +67,7 @@ const createProject = asyncHandler(async (req, res) => {
 });
 
 const getProject = asyncHandler(async (req, res) => {
-  const cacheKey = `project_${req.user._id}`;
+  const cacheKey = `project_${req.user._id}_${req.params.projectId}`;
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
@@ -181,14 +181,52 @@ const addMember = asyncHandler(async (req, res) => {
 
   await project.save();
 
-  cacheHelper.deleteCache(`project_${req.user._id}`);
+  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
+  cacheHelper.deleteCache(`members_${req.user._id}_${req.params.projectId}`);
 
   return res
     .status(200)
     .json(new ApiResponse(200, "Member is added successfully!", project));
 });
 
+const removeMember = asyncHandler(async (req, res) => {
+  const { memberId } = req.body;
+  const project = await Project.findById(req.params.projectId);
+  if (!project) {
+    throw new ApiError(404, "No project found!");
+  }
+
+  if (
+    req.user.role !== "admin" &&
+    project.createdBy.toString() !== req.user._id.toString()
+  ) {
+    throw new ApiError(403, "You cann't remove member!");
+  }
+
+  if (!project.members.includes(memberId)) {
+    throw new ApiError(404, "Member not found in this project!");
+  }
+
+  project.members.pull(memberId);
+  await project.save();
+
+  res.status(200).json(new ApiResponse(200, "Member removed successfully!"));
+});
+
 const getProjectMembers = asyncHandler(async (req, res) => {
+  const cacheKey = `members_${req.user._id}_${req.params.projectId}`;
+  const cached = cacheHelper.getCache(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log("Cache Hit:", cacheKey);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "From cache", cached.data));
+  } else {
+    console.log("Cache Miss:", cacheKey);
+    cacheHelper.deleteCache(cacheKey);
+  }
+
   //.populate({})  in obj,  it's a nested schema to get all details of a user based on (members.user => id)
   const project = await Project.findById(req.params.projectId).populate({
     path: "members.user",
@@ -198,6 +236,8 @@ const getProjectMembers = asyncHandler(async (req, res) => {
   if (!project) {
     throw new ApiError(404, "Project not found!");
   }
+
+  cacheHelper.setCache(cacheKey, project.members);
 
   res
     .status(200)
@@ -210,5 +250,6 @@ export default {
   deleteProject,
   getProjects,
   addMember,
+  removeMember,
   getProjectMembers,
 };

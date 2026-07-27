@@ -129,6 +129,8 @@ router.get("/:projectId", authMiddleware, projectController.getProject);
  */
 router.post("/:projectId/member", authMiddleware, projectController.addMember);
 
+router.post("/:projectId/member/remove", authMiddleware, projectController.removeMember);
+
 /**
  * @swagger
  * /api/v1/projects/{projectId}/members:

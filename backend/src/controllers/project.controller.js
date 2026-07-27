@@ -67,7 +67,7 @@ const createProject = asyncHandler(async (req, res) => {
 });
 
 const getProject = asyncHandler(async (req, res) => {
-  const cacheKey = `project_${req.params.projectId}`;
+  const cacheKey = `project_${req.user._id}`;
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {

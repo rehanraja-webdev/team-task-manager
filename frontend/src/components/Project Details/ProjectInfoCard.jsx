@@ -8,10 +8,9 @@ import {
 import formatDate from "../../utils/formatDate";
 import useProjects from "../../hooks/useProjects";
 import { useNavigate } from "react-router";
-import LoadingSpinner from "../common/LoadingSpinner";
 
 const ProjectInfoCard = ({ project }) => {
-  const { deleteProject, reloadProjects, loading } = useProjects();
+  const { deleteProject, reloadProjects } = useProjects();
   const navigate = useNavigate();
 
   const handleDelete = async () => {
@@ -23,7 +22,6 @@ const ProjectInfoCard = ({ project }) => {
     await reloadProjects();
   };
 
-  if (loading) return <LoadingSpinner />;
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:col-span-2 shadow-lg">
       {/* Header */}

@@ -3,10 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Modal from "../common/Modal";
 import useTaskActions from "../../hooks/UseTaskActions";
-import LoadingSpinner from "../common/LoadingSpinner";
 
 const TaskHeader = ({ task }) => {
-  const { deleteTask, loading } = useTaskActions(task._id);
+  const { deleteTask } = useTaskActions(task._id);
   const [modalActive, setModalActive] = useState(false);
   const navigate = useNavigate();
 
@@ -15,7 +14,6 @@ const TaskHeader = ({ task }) => {
     navigate(-1);
   };
 
-  if (loading) return <LoadingSpinner />;
   return (
     <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between pb-6 border-b border-slate-800/80">
       {modalActive && (

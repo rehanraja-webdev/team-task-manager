@@ -8,10 +8,6 @@ const getTaskActivities = asyncHandler(async (req, res) => {
     .populate("user", "fullname email")
     .sort({ createdAt: -1 });
 
-  if (activities.length === 0) {
-    throw new ApiError(404, "No activities found!");
-  }
-
   res
     .status(200)
     .json(new ApiResponse(200, "Activities fetched successfully!", activities));

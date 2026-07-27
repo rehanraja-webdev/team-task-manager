@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useProject from "../hooks/useProject";
-import useTask from "../hooks/useTask";
+import useTaskActions from "../hooks/UseTaskActions";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const CreateTask = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
   const { members } = useProject(projectId);
-  const { createTask } = useTask();
+  const { createTask, loading } = useTaskActions();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -25,12 +26,13 @@ const CreateTask = () => {
     }));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     await createTask(formData);
     navigate(-1);
   };
 
+  if (loading) return <LoadingSpinner />;
   return (
     <div className="max-w-4xl mx-auto bg-slate-900 rounded-3xl p-8 border border-slate-800">
       <h1 className="text-4xl font-bold text-white">

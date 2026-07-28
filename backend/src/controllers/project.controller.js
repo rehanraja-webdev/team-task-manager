@@ -5,6 +5,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 import User from "../models/user.model.js";
 import cache from "../utils/cache.js";
 import cacheHelper from "../utils/cache.helper.js";
+import Task from "../models/task.model.js";
 import Activity from "../models/activity.model.js";
 import mongoose from "mongoose";
 
@@ -71,12 +72,10 @@ const getProject = asyncHandler(async (req, res) => {
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log("Cache Hit:", cacheKey);
     return res
       .status(200)
       .json(new ApiResponse(200, "Project fetched from cache!", cached.data));
   } else {
-    console.log("Cache Miss:", cacheKey);
     cacheHelper.deleteCache(cacheKey);
   }
 
@@ -127,12 +126,10 @@ const getProjects = asyncHandler(async (req, res) => {
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log("Cache Hit:", cacheKey);
     return res
       .status(200)
       .json(new ApiResponse(200, "Projects fetched from cache!", cached.data));
   } else {
-    console.log("Cache Miss:", cacheKey);
     cacheHelper.deleteCache(cacheKey);
   }
 
@@ -190,25 +187,64 @@ const addMember = asyncHandler(async (req, res) => {
 });
 
 const removeMember = asyncHandler(async (req, res) => {
-  const { memberId } = req.body;
-  const project = await Project.findById(req.params.projectId);
+  const { memberId, projectId } = req.params;
+
+  const member = await User.findById(memberId);
+
+  if (!member) {
+    throw new ApiError(404, "Member not found!");
+  }
+
+  const project = await Project.findById(projectId);
   if (!project) {
-    throw new ApiError(404, "No project found!");
+    throw new ApiError(404, "Project not found!");
   }
 
   if (
     req.user.role !== "admin" &&
-    project.createdBy.toString() !== req.user._id.toString()
+    project.owner.toString() !== req.user._id.toString()
   ) {
-    throw new ApiError(403, "You cann't remove member!");
+    throw new ApiError(403, "You don't have permission to remove member");
   }
 
-  if (!project.members.includes(memberId)) {
+  const isMember = project.members.some((m) => m.user.toString() === memberId);
+
+  if (!isMember) {
     throw new ApiError(404, "Member not found in this project!");
   }
 
-  project.members.pull(memberId);
+  if (project.owner.toString() === member._id.toString()) {
+    throw new ApiError(403, "You cann't remove project Owner!");
+  }
+
+  project.members = project.members.filter(
+    (m) => m.user.toString() !== memberId,
+  );
+
   await project.save();
+  await Task.updateMany(
+    {
+      project: project._id,
+      assignedTo: memberId,
+    },
+    {
+      $unset: {
+        assignedTo: "",
+      },
+    },
+  );
+
+  await Activity.create({
+    project: project._id,
+    user: req.user._id,
+    action: `${member.fullname} has been removed from the project`,
+  });
+
+  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
+  cacheHelper.deleteCache(`projects_${req.user._id}_${projectId}`);
+  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`task_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`dashboard_${req.user._id}`);
 
   res.status(200).json(new ApiResponse(200, "Member removed successfully!"));
 });
@@ -218,12 +254,12 @@ const getProjectMembers = asyncHandler(async (req, res) => {
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log("Cache Hit:", cacheKey);
     return res
       .status(200)
-      .json(new ApiResponse(200, "From cache", cached.data));
+      .json(
+        new ApiResponse(200, "Project members fetched from cache", cached.data),
+      );
   } else {
-    console.log("Cache Miss:", cacheKey);
     cacheHelper.deleteCache(cacheKey);
   }
 

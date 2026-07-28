@@ -1,24 +1,20 @@
 import { useRef } from "react";
-import useProjects from "../hooks/useProjects";
+import useProjectActions from "../hooks/useProjectActions";
 import { useNavigate, useParams } from "react-router-dom";
-import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const AddProjectMember = () => {
-  const { addMember, loading } = useProjects();
+  const { projectId } = useParams();
+  const { addMember, loading } = useProjectActions();
   const emailRef = useRef();
   const navigate = useNavigate();
 
-  const { projectId } = useParams();
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const email = emailRef.current.value;
 
-    addMember(projectId, email);
+    await addMember(projectId, email);
     navigate(-1);
   };
-
-  if (loading) return <LoadingSpinner />;
 
   return (
     <>
@@ -48,16 +44,18 @@ const AddProjectMember = () => {
             <button
               onClick={() => navigate(-1)}
               type="button"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-600"
+              disabled={loading}
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-600 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white shadow-lg shadow-purple-600/25 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+              disabled={loading}
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white shadow-lg shadow-purple-600/25 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Add Member
+              {loading ? "Adding..." : "Add Member"}
             </button>
           </div>
         </form>

@@ -73,8 +73,9 @@ const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
             <div className="flex items-center justify-end space-x-3 pt-2">
               <button
                 type="button"
+                disabled={loading}
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700/60 rounded-lg transition cursor-pointer"
+                className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700/60 rounded-lg transition cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -82,7 +83,7 @@ const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg shadow-md shadow-indigo-600/20 transition cursor-pointer"
+                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg shadow-md shadow-indigo-600/20 transition cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? "Saving" : "Save Changes"}
               </button>

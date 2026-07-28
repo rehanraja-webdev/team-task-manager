@@ -53,8 +53,13 @@ const createTask = asyncHandler(async (req, res) => {
   });
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+  cacheHelper.deleteCache(`dashboard_${assignedTo}`);
+
   cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
-  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
+  cacheHelper.deleteByPrefix(`tasks_${assignedTo}`);
+
+  cacheHelper.deleteByPrefix(`project_tasks_${projectId}`);
+  cacheHelper.deleteByPrefix(`project_${req.user._id}`);
 
   res
     .status(201)
@@ -63,7 +68,7 @@ const createTask = asyncHandler(async (req, res) => {
 
 const getTasks = asyncHandler(async (req, res) => {
   const { view } = req.query;
-  const cacheKey = `tasks_${req.user._id}_${view}`;
+  const cacheKey = `tasks_${req.user._id}_${view || "default"}`;
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
@@ -109,7 +114,7 @@ const deleteTask = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid task ID!");
   }
 
-  if (!task.createdBy.equals(req.user._id) || req.user.role !== "admin") {
+  if (!task.createdBy.equals(req.user._id) && req.user.role !== "admin") {
     throw new ApiError(403, "You are not allowed to delete the task!");
   }
 
@@ -117,8 +122,9 @@ const deleteTask = asyncHandler(async (req, res) => {
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
   cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
-  cacheHelper.deleteCache(`task_${req.user._id}_${req.params.taskId}`);
   cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
+  cacheHelper.deleteCache(`task_${req.user._id}_${task._id}`);
+  cacheHelper.deleteByPrefix(`project_tasks_${task.project}`);
 
   return res
     .status(200)
@@ -126,13 +132,15 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 const getProjectTasks = asyncHandler(async (req, res) => {
-  const cacheKey = `project_tasks_${req.params.projectId}`;
+  const cacheKey = `project_tasks_${req.params.projectId}_${JSON.stringify(req.query)}`;
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
       .status(200)
-      .json(new ApiResponse(200, "Project tasks fetched from cache", cached.data));
+      .json(
+        new ApiResponse(200, "Project tasks fetched from cache", cached.data),
+      );
   } else {
     cacheHelper.deleteCache(cacheKey);
   }
@@ -244,9 +252,11 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
   });
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
-  cacheHelper.deleteCache(`task_${req.user._id}_${req.params.taskId}`);
+  cacheHelper.deleteByPrefix(`project_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
+  cacheHelper.deleteCache(`task_${req.user._id}_${task._id}`);
   cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`project_tasks_${task.project}`);
 
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
 });
@@ -271,6 +281,14 @@ const getTask = asyncHandler(async (req, res) => {
   if (!task) {
     throw new ApiError(404, "Task not found");
   }
+
+  const project = await Project.findById(task.project);
+
+  const isMember =
+    project.owner.equals(req.user._id) ||
+    project.members.some((m) => m.user.equals(req.user._id));
+
+  if (!isMember) throw new ApiError(403, "Access denied");
 
   cacheHelper.setCache(cacheKey, task);
 

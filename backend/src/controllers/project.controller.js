@@ -49,7 +49,7 @@ const createProject = asyncHandler(async (req, res) => {
       { session },
     );
 
-    cacheHelper.deleteCache(`projects_${req.user._id}`);
+    cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
     cacheHelper.deleteCache(`dashboard_${req.user._id}`);
 
     await session.commitTransaction();
@@ -113,15 +113,18 @@ const deleteProject = asyncHandler(async (req, res) => {
   }
 
   await project.deleteOne();
+
+  cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteCache(`projects_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`project_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`members_${req.user._id}`);
 
   res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
 });
 
 const getProjects = asyncHandler(async (req, res) => {
   const { search } = req.query;
-  const cacheKey = `projects_${req.user._id}`;
+  const cacheKey = `projects_${req.user._id}_${search?.toLowerCase()}`;
 
   const cached = cacheHelper.getCache(cacheKey);
 
@@ -150,8 +153,9 @@ const getProjects = asyncHandler(async (req, res) => {
 });
 
 const addMember = asyncHandler(async (req, res) => {
+  const { projectId } = req.params;
   const { email } = req.body;
-  const project = await Project.findById(req.params.projectId);
+  const project = await Project.findById(projectId);
   if (!project) {
     throw new ApiError(404, "Project not found!");
   }
@@ -178,8 +182,12 @@ const addMember = asyncHandler(async (req, res) => {
 
   await project.save();
 
-  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
-  cacheHelper.deleteCache(`members_${req.user._id}_${req.params.projectId}`);
+  cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
+  cacheHelper.deleteCache(`members_${req.user._id}_${projectId}`);
+  cacheHelper.deleteCache(`dashboard_${member._id}`);
+  cacheHelper.deleteCache(`project_${member._id}_${projectId}`);
+  cacheHelper.deleteCache(`members_${member._id}_${projectId}`);
+  cacheHelper.deleteByPrefix(`project_tasks_${projectId}`);
 
   return res
     .status(200)
@@ -240,11 +248,16 @@ const removeMember = asyncHandler(async (req, res) => {
     action: `${member.fullname} has been removed from the project`,
   });
 
-  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
-  cacheHelper.deleteCache(`projects_${req.user._id}_${projectId}`);
-  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`task_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`dashboard_${req.user._id}`);
+  cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
+  cacheHelper.deleteCache(`members_${req.user._id}_${projectId}`);
+
+  cacheHelper.deleteCache(`project_${memberId}_${projectId}`);
+  cacheHelper.deleteCache(`members_${memberId}_${projectId}`);
+
+  cacheHelper.deleteByPrefix(`tasks_${memberId}`);
+  cacheHelper.deleteCache(`dashboard_${memberId}`);
+
+  cacheHelper.deleteByPrefix(`project_tasks_${projectId}`);
 
   res.status(200).json(new ApiResponse(200, "Member removed successfully!"));
 });

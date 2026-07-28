@@ -8,7 +8,7 @@ import useProject from "../hooks/useProject";
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
-  const { project, members, loading } = useProject(projectId);
+  const { project, loading } = useProject(projectId);
 
   if (loading) return <LoadingSpinner />;
   return (
@@ -17,7 +17,7 @@ const ProjectDetails = () => {
 
       <ProjectInfoCard project={project} />
 
-      <MembersList members={members} />
+      <MembersList />
 
       <TaskList projectId={projectId} />
     </div>

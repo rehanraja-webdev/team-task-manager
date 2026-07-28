@@ -7,7 +7,7 @@ import CommentList from "../components/taskDetails/CommentList";
 import useTask from "../hooks/useTask";
 
 const TaskDetails = () => {
-  const { taskId } = useParams();
+  const { projectId, taskId } = useParams();
 
   const { task, activities, comments, reloadTask, loading } = useTask(taskId);
 
@@ -15,7 +15,7 @@ const TaskDetails = () => {
 
   return (
     <div className="space-y-6">
-      <TaskHeader task={task} />
+      <TaskHeader task={task} projectId={projectId} />
 
       <TaskInfoCard task={task} />
 

@@ -6,11 +6,10 @@ import {
   Pencil,
 } from "lucide-react";
 import formatDate from "../../utils/formatDate";
-import useProjects from "../../hooks/useProjects";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../common/LoadingSpinner";
 
-const ProjectInfoCard = ({ project }) => {
-  const { deleteProject, reloadProjects } = useProjects();
+const ProjectInfoCard = ({ project, deleteProject, loading }) => {
   const navigate = useNavigate();
 
   const handleDelete = async () => {
@@ -19,8 +18,13 @@ const ProjectInfoCard = ({ project }) => {
 
     await deleteProject(project._id);
     navigate(-1);
-    await reloadProjects();
   };
+
+  if (loading) return <LoadingSpinner />;
+
+  if (!project) {
+    return <div className="p-4 text-slate-400">Loading project details...</div>;
+  }
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:col-span-2 shadow-lg">

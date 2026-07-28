@@ -1,10 +1,10 @@
 import { useRef } from "react";
-import useProjects from "../hooks/useProjects";
+import useProjectAction from "../hooks/useProjectActions";
 import { useNavigate } from "react-router";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const CreateProject = () => {
-  const { createProject, reloadProjects, loading } = useProjects();
+  const { createProject, loading } = useProjectAction();
   const nameRef = useRef(null);
   const descriptionRef = useRef(null);
 
@@ -18,7 +18,6 @@ const CreateProject = () => {
 
     await createProject({ name, description });
     navigate(-1);
-    await reloadProjects();
   };
 
   if (loading) return <LoadingSpinner />;

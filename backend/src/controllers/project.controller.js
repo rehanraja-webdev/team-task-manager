@@ -179,8 +179,9 @@ const addMember = asyncHandler(async (req, res) => {
   }
 
   project.members.push({ user: member._id, role: member.role || "member" });
-
   await project.save();
+
+  await project.populate("members.user", "fullname email role");
 
   cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
   cacheHelper.deleteCache(`members_${req.user._id}_${projectId}`);
@@ -189,9 +190,7 @@ const addMember = asyncHandler(async (req, res) => {
   cacheHelper.deleteCache(`members_${member._id}_${projectId}`);
   cacheHelper.deleteByPrefix(`project_tasks_${projectId}`);
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, "Member is added successfully!", project));
+  return res.json(new ApiResponse(200, "Member added", project.members));
 });
 
 const removeMember = asyncHandler(async (req, res) => {
@@ -228,6 +227,7 @@ const removeMember = asyncHandler(async (req, res) => {
   project.members = project.members.filter(
     (m) => m.user.toString() !== memberId,
   );
+  await project.populate("members.user", "fullname email role");
 
   await project.save();
   await Task.updateMany(
@@ -259,7 +259,11 @@ const removeMember = asyncHandler(async (req, res) => {
 
   cacheHelper.deleteByPrefix(`project_tasks_${projectId}`);
 
-  res.status(200).json(new ApiResponse(200, "Member removed successfully!"));
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, "Member removed successfully!", project.members),
+    );
 });
 
 const getProjectMembers = asyncHandler(async (req, res) => {

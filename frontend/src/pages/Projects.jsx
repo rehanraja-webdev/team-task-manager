@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import ProjectCard from "../components/common/ProjectCard";
 import useProjects from "../hooks/useProjects";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import ProjectsHeader from "../components/projects/ProjectsHeader";
+import ProjectsFilter from "../components/projects/ProjectsFilter";
 
 const Projects = () => {
   const { projects, loading } = useProjects();
@@ -14,39 +16,12 @@ const Projects = () => {
   if (loading) {
     return <LoadingSpinner />;
   }
-  
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-4xl font-bold text-white">Projects</h1>
+      <ProjectsHeader navigate={navigate} />
 
-          <p className="text-slate-400 mt-2">
-            Manage all your projects in one place.
-          </p>
-        </div>
-
-        <button
-          onClick={() => navigate("create")}
-          className="bg-indigo-600 hover:bg-indigo-700 px-5 py-3 rounded-xl text-white"
-        >
-          + New Project
-        </button>
-      </div>
-
-      <div className="flex gap-4">
-        <input
-          type="text"
-          placeholder="Search projects..."
-          className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white flex-1"
-        />
-
-        <select className="bg-slate-900 border border-slate-800 rounded-xl px-4 text-white">
-          <option>All Status</option>
-          <option>Active</option>
-          <option>Completed</option>
-        </select>
-      </div>
+      <ProjectsFilter />
 
       <div className="grid xl:grid-cols-2 gap-6">
         {projects.map((project) => (

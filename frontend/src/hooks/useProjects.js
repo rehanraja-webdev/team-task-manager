@@ -1,91 +1,33 @@
 import { useEffect, useState } from "react";
-import {
-  createAProject,
-  deleteProjectById,
-  getProjects,
-  addNewMember,
-  removeProjectMember,
-} from "../services/project.service";
+import { getProjects } from "../services/project.service";
 import toast from "react-hot-toast";
 
 const useProjects = () => {
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingProjects, setLoadingProjects] = useState(true);
 
   const fetchProjects = async () => {
+    setLoadingProjects(true);
+
     try {
       const data = await getProjects();
-
       setProjects(data);
     } catch (error) {
-      toast.error(error.response?.data.message);
+      toast.error(error.response?.data?.message || "Failed to fetch projects");
     } finally {
-      setLoading(false);
+      setLoadingProjects(false);
     }
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // eslint-disable-next-line
     fetchProjects();
   }, []);
 
-  const createProject = async (formData) => {
-    try {
-      setLoading(true);
-      const data = await createAProject(formData);
-
-      toast.success(data.message);
-    } catch (error) {
-      toast.error(error.response?.data.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const deleteProject = async (id) => {
-    try {
-      setLoading(true);
-      const data = await deleteProjectById(id);
-
-      toast.success(data.message);
-    } catch (error) {
-      toast.error(error.response?.data.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const addMember = async (id, email) => {
-    try {
-      const data = await addNewMember(id, email);
-      toast.success(data.message);
-    } catch (error) {
-      toast.error(error.response?.data.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const removeMember = async (projectId, memberId) => {
-    try {
-      setLoading(true);
-      await removeProjectMember(projectId, memberId);
-      toast.success("Member removed successfully!");
-    } catch (error) {
-      toast.error(error.response?.data?.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return {
     projects,
-    loading,
+    loadingProjects,
     reloadProjects: fetchProjects,
-    createProject,
-    deleteProject,
-    addMember,
-    removeMember,
   };
 };
 

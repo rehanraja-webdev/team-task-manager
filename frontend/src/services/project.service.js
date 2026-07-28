@@ -10,37 +10,35 @@ export const getProject = async (projectId) => {
   return response.data.data;
 };
 
-export const getProjectTasks = async (projectId) => {
-  const response = await api.get(`/tasks/project/${projectId}`);
-  return response.data.data || [];
-};
-
-export const createAProject = async (formData) => {
-  const response = await api.post("/v1/projects", formData);
-  return response.data;
-};
-
-export const deleteProjectById = async (id) => {
-  const response = await api.delete(`/v1/projects/${id}`);
-  return response.data;
-};
-
-export const addNewMember = async (id, email) => {
-  const response = await api.post(`/v1/projects/${id}/member`, { email });
-  return response.data;
-};
-
 export const getProjectMembers = async (projectId) => {
   const response = await api.get(`/v1/projects/${projectId}/members`);
 
   return response.data.data;
 };
 
-export const removeProjectMember = async (projectId, memberId) => {
-  const response = await api.delete(
-    `/v1/projects/${projectId}/members/${memberId}`,
-    memberId,
-  );
+export const getProjectTasks = async (projectId) => {
+  const response = await api.get(`/tasks/project/${projectId}`);
+  return response.data.data || [];
+};
 
-  return response.data;
+export const createAProject = async (formData) => {
+  await api.post("/v1/projects", formData);
+  return;
+};
+
+export const addNewMember = async (id, email) => {
+  await api.post(`/v1/projects/${id}/member`, { email });
+};
+
+export const deleteProjectById = async (id) => {
+  await api.delete(`/v1/projects/${id}`);
+  return;
+};
+
+export const removeMember = async (projectId, memberId) => {
+  await api.delete(`/v1/projects/${projectId}/members/${memberId}`);
+};
+
+export const updateProjectById = async (projectId, formData) => {
+  await api.patch(`/projects/v1/${projectId}`, formData);
 };

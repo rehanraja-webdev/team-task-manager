@@ -4,6 +4,7 @@ import {
   deleteProjectById,
   getProjects,
   addNewMember,
+  removeProjectMember,
 } from "../services/project.service";
 import toast from "react-hot-toast";
 
@@ -65,6 +66,18 @@ const useProjects = () => {
     }
   };
 
+  const removeMember = async (projectId, memberId) => {
+    try {
+      setLoading(true);
+      await removeProjectMember(projectId, memberId);
+      toast.success("Member removed successfully!");
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     projects,
     loading,
@@ -72,6 +85,7 @@ const useProjects = () => {
     createProject,
     deleteProject,
     addMember,
+    removeMember,
   };
 };
 

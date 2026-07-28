@@ -3,11 +3,12 @@ import { Users, Plus } from "lucide-react";
 import useProject from "../../hooks/useProject";
 import LoadingSpinner from "../common/LoadingSpinner";
 import MemberCard from "./MemberCard";
+import useProjects from "../../hooks/useProjects";
 
 const MembersList = () => {
   const { projectId } = useParams();
-  const { members, removeMember, reloadProject, loading } =
-    useProject(projectId);
+  const { members, reloadProject, loading } = useProject(projectId);
+  const { removeMember } = useProjects();
 
   const handleDelete = async (memberId) => {
     await removeMember(projectId, memberId);

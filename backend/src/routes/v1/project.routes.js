@@ -129,7 +129,7 @@ router.get("/:projectId", authMiddleware, projectController.getProject);
  */
 router.post("/:projectId/member", authMiddleware, projectController.addMember);
 
-router.post("/:projectId/member/remove", authMiddleware, projectController.removeMember);
+router.delete("/:projectId/members/:memberId", authMiddleware, projectController.removeMember);
 
 /**
  * @swagger

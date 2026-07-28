@@ -67,12 +67,10 @@ const getTasks = asyncHandler(async (req, res) => {
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log("Cache Hit:", cacheKey);
     return res
       .status(200)
-      .json(new ApiResponse(200, "From cache", cached.data));
+      .json(new ApiResponse(200, "All tasks fetched from cache", cached.data));
   } else {
-    console.log("Cache Miss:", cacheKey);
     cacheHelper.deleteCache(cacheKey);
   }
 
@@ -132,12 +130,10 @@ const getProjectTasks = asyncHandler(async (req, res) => {
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log("Cache Hit:", cacheKey);
     return res
       .status(200)
-      .json(new ApiResponse(200, "From cache", cached.data));
+      .json(new ApiResponse(200, "Project tasks fetched from cache", cached.data));
   } else {
-    console.log("Cache Miss:", cacheKey);
     cacheHelper.deleteCache(cacheKey);
   }
 
@@ -260,12 +256,10 @@ const getTask = asyncHandler(async (req, res) => {
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log("Cache Hit:", cacheKey);
     return res
       .status(200)
-      .json(new ApiResponse(200, "From cache", cached.data));
+      .json(new ApiResponse(200, "Task fetched from cache", cached.data));
   } else {
-    console.log("Cache Miss:", cacheKey);
     cacheHelper.deleteCache(cacheKey);
   }
 

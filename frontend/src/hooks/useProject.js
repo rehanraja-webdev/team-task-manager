@@ -8,7 +8,7 @@ import {
 import toast from "react-hot-toast";
 
 const useProject = (projectId) => {
-  const [loading, setLoading] = useState(true);
+  const [fetching, setFetching] = useState(true);
   const [project, setProject] = useState(null);
   const [members, setMembers] = useState([]);
 
@@ -26,7 +26,7 @@ const useProject = (projectId) => {
     } catch (error) {
       toast.error(error.response?.data.message || "Something went wrong!");
     } finally {
-      setLoading(false);
+      setFetching(false);
     }
   };
 
@@ -37,7 +37,7 @@ const useProject = (projectId) => {
   return {
     project,
     members,
-    loading,
+    fetching,
     reloadProject: fetchProjectDetails,
   };
 };

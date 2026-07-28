@@ -69,6 +69,8 @@ router.delete(
   projectController.deleteProject,
 );
 
+router.patch("/:projectId", authMiddleware, projectController.updateProject);
+
 /**
  * @swagger
  * /api/v1/projects:
@@ -129,7 +131,11 @@ router.get("/:projectId", authMiddleware, projectController.getProject);
  */
 router.post("/:projectId/member", authMiddleware, projectController.addMember);
 
-router.delete("/:projectId/members/:memberId", authMiddleware, projectController.removeMember);
+router.delete(
+  "/:projectId/members/:memberId",
+  authMiddleware,
+  projectController.removeMember,
+);
 
 /**
  * @swagger

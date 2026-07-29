@@ -1,21 +1,19 @@
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Users, Plus } from "lucide-react";
-import useProject from "../../hooks/useProject";
-import LoadingSpinner from "../common/LoadingSpinner";
 import MemberCard from "./MemberCard";
-import useProjects from "../../hooks/useProjects";
 
-const MembersList = () => {
-  const { projectId } = useParams();
-  const { members, reloadProject, loading } = useProject(projectId);
-  const { removeMember } = useProjects();
-
+const MembersList = ({
+  members,
+  deleteMember,
+  reloadMembers,
+  projectId,
+  loading,
+}) => {
   const handleDelete = async (memberId) => {
-    await removeMember(projectId, memberId);
-    await reloadProject();
+    await deleteMember(projectId, memberId);
+    await reloadMembers();
   };
 
-  if (loading) return <LoadingSpinner />;
   return (
     <div className="bg-slate-900 rounded-3xl p-8">
       <div className="flex items-center gap-3 border-b border-slate-800 pb-5 mb-8">

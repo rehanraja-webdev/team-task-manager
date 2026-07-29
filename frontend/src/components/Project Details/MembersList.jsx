@@ -10,6 +10,9 @@ const MembersList = ({
   loading,
 }) => {
   const handleDelete = async (memberId) => {
+    const confirmed = confirm("Do you want to delete member?");
+    if (!confirmed) return;
+
     await deleteMember(projectId, memberId);
     await reloadMembers();
   };

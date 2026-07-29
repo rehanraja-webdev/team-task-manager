@@ -132,6 +132,10 @@ const updateProject = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Project not found!");
   }
 
+  if (project.name === name && project.description === description) {
+    throw new ApiError(400, "No change found!");
+  }
+
   const isOwner = project.owner.toString() === req.user._id.toString();
   const isAdmin = req.user.role === "admin";
 
@@ -144,7 +148,7 @@ const updateProject = asyncHandler(async (req, res) => {
     { $set: { name, description } },
     { new: true, runValidators: true },
   );
-  
+
   cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
   cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);

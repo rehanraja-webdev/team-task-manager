@@ -2,23 +2,19 @@ import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Modal from "../common/Modal";
-import useTaskActions from "../../hooks/UseTaskActions";
-import useProject from "../../hooks/useProject";
-import LoadingSpinner from "../common/LoadingSpinner";
 
-const TaskHeader = ({ task, projectId }) => {
-  const { deleteTask, loading } = useTaskActions(task._id);
-  const { reloadProject } = useProject(projectId);
+const TaskHeader = ({ task, deleteTask, loading }) => {
   const [modalActive, setModalActive] = useState(false);
   const navigate = useNavigate();
 
   const handleDelete = async () => {
+    const confirmed = confirm("Do you want to delete the task?");
+    if (!confirmed) return;
+
     await deleteTask(task._id);
-    await reloadProject();
     navigate(-1);
   };
 
-  if (loading) return <LoadingSpinner />;
   return (
     <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between pb-6 border-b border-slate-800/80">
       {modalActive && (
@@ -65,11 +61,12 @@ const TaskHeader = ({ task, projectId }) => {
         <button
           onClick={handleDelete}
           type="button"
+          disabled={loading}
           aria-label="Delete task"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all duration-200 active:scale-95 shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all duration-200 active:scale-95 shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Trash2 className="w-4 h-4" />
-          <span>Delete</span>
+          <span>{loading ? "Deleting..." : "Delete"}</span>
         </button>
       </div>
     </div>

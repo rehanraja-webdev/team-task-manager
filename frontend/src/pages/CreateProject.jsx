@@ -1,10 +1,9 @@
 import { useRef } from "react";
-import useProjectAction from "../hooks/useProjectActions";
-import { useNavigate } from "react-router";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import useProjectActions from "../hooks/useProjectActions";
+import { useNavigate } from "react-router-dom";
 
 const CreateProject = () => {
-  const { createProject, loading } = useProjectAction();
+  const { createProject, loading } = useProjectActions();
   const nameRef = useRef(null);
   const descriptionRef = useRef(null);
 
@@ -20,7 +19,6 @@ const CreateProject = () => {
     navigate(-1);
   };
 
-  if (loading) return <LoadingSpinner />;
   return (
     <div className="max-w-2xl mx-auto p-8 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl">
       {/* Header */}
@@ -72,18 +70,20 @@ const CreateProject = () => {
         {/* Action Buttons */}
         <div className="pt-4 flex items-center justify-end gap-4 font-medium text-sm">
           <button
-            onClick={() => navigate(-1)}
             type="button"
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-600"
+            onClick={() => navigate(-1)}
+            disabled={loading}
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
 
           <button
             type="submit"
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white shadow-lg shadow-purple-600/25 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+            disabled={loading}
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white shadow-lg shadow-purple-600/25 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Create Project
+            {loading ? "Creating..." : "Create Project"}
           </button>
         </div>
       </form>

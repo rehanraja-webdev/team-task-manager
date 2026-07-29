@@ -40,5 +40,5 @@ export const removeMember = async (projectId, memberId) => {
 };
 
 export const updateProjectById = async (projectId, formData) => {
-  await api.patch(`/projects/v1/${projectId}`, formData);
+  await api.patch(`/v1/projects/${projectId}`, formData);
 };

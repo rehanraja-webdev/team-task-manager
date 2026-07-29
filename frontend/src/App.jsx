@@ -13,6 +13,7 @@ import TaskDetails from "./pages/TaskDetails";
 import CreateTask from "./pages/CreateTask";
 import Users from "./pages/Users";
 import Tasks from "./pages/Tasks";
+import UpdateProject from "./pages/UpdateProject";
 
 const App = () => {
   return (
@@ -25,25 +26,31 @@ const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
-            <Route path="projects" element={<Projects />} />
-            <Route path="users" element={<Users />} />
-            <Route path="tasks" element={<Tasks />} />
 
+            <Route path="projects" element={<Projects />} />
             <Route path="projects/create" element={<CreateProject />} />
+            <Route
+              path="projects/:projectId/update"
+              element={<UpdateProject />}
+            />
             <Route path="projects/:projectId" element={<ProjectDetails />} />
             <Route
               path="projects/:projectId/add-member"
               element={<AddProjectMember />}
             />
             <Route
+              path="projects/:projectId/tasks/new"
+              element={<CreateTask />}
+            />
+            <Route
               path="projects/:projectId/tasks/:taskId"
               element={<TaskDetails />}
             />
 
-            <Route
-              path="projects/:projectId/tasks/new"
-              element={<CreateTask />}
-            />
+            <Route path="tasks" element={<Tasks />} />
+            <Route path="tasks/new" element={<CreateTask />} />
+
+            <Route path="users" element={<Users />} />
           </Route>
         </Route>
       </Routes>

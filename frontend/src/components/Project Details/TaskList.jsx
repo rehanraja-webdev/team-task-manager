@@ -2,12 +2,10 @@ import { ClipboardList, FolderPlus, Plus } from "lucide-react";
 import TaskCard from "../common/TaskCard";
 import { NavLink } from "react-router-dom";
 import useProjectTasks from "../../hooks/useProjectTasks";
-import LoadingSpinner from "../common/LoadingSpinner";
 
 const TaskList = ({ projectId }) => {
-  const { tasks, loading } = useProjectTasks(projectId);
-  if (loading) return <LoadingSpinner />;
-  
+  const { tasks } = useProjectTasks(projectId);
+
   return (
     <div className="bg-slate-900 p-8 rounded-3xl text-white">
       {/* Task List Header */}

@@ -7,7 +7,7 @@ const CreateTask = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
   const { members } = useProject(projectId);
-  const { createTask } = useTaskActions();
+  const { createTask, loading } = useTaskActions();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -140,17 +140,19 @@ const CreateTask = () => {
         <div className="flex justify-end gap-4 pt-4">
           <button
             type="button"
+            disabled={loading}
             onClick={() => navigate(-1)}
-            className="px-6 py-3 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 transition"
+            className="px-6 py-3 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 transition disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
 
           <button
             type="submit"
-            className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition"
+            disabled={loading}
+            className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Create Task
+            {loading ? "Creating..." : "Create Task"}
           </button>
         </div>
       </form>

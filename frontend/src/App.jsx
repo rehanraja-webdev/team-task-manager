@@ -13,7 +13,6 @@ import TaskDetails from "./pages/TaskDetails";
 import CreateTask from "./pages/CreateTask";
 import Users from "./pages/Users";
 import Tasks from "./pages/Tasks";
-import UpdateProject from "./pages/UpdateProject";
 
 const App = () => {
   return (
@@ -29,10 +28,6 @@ const App = () => {
 
             <Route path="projects" element={<Projects />} />
             <Route path="projects/create" element={<CreateProject />} />
-            <Route
-              path="projects/:projectId/update"
-              element={<UpdateProject />}
-            />
             <Route path="projects/:projectId" element={<ProjectDetails />} />
             <Route
               path="projects/:projectId/add-member"

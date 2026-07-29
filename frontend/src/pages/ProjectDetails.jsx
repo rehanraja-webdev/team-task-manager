@@ -9,8 +9,10 @@ import useProjectActions from "../hooks/useProjectActions";
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
-  const { project, members, reloadMembers, fetching } = useProject(projectId);
-  const { deleteMember, deleteProject, loading } = useProjectActions();
+  const { project, members, reloadMembers, reloadProject, fetching } =
+    useProject(projectId);
+  const { updateProject, deleteMember, deleteProject, loading } =
+    useProjectActions();
 
   if (fetching || loading) return <LoadingSpinner />;
   return (
@@ -19,7 +21,9 @@ const ProjectDetails = () => {
 
       <ProjectInfoCard
         project={project}
+        updateProject={updateProject}
         deleteProject={deleteProject}
+        reloadProject={reloadProject}
         loading={loading}
       />
 

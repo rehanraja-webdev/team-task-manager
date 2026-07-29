@@ -11,7 +11,7 @@ const useTask = (taskId) => {
   const [task, setTask] = useState(null);
   const [comments, setComments] = useState([]);
   const [activities, setActivities] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [fetchingTaskDetails, setFetchingTaskDetails] = useState(true);
 
   const taskDetails = async () => {
     if (!taskId) return;
@@ -30,7 +30,7 @@ const useTask = (taskId) => {
         error.response?.data.message || "Error fetching task details",
       );
     } finally {
-      setLoading(false);
+      setFetchingTaskDetails(false);
     }
   };
 
@@ -43,7 +43,7 @@ const useTask = (taskId) => {
     reloadTask: taskDetails,
     activities,
     comments,
-    loading,
+    fetchingTaskDetails,
   };
 };
 

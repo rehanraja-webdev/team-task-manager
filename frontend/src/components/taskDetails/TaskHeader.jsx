@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Modal from "../common/Modal";
 
-const TaskHeader = ({ task, deleteTask, loading }) => {
+const TaskHeader = ({ task, deleteTask, reloadTask, loading }) => {
   const [modalActive, setModalActive] = useState(false);
   const navigate = useNavigate();
 
@@ -22,6 +22,7 @@ const TaskHeader = ({ task, deleteTask, loading }) => {
           modalActive={modalActive}
           task={task}
           action="status"
+          reloadTask={reloadTask}
           onClose={() => setModalActive(false)}
         />
       )}

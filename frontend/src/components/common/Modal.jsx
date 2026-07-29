@@ -1,52 +1,72 @@
-import { useState } from "react";
-import useTaskActions from "../../hooks/UseTaskActions";
+/* eslint-disable */
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import useTaskActions from "../../hooks/UseTaskActions";
 
 const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
-  const [status, setStatus] = useState(task?.status || "todo");
   const { taskId } = useParams();
   const { updateTaskStatus, addComment, loading } = useTaskActions();
 
+  const [status, setStatus] = useState("todo");
   const [content, setContent] = useState("");
+
+  useEffect(() => {
+    if (modalActive && task) {
+      setStatus(task.status);
+      setContent("");
+    }
+  }, [modalActive, task]);
 
   if (!modalActive) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let success = false;
+
     if (action === "comment") {
-      await addComment(taskId, { content });
+      success = await addComment(taskId, { content });
     } else {
-      await updateTaskStatus(taskId, { status });
+      success = await updateTaskStatus(taskId, { status });
     }
-    await reloadTask();
-    onClose();
+
+    if (success) {
+      await reloadTask();
+      onClose();
+    }
   };
 
   return (
     <>
       <div
-        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
+        onClick={!loading ? onClose : undefined}
+        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
       />
 
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-sm p-6 bg-slate-800 border border-slate-700/80 rounded-2xl shadow-2xl text-white transform transition-all">
-          <h3 className="text-lg font-semibold text-slate-100 mb-4">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-800 p-6 text-white shadow-2xl"
+        >
+          <h3 className="mb-5 text-lg font-semibold">
             {action === "status" ? "Update Task Status" : "Add Comment"}
           </h3>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {action === "status" ? (
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wider text-slate-400 mb-2">
+                <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   Status
                 </label>
 
                 <select
-                  name="status"
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full bg-slate-900/80 border border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none transition cursor-pointer"
+                  disabled={loading}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-200 outline-none focus:border-indigo-500"
                 >
                   <option value="todo">Todo</option>
                   <option value="in-progress">In Progress</option>
@@ -55,27 +75,28 @@ const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
               </div>
             ) : (
               <div>
-                <label className="block text-xs font-medium uppercase tracking-wider text-slate-400 mb-2">
+                <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-slate-400">
                   Comment
                 </label>
 
                 <input
                   type="text"
-                  name="comment"
-                  placeholder="Add comment about task"
+                  value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  className="w-full bg-slate-900/80 border border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 rounded-xl px-4 py-3 text-sm text-slate-200 outline-none transition"
+                  placeholder="Add a comment..."
+                  disabled={loading}
                   required
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-slate-200 outline-none focus:border-indigo-500"
                 />
               </div>
             )}
 
-            <div className="flex items-center justify-end space-x-3 pt-2">
+            <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
-                disabled={loading}
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-700/60 rounded-lg transition cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={loading}
+                className="rounded-lg px-4 py-2 text-sm text-slate-300 transition hover:bg-slate-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -83,9 +104,9 @@ const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg shadow-md shadow-indigo-600/20 transition cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {loading ? "Saving" : "Save Changes"}
+                {loading ? "Saving..." : "Save Changes"}
               </button>
             </div>
           </form>

@@ -18,7 +18,7 @@ const TaskDetails = () => {
 
   return (
     <div className="space-y-6">
-      <TaskHeader task={task} deleteTask={deleteTask} loading={loading} />
+      <TaskHeader task={task} deleteTask={deleteTask} reloadTask={reloadTask} loading={loading} />
 
       <TaskInfoCard task={task} />
 

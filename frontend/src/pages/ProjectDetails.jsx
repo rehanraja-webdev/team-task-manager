@@ -14,7 +14,7 @@ const ProjectDetails = () => {
   const { updateProject, deleteMember, deleteProject, loading } =
     useProjectActions();
 
-  if (fetching || loading) return <LoadingSpinner />;
+  if (fetching ) return <LoadingSpinner />;
   return (
     <div className="flex flex-col space-y-6">
       <ProjectHeader />
@@ -25,6 +25,7 @@ const ProjectDetails = () => {
         deleteProject={deleteProject}
         reloadProject={reloadProject}
         loading={loading}
+        fetching={fetching}
       />
 
       <MembersList

@@ -20,7 +20,7 @@ const TaskDetails = () => {
     <div className="space-y-6">
       <TaskHeader task={task} deleteTask={deleteTask} reloadTask={reloadTask} loading={loading} />
 
-      <TaskInfoCard task={task} />
+      <TaskInfoCard task={task} reloadTask={reloadTask} />
 
       <ActivityTimeline activities={activities} />
 

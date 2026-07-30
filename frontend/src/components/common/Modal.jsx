@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import useTaskActions from "../../hooks/UseTaskActions";
 
 const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
+  if (!modalActive) return null;
   const { taskId } = useParams();
   const { updateTaskStatus, addComment, loading } = useTaskActions();
 
@@ -17,7 +18,6 @@ const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
     }
   }, [modalActive, task]);
 
-  if (!modalActive) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

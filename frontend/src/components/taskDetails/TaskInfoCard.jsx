@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Circle,
   Clock3,
@@ -9,10 +10,14 @@ import {
   UserPlus,
   FolderOpen,
   CalendarDays,
+  PenLine,
 } from "lucide-react";
 import formatDate from "../../utils/formatDate";
+import Modal from "../common/Modal";
 
-const TaskInfoCard = ({ task }) => {
+const TaskInfoCard = ({ task, reloadTask }) => {
+  const [modalActive, setModalActive] = useState(false);
+
   const statusConfig = {
     todo: {
       icon: <Circle size={18} />,
@@ -51,7 +56,6 @@ const TaskInfoCard = ({ task }) => {
 
   const status = statusConfig[task.status];
   const priority = priorityConfig[task.priority];
-
   return (
     <div className="bg-slate-900 rounded-3xl border border-slate-800 p-6">
       <h2 className="text-2xl font-bold text-white mb-6">
@@ -61,12 +65,30 @@ const TaskInfoCard = ({ task }) => {
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {/* Status */}
         <InfoItem icon={status.icon} label="Status">
+          {modalActive && (
+            <Modal
+              modalActive={modalActive}
+              task={task}
+              action="status"
+              reloadTask={reloadTask}
+              onClose={() => setModalActive(false)}
+            />
+          )}
           <span
             className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm ${status.className}`}
           >
             {status.icon}
             {status.label}
           </span>
+
+          <button
+            type="button"
+            onClick={() => setModalActive(true)}
+            className="absolute top-3 right-3 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-700/50 transition-colors"
+            title="Edit Status"
+          >
+            <PenLine className="w-4 h-4" />
+          </button>
         </InfoItem>
 
         {/* Priority */}
@@ -120,7 +142,7 @@ const TaskInfoCard = ({ task }) => {
 };
 
 const InfoItem = ({ icon, label, children }) => (
-  <div className="bg-slate-800/60 border border-slate-700 rounded-xl p-4">
+  <div className="relative bg-slate-800/60 border border-slate-700 rounded-xl p-4">
     <div className="flex items-center gap-2 text-slate-400 text-sm mb-3">
       {icon}
       <span>{label}</span>

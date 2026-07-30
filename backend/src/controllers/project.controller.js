@@ -289,6 +289,7 @@ const removeMember = asyncHandler(async (req, res) => {
   cacheHelper.deleteCache(`project_${memberId}_${projectId}`);
   cacheHelper.deleteCache(`members_${memberId}_${projectId}`);
 
+  cacheHelper.deleteByPrefix(`task_${req.user._id}_`);
   cacheHelper.deleteByPrefix(`tasks_${memberId}`);
   cacheHelper.deleteCache(`dashboard_${memberId}`);
 

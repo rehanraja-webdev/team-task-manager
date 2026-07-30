@@ -1,22 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useProject from "../hooks/useProject";
 import useTaskActions from "../hooks/UseTaskActions";
+import useProjects from "../hooks/useProjects";
 
 const CreateTask = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
-  const { members } = useProject(projectId);
   const { createTask, loading } = useTaskActions();
+  const { projects } = useProjects();
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     assignedTo: "",
-    projectId,
+    projectId: projectId || "",
     priority: "medium",
     dueDate: "",
   });
+  const { members, reloadMembers } = useProject(formData.projectId);
+
+  useEffect(() => {
+    if (!formData.projectId) return;
+
+    const fetchMembers = async () => {
+      await reloadMembers(formData.projectId);
+    };
+
+    fetchMembers();
+  // eslint-disable-next-line
+  }, [formData.projectId]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -77,8 +90,31 @@ const CreateTask = () => {
           />
         </div>
 
-        {/* Assigned To */}
+        {!projectId && (
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">
+              Projects
+            </label>
 
+            <select
+              name="projectId"
+              value={formData.projectId}
+              onChange={handleChange}
+              className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+              required
+            >
+              <option value="">Select Project</option>
+
+              {projects.map((project) => (
+                <option key={project._id} value={project._id}>
+                  {project.name}{" "}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {/* Assigned To */}
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2">
             Assign Member

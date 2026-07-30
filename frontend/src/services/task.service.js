@@ -16,6 +16,11 @@ export const changeTaskStatus = async (taskId, status) => {
   return res.data;
 };
 
+export const updateTaskdetails = async (taskId, formData) => {
+  const res = await api.patch(`/tasks/${taskId}/details`, formData);
+  return res.data.data;
+};
+
 export const deleteTaskById = async (taskId) => {
   const res = await api.delete(`/tasks/${taskId}`);
 

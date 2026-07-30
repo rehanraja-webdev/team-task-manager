@@ -9,6 +9,7 @@ import { useState } from "react";
 
 const useTaskActions = () => {
   const [loading, setLoading] = useState(false);
+  const [updatedTask, setUpdatedTask] = useState([]);
 
   const createTask = async (formData) => {
     try {
@@ -27,6 +28,21 @@ const useTaskActions = () => {
       setLoading(true);
       const updateRes = await changeTaskStatus(taskId, status);
       toast.success(updateRes.message || `Task status updated to ${status}`);
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateTask = async (taskId, formData) => {
+    try {
+      setLoading(true);
+      const updatedRes = await changeTaskStatus(taskId, formData);
+      setUpdatedTask(updatedRes);
+
+      toast.success(updatedRes.message || "Task details updated!");
       return true;
     } catch (error) {
       toast.error(error.response?.data?.message);
@@ -65,7 +81,9 @@ const useTaskActions = () => {
     createTask,
     deleteTask,
     updateTaskStatus,
+    updateTask,
     addComment,
+    updatedTask,
     loading,
   };
 };

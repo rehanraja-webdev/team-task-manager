@@ -1,7 +1,7 @@
 import { MessageCircle, CalendarDays, Plus } from "lucide-react";
 import formatDate from "../../utils/formatDate";
 import { useState } from "react";
-import Modal from "../common/Modal";
+import TaskModal from "./TaskModal";
 
 const CommentList = ({ reloadTask, comments = [] }) => {
   const [modalActive, setModalActive] = useState(false);
@@ -23,7 +23,7 @@ const CommentList = ({ reloadTask, comments = [] }) => {
 
         <div className="ml-auto">
           {modalActive && (
-            <Modal
+            <TaskModal
               modalActive={modalActive}
               reloadTask={reloadTask}
               action="comment"

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useTaskActions from "../../hooks/UseTaskActions";
 
-const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
+const TaskModal = ({ modalActive, task, reloadTask, onClose, action }) => {
   if (!modalActive) return null;
   const { taskId } = useParams();
   const { updateTaskStatus, addComment, loading } = useTaskActions();
@@ -17,7 +17,6 @@ const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
       setContent("");
     }
   }, [modalActive, task]);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,4 +115,4 @@ const Modal = ({ modalActive, task, reloadTask, onClose, action }) => {
   );
 };
 
-export default Modal;
+export default TaskModal;

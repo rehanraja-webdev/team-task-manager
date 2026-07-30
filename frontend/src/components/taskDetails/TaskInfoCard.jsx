@@ -13,7 +13,7 @@ import {
   PenLine,
 } from "lucide-react";
 import formatDate from "../../utils/formatDate";
-import Modal from "../common/Modal";
+import TaskModal from "./TaskModal";
 
 const TaskInfoCard = ({ task, reloadTask }) => {
   const [modalActive, setModalActive] = useState(false);
@@ -66,7 +66,7 @@ const TaskInfoCard = ({ task, reloadTask }) => {
         {/* Status */}
         <InfoItem icon={status.icon} label="Status">
           {modalActive && (
-            <Modal
+            <TaskModal
               modalActive={modalActive}
               task={task}
               action="status"

@@ -261,6 +261,63 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
 });
 
+const updateTaskDetails = asyncHandler(async (req, res) => {
+  const { taskId } = req.params;
+  const { title, description, priority, dueDate } = req.body;
+
+  const task = await Task.findById(taskId);
+
+  if (!task) {
+    throw new ApiError(404, "No task found!");
+  }
+
+  if (
+    task.createdBy.toString() !== req.user._id.toString() &&
+    req.user.role !== "admin"
+  ) {
+    throw new ApiError(403, "You can't update task details!");
+  }
+
+  const isTitleUnchanged =
+    title !== undefined && task.title.trim() === title.trim();
+  const isDescriptionUnchanged =
+    description !== undefined &&
+    task.description?.trim() === description.trim();
+  const isPriorityUnchanged =
+    priority !== undefined && task.priority === priority;
+  const isDueDateUnchanged =
+    dueDate !== undefined &&
+    new Date(task.dueDate).getTime() === new Date(dueDate).getTime();
+
+  if (
+    isTitleUnchanged &&
+    isDescriptionUnchanged &&
+    isPriorityUnchanged &&
+    isDueDateUnchanged
+  ) {
+    throw new ApiError(400, "No changes detected to update!");
+  }
+
+  if (title !== undefined) task.title = title;
+  if (description !== undefined) task.description = description;
+  if (priority !== undefined) task.priority = priority;
+  if (dueDate !== undefined) task.dueDate = dueDate;
+
+  const updatedTask = await task.save();
+
+  Activity.create({
+    task: task._id,
+    user: req.user._id,
+    action: "Task details updated!",
+  });
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, "Task details updated successfully", updatedTask),
+    );
+});
+
 const getTask = asyncHandler(async (req, res) => {
   const cacheKey = `task_${req.user._id}_${req.params.taskId}`;
   const cached = cacheHelper.getCache(cacheKey);
@@ -304,4 +361,5 @@ export default {
   getTask,
   deleteTask,
   updateTaskStatus,
+  updateTaskDetails,
 };

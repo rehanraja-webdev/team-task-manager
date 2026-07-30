@@ -54,11 +54,7 @@ const router = express.Router();
  */
 router.post("/", authMiddleware, validateTask, taskController.createTask);
 
-router.get(
-  "/",
-  authMiddleware,
-  taskController.getTasks,
-);
+router.get("/", authMiddleware, taskController.getTasks);
 
 /**
  * @swagger
@@ -114,6 +110,12 @@ router.patch(
   "/:taskId/status",
   authMiddleware,
   taskController.updateTaskStatus,
+);
+
+router.patch(
+  "/:taskId/details",
+  authMiddleware,
+  taskController.updateTaskDetails,
 );
 
 export default router;

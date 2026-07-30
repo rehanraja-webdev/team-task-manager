@@ -263,7 +263,7 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
 
 const updateTaskDetails = asyncHandler(async (req, res) => {
   const { taskId } = req.params;
-  const { title, description, priority, dueDate } = req.body;
+  const { title, description, priority, assignedTo, dueDate } = req.body;
 
   const task = await Task.findById(taskId);
 
@@ -285,6 +285,8 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
     task.description?.trim() === description.trim();
   const isPriorityUnchanged =
     priority !== undefined && task.priority === priority;
+  const isAssignedToChanged =
+    assignedTo !== undefined && task.assignedTo === assignedTo;
   const isDueDateUnchanged =
     dueDate !== undefined &&
     new Date(task.dueDate).getTime() === new Date(dueDate).getTime();
@@ -293,6 +295,7 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
     isTitleUnchanged &&
     isDescriptionUnchanged &&
     isPriorityUnchanged &&
+    isAssignedToChanged &&
     isDueDateUnchanged
   ) {
     throw new ApiError(400, "No changes detected to update!");

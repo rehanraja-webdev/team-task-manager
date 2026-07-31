@@ -4,6 +4,7 @@ import Task from "../models/task.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import cache from "../utils/cache.js";
 import cacheHelper from "../utils/cache.helper.js";
+import Activity from "../models/activity.model.js";
 
 const getDashboardStats = asyncHandler(async (req, res) => {
   //created cache key
@@ -93,6 +94,8 @@ const getDashboardStats = asyncHandler(async (req, res) => {
     assignedTo: req.user._id,
   });
 
+  const activities = await Activity.find();
+
   cacheHelper.setCache(cacheKey, {
     totalProjects,
     totalTasks,
@@ -101,6 +104,7 @@ const getDashboardStats = asyncHandler(async (req, res) => {
     doneTasks,
     completionRate,
     myAssignedTasks,
+    activities,
   });
 
   res.status(200).json(
@@ -112,6 +116,7 @@ const getDashboardStats = asyncHandler(async (req, res) => {
       doneTasks,
       completionRate,
       myAssignedTasks,
+      activities,
     }),
   );
 });

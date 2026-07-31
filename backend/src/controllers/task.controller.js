@@ -320,6 +320,13 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
     action: "Task details updated!",
   });
 
+  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`project_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
+  cacheHelper.deleteCache(`task_${req.user._id}_${task._id}`);
+  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
+  cacheHelper.deleteByPrefix(`project_tasks_${task.project}`);
+
   return res
     .status(200)
     .json(

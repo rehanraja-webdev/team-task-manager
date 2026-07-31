@@ -13,6 +13,7 @@ import TaskDetails from "./pages/TaskDetails";
 import CreateTask from "./pages/CreateTask";
 import Users from "./pages/Users";
 import Tasks from "./pages/Tasks";
+import ActivityPage from "./pages/ActivityPage";
 
 const App = () => {
   return (
@@ -46,6 +47,8 @@ const App = () => {
             <Route path="tasks/new" element={<CreateTask />} />
 
             <Route path="users" element={<Users />} />
+
+            <Route path="activities" element={<ActivityPage />} />
           </Route>
         </Route>
       </Routes>

@@ -279,23 +279,28 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
   }
 
   const isTitleUnchanged =
-    title !== undefined && task.title.trim() === title.trim();
+    title !== undefined && (task.title || "").trim() === title.trim();
+
   const isDescriptionUnchanged =
     description !== undefined &&
-    task.description?.trim() === description.trim();
+    (task.description || "").trim() === description.trim();
+
   const isPriorityUnchanged =
     priority !== undefined && task.priority === priority;
-  const isAssignedToChanged =
-    assignedTo !== undefined && task.assignedTo === assignedTo;
-  const isDueDateUnchanged =
-    dueDate !== undefined &&
-    new Date(task.dueDate).getTime() === new Date(dueDate).getTime();
+
+  const isAssignedToUnchanged =
+    assignedTo !== undefined &&
+    task.assignedTo?.toString() === assignedTo?.toString();
+
+  const taskTime = task.dueDate ? new Date(task.dueDate).getTime() : null;
+  const newTime = dueDate ? new Date(dueDate).getTime() : null;
+  const isDueDateUnchanged = dueDate !== undefined && taskTime === newTime;
 
   if (
     isTitleUnchanged &&
     isDescriptionUnchanged &&
     isPriorityUnchanged &&
-    isAssignedToChanged &&
+    isAssignedToUnchanged &&
     isDueDateUnchanged
   ) {
     throw new ApiError(400, "No changes detected to update!");
@@ -304,11 +309,12 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
   if (title !== undefined) task.title = title;
   if (description !== undefined) task.description = description;
   if (priority !== undefined) task.priority = priority;
+  if (assignedTo !== undefined) task.assignedTo = assignedTo;
   if (dueDate !== undefined) task.dueDate = dueDate;
 
   const updatedTask = await task.save();
 
-  Activity.create({
+  await Activity.create({
     task: task._id,
     user: req.user._id,
     action: "Task details updated!",

@@ -4,6 +4,7 @@ import {
   createATask,
   createTaskComment,
   deleteTaskById,
+  updateTaskdetails,
 } from "../services/task.service";
 import { useState } from "react";
 
@@ -39,7 +40,7 @@ const useTaskActions = () => {
   const updateTask = async (taskId, formData) => {
     try {
       setLoading(true);
-      const updatedRes = await changeTaskStatus(taskId, formData);
+      const updatedRes = await updateTaskdetails(taskId, formData);
       setUpdatedTask(updatedRes);
 
       toast.success(updatedRes.message || "Task details updated!");

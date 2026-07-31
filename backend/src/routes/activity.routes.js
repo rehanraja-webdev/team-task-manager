@@ -22,7 +22,7 @@ router.get(
   "/",
   authMiddleware,
   authorizeRoles("admin", "super-admin"),
-  activityController.getTaskActivities,
+  activityController.getAllActivities,
 );
 
 export default router;

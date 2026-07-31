@@ -33,6 +33,7 @@ const getAllActivities = asyncHandler(async (req, res) => {
   }
 
   const activities = await Activity.find()
+    .populate("user", "fullname email")
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);

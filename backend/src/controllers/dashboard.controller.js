@@ -94,7 +94,7 @@ const getDashboardStats = asyncHandler(async (req, res) => {
     assignedTo: req.user._id,
   });
 
-  const activities = await Activity.find();
+  const activities = await Activity.find().sort({ createdAt: -1 }).limit(10);
 
   cacheHelper.setCache(cacheKey, {
     totalProjects,

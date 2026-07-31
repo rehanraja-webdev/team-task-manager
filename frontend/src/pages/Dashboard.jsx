@@ -6,16 +6,18 @@ import {
   CheckCircle,
   Clock,
   ListTodo,
+  ArrowRight,
 } from "lucide-react";
 
+import useDashboard from "../hooks/useDashboard";
+import formatTimeAgo from "../utils/formatTimeAgo";
+import { NavLink } from "react-router-dom";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import profileImg from "../assets/profile.png";
 import StatCard from "../components/common/StatCard";
 import ProgressBar from "../components/dashboard/ProgressBar";
 import ActivityItem from "../components/dashboard/ActivityItem";
 import OverviewItem from "../components/dashboard/OverviewItem";
-import useDashboard from "../hooks/useDashboard";
-import formatTimeAgo from "../utils/formatTimeAgo";
 
 const Dashboard = () => {
   const { stats, loading } = useDashboard();
@@ -157,17 +159,23 @@ const Dashboard = () => {
             Recent Activity
           </h2>
 
-          <div className="space-y-5">
-            {stats?.activities
-              .slice()
-              .reverse()
-              .map((activity) => (
-                <ActivityItem
-                  key={activity._id}
-                  text={activity.action}
-                  time={formatTimeAgo(activity.createdAt)}
-                />
-              ))}
+          <div className="space-y-5 max-h-64 overflow-y-auto scroll-smooth p-1 scrollbar-none">
+            {stats?.activities.map((activity) => (
+              <ActivityItem
+                key={activity._id}
+                text={activity.action}
+                time={formatTimeAgo(activity.createdAt)}
+              />
+            ))}
+            <div className="flex items-center justify-end">
+              <NavLink
+                to="activities"
+                className="flex items-center pt-2 gap-2 text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
+              >
+                <span>View all activities</span>
+                <ArrowRight className="w-4 h-4" />
+              </NavLink>
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import {
   Search,
   Mail,
@@ -9,35 +8,17 @@ import {
   ListTodo,
 } from "lucide-react";
 
-import { useEffect, useState } from "react";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import profileImg from "../assets/profile.png";
-import api from "../api/axios";
-import toast from "react-hot-toast";
 import StatCard from "../components/common/StatCard";
 import ProgressBar from "../components/dashboard/ProgressBar";
 import ActivityItem from "../components/dashboard/ActivityItem";
 import OverviewItem from "../components/dashboard/OverviewItem";
+import useDashboard from "../hooks/useDashboard";
+import formatTimeAgo from "../utils/formatTimeAgo";
 
 const Dashboard = () => {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const getDashboard = async () => {
-    try {
-      const res = await api.get("/dashboard/stats");
-      setStats(res.data.data);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch dashboard");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getDashboard();
-  }, []);
-
+  const { stats, loading } = useDashboard();
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -177,13 +158,16 @@ const Dashboard = () => {
           </h2>
 
           <div className="space-y-5">
-            <ActivityItem text="Task created successfully" time="2 mins ago" />
-
-            <ActivityItem text="Project updated" time="10 mins ago" />
-
-            <ActivityItem text="Team member assigned" time="1 hour ago" />
-
-            <ActivityItem text="Task marked as completed" time="2 hours ago" />
+            {stats?.activities
+              .slice()
+              .reverse()
+              .map((activity) => (
+                <ActivityItem
+                  key={activity._id}
+                  text={activity.action}
+                  time={formatTimeAgo(activity.createdAt)}
+                />
+              ))}
           </div>
         </div>
       </div>

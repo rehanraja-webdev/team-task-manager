@@ -1,9 +1,11 @@
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Modal from "../common/Modal";
+import TaskUpdateModal from "./TaskUpdateModal";
+import useProject from "../../hooks/useProject";
 
-const TaskHeader = ({ task, deleteTask, reloadTask, loading }) => {
+const TaskHeader = ({ projectId, task, deleteTask, reloadTask, loading }) => {
+  const { members } = useProject(projectId);
   const [modalActive, setModalActive] = useState(false);
   const navigate = useNavigate();
 
@@ -18,10 +20,10 @@ const TaskHeader = ({ task, deleteTask, reloadTask, loading }) => {
   return (
     <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between pb-6 border-b border-slate-800/80">
       {modalActive && (
-        <Modal
+        <TaskUpdateModal
           modalActive={modalActive}
+          members={members}
           task={task}
-          action="status"
           reloadTask={reloadTask}
           onClose={() => setModalActive(false)}
         />

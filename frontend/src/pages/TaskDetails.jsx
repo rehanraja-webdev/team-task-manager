@@ -8,7 +8,7 @@ import useTask from "../hooks/useTask";
 import useTaskActions from "../hooks/UseTaskActions";
 
 const TaskDetails = () => {
-  const { taskId } = useParams();
+  const { projectId, taskId } = useParams();
 
   const { task, activities, comments, reloadTask, fetchingTaskDetails } =
     useTask(taskId);
@@ -18,7 +18,7 @@ const TaskDetails = () => {
 
   return (
     <div className="space-y-6">
-      <TaskHeader task={task} deleteTask={deleteTask} reloadTask={reloadTask} loading={loading} />
+      <TaskHeader projectId={projectId} task={task} deleteTask={deleteTask} reloadTask={reloadTask} loading={loading} />
 
       <TaskInfoCard task={task} reloadTask={reloadTask} />
 

@@ -13,4 +13,24 @@ const getTaskActivities = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Activities fetched successfully!", activities));
 });
 
-export default { getTaskActivities };
+const getAllActivities = asyncHandler(async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 20;
+  const skip = (page - 1) * limit;
+
+  const activities = await Activity.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const total = await Activity.countDocuments();
+
+  res.json({
+    activities,
+    currentPage: page,
+    totalPages: Math.ceil(total / limit),
+    hasMore: skip + activities.length < total,
+  });
+});
+
+export default { getTaskActivities, getAllActivities };

@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-const ActivityFilters = () => {
+const ActivityFilters = ({ filter, setFilter }) => {
   return (
     <div className="flex space-x-4">
       <div className="relative w-[75%]">
@@ -11,17 +11,26 @@ const ActivityFilters = () => {
 
         <input
           type="text"
+          value={filter.search}
+          onChange={(e) =>
+            setFilter((prev) => ({ ...prev, search: e.target.value }))
+          }
           placeholder="Search activities..."
           className="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 outline-none focus:border-purple-500"
         />
       </div>
 
-      <select className="bg-slate-900 lg:w-[25%] border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500">
-        <option value="">All</option>
-        <option value="">Project</option>
-        <option value="">Task</option>
-        <option value="">Comment</option>
-        <option value="">Member</option>
+      <select
+        onChange={(e) =>
+          setFilter((prev) => ({ ...prev, selected: e.target.value }))
+        }
+        className="bg-slate-900 lg:w-[25%] border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+      >
+        <option value="all">All</option>
+        <option value="project">Project</option>
+        <option value="task">Task</option>
+        <option value="comment">Comment</option>
+        <option value="member">Member</option>
       </select>
     </div>
   );

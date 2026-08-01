@@ -14,7 +14,7 @@ const ActivityPage = () => {
 
   const queryParams = new URLSearchParams(params).toString();
   const { activities, fetching } = useActivity(queryParams);
-  
+
   if (fetching) return <LoadingSpinner />;
   return (
     <div className="space-y-6">

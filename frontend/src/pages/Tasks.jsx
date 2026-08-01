@@ -68,7 +68,13 @@ const Tasks = () => {
         setSort={setSort}
       />
 
-      <TaskGrid tasks={tasks} />
+      <TaskGrid
+        tasks={tasks}
+        search={search}
+        status={status}
+        priority={priority}
+        sort={sort}
+      />
     </div>
   );
 };

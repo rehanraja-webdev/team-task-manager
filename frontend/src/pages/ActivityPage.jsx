@@ -6,6 +6,12 @@ import useActivity from "../hooks/useActivity";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const ActivityPage = () => {
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState({
+    search: "",
+    selected: "all",
+  });
+
   const [page, setPage] = useState(1);
   const params = {
     page,
@@ -20,9 +26,18 @@ const ActivityPage = () => {
     <div className="space-y-6">
       <ActivityHeader />
 
-      <ActivityFilters />
+      <ActivityFilters
+        search={search}
+        setSearch={setSearch}
+        filter={filter}
+        setFilter={setFilter}
+      />
 
-      <ActivityList activities={activities} setPage={setPage} />
+      <ActivityList
+        activities={activities}
+        setPage={setPage}
+        filter={filter}
+      />
     </div>
   );
 };

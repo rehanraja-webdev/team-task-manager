@@ -47,12 +47,14 @@ const getAllActivities = asyncHandler(async (req, res) => {
     hasMore: skip + activities.length < total,
   });
 
-  res.json({
-    activities,
-    currentPage: page,
-    totalPages: Math.ceil(total / limit),
-    hasMore: skip + activities.length < total,
-  });
+  res.status(200).json(
+    new ApiResponse(200, "Activities fetched successfully!", {
+      activities,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      hasMore: skip + activities.length < total,
+    }),
+  );
 });
 
 export default { getTaskActivities, getAllActivities };

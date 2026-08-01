@@ -45,6 +45,7 @@ const App = () => {
 
             <Route path="tasks" element={<Tasks />} />
             <Route path="tasks/new" element={<CreateTask />} />
+            <Route path="tasks/:taskId" element={<TaskDetails />} />
 
             <Route path="users" element={<Users />} />
 

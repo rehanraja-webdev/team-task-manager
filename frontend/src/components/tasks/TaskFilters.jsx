@@ -65,7 +65,6 @@ const TaskFilters = ({
         >
           <option value="latest">Latest</option>
           <option value="oldest">Oldest</option>
-          <option value="priority">Priority</option>
         </select>
       </div>
     </div>

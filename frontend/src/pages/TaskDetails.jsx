@@ -18,7 +18,13 @@ const TaskDetails = () => {
 
   return (
     <div className="space-y-6">
-      <TaskHeader projectId={projectId} task={task} deleteTask={deleteTask} reloadTask={reloadTask} loading={loading} />
+      <TaskHeader
+        projectId={projectId ? projectId : task.project._id}
+        task={task}
+        deleteTask={deleteTask}
+        reloadTask={reloadTask}
+        loading={loading}
+      />
 
       <TaskInfoCard task={task} reloadTask={reloadTask} />
 

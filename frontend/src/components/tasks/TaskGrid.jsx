@@ -19,7 +19,7 @@ const TaskGrid = ({ tasks, search, status, priority, sort }) => {
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       {filteredTasks.map((task) => (
-        <TaskCard key={task._id} task={task} />
+        <TaskCard key={task._id} task={task} from="tasks" />
       ))}
     </div>
   );

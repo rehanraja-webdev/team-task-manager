@@ -10,7 +10,7 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const Analytics = () => {
   const { overview, monthTasks, fetching } = useAnalytics();
-
+console.log(monthTasks)
   if (fetching) return <LoadingSpinner />;
   return (
     <div className="space-y-8">
@@ -21,7 +21,7 @@ const Analytics = () => {
         <PriorityChart analytics={overview} />
       </div>
 
-      <MonthlyTasksChart monthTasks={monthTasks} />
+      <MonthlyTasksChart data={monthTasks} />
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <ProjectProgress />

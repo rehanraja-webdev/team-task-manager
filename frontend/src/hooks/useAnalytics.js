@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
-import { getAnalyticsOverview, getTasksStats } from "../services/admin.service";
+import {
+  getAnalyticsOverview,
+  getMonthlyTask,
+} from "../services/admin.service";
 import toast from "react-hot-toast";
 
 const useAnalytics = () => {
   const [overview, setOverview] = useState(null);
-  const [taskStats, setTaskStats] = useState(null);
+  const [monthTasks, setMonthTasks] = useState(null);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const [analyticsRes, taskStatsRes] = await Promise.all([
+        const [analyticsRes, monthTaskRes] = await Promise.all([
           getAnalyticsOverview(),
-          getTasksStats(),
+          getMonthlyTask(),
         ]);
 
         setOverview(analyticsRes);
-        setTaskStats(taskStatsRes);
+        setMonthTasks(monthTaskRes);
       } catch (error) {
         toast.error(
           error.response?.data?.message || "Failed to load analytics!",
@@ -29,6 +32,6 @@ const useAnalytics = () => {
     fetchAnalytics();
   }, []);
 
-  return { overview, taskStats, fetching };
+  return { overview, monthTasks, fetching };
 };
 export default useAnalytics;

@@ -15,7 +15,7 @@ export const getAnalyticsOverview = async () => {
   return response.data.data;
 };
 
-export const getTasksStats = async () => {
-  const response = await api.get("/v1/analytics/task-stats");
+export const getMonthlyTask = async () => {
+  const response = await api.get("/v1/analytics/monthly-task");
   return response.data.data;
 };

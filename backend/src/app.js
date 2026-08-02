@@ -5,6 +5,7 @@ import authRoutes from "./routes/v1/auth.routes.js";
 import projectRoutes from "./routes/v1/project.routes.js";
 import errorHandler from "./middlewares/error.middleware.js";
 import taskRoutes from "./routes/task.routes.js";
+import analyticRoutes from "./routes/v1/analytics.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
 import activityRoutes from "./routes/activity.routes.js";
 import attachmentRoutes from "./routes/attachment.routes.js";
@@ -37,6 +38,7 @@ app.use("/api", rateLimiter);
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/projects", projectRoutes);
+app.use("/api/v1/analytics", analyticRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/activities", activityRoutes);

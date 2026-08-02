@@ -5,18 +5,23 @@ import MonthlyTasksChart from "../components/analytics/MonthlyTasksChart";
 import ProjectProgress from "../components/analytics/ProjectProgress";
 import ContributorsTable from "../components/analytics/ContributorsTable";
 import OverdueTasksTable from "../components/analytics/OverdueTasksTable";
+import useAnalytics from "../hooks/useAnalytics";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const Analytics = () => {
+  const { overview, monthTasks, fetching } = useAnalytics();
+
+  if (fetching) return <LoadingSpinner />;
   return (
     <div className="space-y-8">
-      <AnalyticsCards />
+      <AnalyticsCards overview={overview} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TaskStatusChart />
-        <PriorityChart />
+        <TaskStatusChart analytics={overview} />
+        <PriorityChart analytics={overview} />
       </div>
 
-      <MonthlyTasksChart />
+      <MonthlyTasksChart monthTasks={monthTasks} />
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <ProjectProgress />

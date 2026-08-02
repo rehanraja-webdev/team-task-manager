@@ -19,64 +19,50 @@ const analyticsOverview = asyncHandler(async (req, res) => {
     cacheHelper.deleteCache(cacheKey);
   }
 
-  const totalUsers = await User.countDocuments();
-  const totalProjects = await Project.countDocuments();
-  const totalTasks = await Task.countDocuments();
-
-  const userStats = await User.aggregate([
-    {
-      $group: {
-        _id: "$role",
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-
-  let totalMembers = 0;
-  let totalAdmins = 0;
-
-  userStats.map((user) => {
-    if (user._id === "member") {
-      totalMembers = user.count;
-    } else if (user._id === "admin") {
-      totalAdmins = user.count;
-    }
-  });
-
-  const taskStats = await Task.aggregate([
-    {
-      $facet: {
-        byStatus: [
-          {
-            $group: {
-              _id: "$status",
-              count: { $sum: 1 },
-            },
+  const [totalUsers, totalProjects, totalTasks, overdueTasks, taskStats] =
+    await Promise.all([
+      User.countDocuments(),
+      Project.countDocuments(),
+      Task.countDocuments(),
+      Task.countDocuments({
+        dueDate: { $lt: new Date() },
+        status: { $ne: "done" },
+      }),
+      Task.aggregate([
+        {
+          $facet: {
+            byStatus: [
+              {
+                $group: {
+                  _id: "$status",
+                  count: { $sum: 1 },
+                },
+              },
+            ],
+            byPriority: [
+              {
+                $group: {
+                  _id: "$priority",
+                  count: { $sum: 1 },
+                },
+              },
+            ],
           },
-        ],
-        byPriority: [
-          {
-            $group: {
-              _id: "$priority",
-              count: { $sum: 1 },
-            },
-          },
-        ],
-      },
-    },
-  ]);
+        },
+      ]),
+    ]);
 
   const statusCounts = Object.fromEntries(
     taskStats[0].byStatus.map(({ _id, count }) => [_id, count]),
   );
 
-  const priorityCounts = Object.fromEntries(
-    taskStats[0].byPriority.map(({ _id, count }) => [_id, count]),
-  );
-
   const todoTasks = statusCounts.todo || 0;
   const inProgressTasks = statusCounts["in-progress"] || 0;
   const doneTasks = statusCounts.done || 0;
+
+  const priorityCounts = Object.fromEntries(
+    taskStats[0].byPriority.map(({ _id, count }) => [_id, count]),
+  );
 
   const lowPriority = priorityCounts.low || 0;
   const mediumPriority = priorityCounts.medium || 0;
@@ -84,28 +70,26 @@ const analyticsOverview = asyncHandler(async (req, res) => {
 
   cacheHelper.setCache(cacheKey, {
     totalUsers,
-    totalAdmins,
-    totalMembers,
     totalProjects,
     totalTasks,
     todoTasks,
     inProgressTasks,
     doneTasks,
+    overdueTasks,
     lowPriority,
     mediumPriority,
     highPriority,
   });
 
   res.status(200).json(
-    new ApiResponse(200, "analytics", {
+    new ApiResponse(200, "analytics overview fetched!", {
       totalUsers,
-      totalAdmins,
-      totalMembers,
       totalProjects,
       totalTasks,
       todoTasks,
       inProgressTasks,
       doneTasks,
+      overdueTasks,
       lowPriority,
       mediumPriority,
       highPriority,
@@ -113,4 +97,31 @@ const analyticsOverview = asyncHandler(async (req, res) => {
   );
 });
 
-export default { analyticsOverview };
+const monthlyTask = asyncHandler(async (req, res) => {
+  const stats = await Task.aggregate([
+    {
+      $group: {
+        _id: { month: { $month: "$createdAt" } },
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const statsMap = Object.fromEntries(
+    stats.map(({ _id, count }) => [_id.month, count]),
+  );
+
+  const monthlyCount = Array.from({ length: 12 }, (_, i) => i + 1).reduce(
+    (acc, month) => {
+      acc[month] = statsMap[month] || 0;
+      return acc;
+    },
+    {},
+  );
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "monthly tasks fetched!", monthlyCount));
+});
+
+export default { analyticsOverview, monthlyTask };

@@ -98,30 +98,47 @@ const analyticsOverview = asyncHandler(async (req, res) => {
 });
 
 const monthlyTask = asyncHandler(async (req, res) => {
-  const stats = await Task.aggregate([
+  const monthlyTasks = await Task.aggregate([
     {
       $group: {
-        _id: { month: { $month: "$createdAt" } },
-        count: { $sum: 1 },
+        _id: {
+          month: { $month: "$createdAt" },
+          year: { $year: "$createdAt" },
+        },
+        tasks: { $sum: 1 },
+      },
+    },
+    {
+      $sort: {
+        "_id.year": 1,
+        "_id.month": 1,
       },
     },
   ]);
 
-  const statsMap = Object.fromEntries(
-    stats.map(({ _id, count }) => [_id.month, count]),
-  );
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
-  const monthlyCount = Array.from({ length: 12 }, (_, i) => i + 1).reduce(
-    (acc, month) => {
-      acc[month] = statsMap[month] || 0;
-      return acc;
-    },
-    {},
-  );
+  const monthlyChart = monthlyTasks.map((item) => ({
+    month: `${monthNames[item._id.month - 1]} ${item._id.year}`,
+    tasks: item.tasks,
+  }));
 
   res
     .status(200)
-    .json(new ApiResponse(200, "monthly tasks fetched!", monthlyCount));
+    .json(new ApiResponse(200, "monthly tasks fetched!", monthlyChart));
 });
 
 export default { analyticsOverview, monthlyTask };

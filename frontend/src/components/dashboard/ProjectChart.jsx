@@ -14,9 +14,9 @@ const CustomTooltip = ({ active, payload }) => {
     const data = payload[0].payload;
     return (
       <div className="bg-slate-800 border border-slate-700 p-3 rounded-lg shadow-xl text-slate-200 text-sm">
-        <p className="font-semibold text-white mb-1">{data.projectName}</p>
+        <p className="font-semibold text-white mb-1">{data.project}</p>
         <p className="text-violet-400">
-          Tasks: <span className="font-bold text-white">{data.taskCount}</span>
+          Tasks: <span className="font-bold text-white">{data.tasks}</span>
         </p>
       </div>
     );
@@ -62,7 +62,7 @@ const ProjectChart = ({ data }) => {
           {/* Y Axis styling for project names */}
           <YAxis
             type="category"
-            dataKey="projectName"
+            dataKey="project"
             width={120}
             stroke="#64748b"
             tick={{ fill: "#cbd5e1", fontSize: 13, fontWeight: 500 }}
@@ -78,7 +78,7 @@ const ProjectChart = ({ data }) => {
 
           {/* Glowing gradient bar */}
           <Bar
-            dataKey="taskCount"
+            dataKey="tasks"
             fill="#8b5cf6"
             radius={[0, 6, 6, 0]}
             barSize={24}

@@ -201,8 +201,8 @@ const projectProgress = asyncHandler(async (req, res) => {
       // Format the output structure
       $project: {
         _id: 0,
-        projectName: "$projectDetails.name",
-        taskCount: "$count",
+        project: "$projectDetails.name",
+        tasks: "$count",
       },
     },
   ]);

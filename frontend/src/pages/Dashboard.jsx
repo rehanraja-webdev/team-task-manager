@@ -18,6 +18,7 @@ import StatCard from "../components/common/StatCard";
 import ProgressBar from "../components/dashboard/ProgressBar";
 import ActivityItem from "../components/dashboard/ActivityItem";
 import OverviewItem from "../components/dashboard/OverviewItem";
+import CompletionRateChart from "../components/dashboard/CompletionRateChart";
 
 const Dashboard = () => {
   const { stats, loading } = useDashboard();
@@ -139,19 +140,7 @@ const Dashboard = () => {
       {/* Bottom Section */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Completion Rate */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-          <h2 className="text-white text-xl font-semibold mb-6">
-            Completion Rate
-          </h2>
-
-          <div className="flex flex-col items-center justify-center py-6">
-            <div className="text-6xl font-bold text-indigo-400">
-              {stats?.completionRate ?? 0}%
-            </div>
-
-            <p className="text-slate-400 mt-3">Overall Project Progress</p>
-          </div>
-        </div>
+        <CompletionRateChart completionRate={stats.completionRate} />
 
         {/* Recent Activity */}
         <div className="xl:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6">

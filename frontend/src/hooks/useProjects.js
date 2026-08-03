@@ -4,30 +4,28 @@ import toast from "react-hot-toast";
 
 const useProjects = () => {
   const [projects, setProjects] = useState([]);
-  const [loadingProjects, setLoadingProjects] = useState(true);
-
-  const fetchProjects = async () => {
-    setLoadingProjects(true);
-
-    try {
-      const data = await getProjects();
-      setProjects(data);
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch projects");
-    } finally {
-      setLoadingProjects(false);
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // eslint-disable-next-line
+    const fetchProjects = async () => {
+      try {
+        const data = await getProjects();
+        setProjects(data);
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || "Failed to fetch projects",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProjects();
   }, []);
 
   return {
     projects,
-    loadingProjects,
-    reloadProjects: fetchProjects,
+    loading,
   };
 };
 

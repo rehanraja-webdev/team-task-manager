@@ -9,13 +9,7 @@ const Projects = () => {
   const { projects, loading } = useProjects();
   const navigate = useNavigate();
 
-  if (projects.length === 0) {
-    return <p>No projects found.</p>;
-  }
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="space-y-6">

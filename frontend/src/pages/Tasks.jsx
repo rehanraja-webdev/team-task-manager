@@ -39,7 +39,7 @@ const Tasks = () => {
         <StatCard title="Todo" value={todoTasks} icon={<Circle />} />
 
         <StatCard
-          title="In Progrss"
+          title="In Progress"
           value={inProgressTasks}
           icon={<Clock3 />}
         />

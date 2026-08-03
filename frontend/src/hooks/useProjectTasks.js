@@ -22,7 +22,7 @@ const useProjectTasks = (projectId) => {
     fetchTasks();
   }, [projectId]);
 
-  return { tasks, reloadTasks: fetchTasks };
+  return { tasks, reloadTasks: fetchTasks, loadingTasks: loading };
 };
 
 export default useProjectTasks;

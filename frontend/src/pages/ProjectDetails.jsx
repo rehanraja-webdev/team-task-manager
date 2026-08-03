@@ -6,6 +6,7 @@ import MembersList from "../components/Project Details/MembersList";
 import TaskList from "../components/Project Details/TaskList";
 import useProject from "../hooks/useProject";
 import useProjectActions from "../hooks/useProjectActions";
+import useProjectTasks from "../hooks/useProjectTasks";
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
@@ -13,8 +14,9 @@ const ProjectDetails = () => {
     useProject(projectId);
   const { updateProject, deleteMember, deleteProject, loading } =
     useProjectActions();
+  const { tasks, loadingTasks } = useProjectTasks(projectId);
 
-  if (fetching ) return <LoadingSpinner />;
+  if (fetching || loadingTasks) return <LoadingSpinner />;
   return (
     <div className="flex flex-col space-y-6">
       <ProjectHeader />
@@ -36,7 +38,7 @@ const ProjectDetails = () => {
         loading={loading}
       />
 
-      <TaskList projectId={projectId} />
+      <TaskList tasks={tasks} />
     </div>
   );
 };

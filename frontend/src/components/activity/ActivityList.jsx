@@ -52,26 +52,38 @@ const ActivityList = ({ setPage, activities, filter }) => {
         <p className="text-slate-400 text-center py-4">No activities found.</p>
       )}
 
-      <div className="text-white flex justify-between items-center">
-        {activities?.currentPage > 1 && (
-          <button
-            onClick={() => setPage((currentPage) => currentPage - 1)}
-            className="flex space-x-1 cursor-pointer hover:bg-slate-800 hover:text-amber-500 hover:space-x-1.5 transition-all duration-300 ease-in-out px-3 py-1 rounded-md"
-          >
-            <ArrowLeft /> <span>Prev</span>
-          </button>
-        )}
+      <div className="flex items-center justify-between border-t border-slate-800/80 pt-6 mt-8">
+        <button
+          onClick={() => setPage((currentPage) => Math.max(currentPage - 1, 1))}
+          disabled={!activities || activities?.currentPage <= 1}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border border-slate-800 ${
+            !activities || activities?.currentPage <= 1
+              ? "opacity-0 pointer-events-none"
+              : "bg-slate-800/60 text-slate-300 hover:bg-purple-600 hover:text-white hover:border-purple-500 hover:shadow-md hover:shadow-purple-500/10 active:scale-95 cursor-pointer"
+          }`}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Previous</span>
+        </button>
 
-        {activities?.hasMore && (
-          <div className="ml-auto">
-            <button
-              onClick={() => setPage((currentPage) => currentPage + 1)}
-              className="flex space-x-1 cursor-pointer hover:bg-slate-800 hover:text-amber-500 hover:space-x-1.5 transition-all duration-300 ease-in-out px-3 py-1 rounded-md"
-            >
-              <span>Next</span> <ArrowRight />
-            </button>
-          </div>
-        )}
+        <div className="text-xs sm:text-sm font-medium text-slate-400 bg-slate-800/40 border border-slate-800/60 px-3.5 py-1.5 rounded-full">
+          Page{" "}
+          <span className="text-purple-400 font-semibold">{activities.currentPage}</span>{" "}
+          of <span className="text-slate-200 font-semibold">{activities.totalPages}</span>
+        </div>
+
+        <button
+          onClick={() => setPage((currentPage) => currentPage + 1)}
+          disabled={!activities?.hasMore}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border border-slate-800 ${
+            !activities?.hasMore
+              ? "opacity-0 pointer-events-none"
+              : "bg-slate-800/60 text-slate-300 hover:bg-purple-600 hover:text-white hover:border-purple-500 hover:shadow-md hover:shadow-purple-500/10 active:scale-95 cursor-pointer"
+          }`}
+        >
+          <span>Next</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );

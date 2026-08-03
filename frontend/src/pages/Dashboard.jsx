@@ -1,21 +1,13 @@
-import {
-  FolderKanban,
-  CheckCircle,
-  Clock,
-  ListTodo,
-  ArrowRight,
-} from "lucide-react";
+import { FolderKanban, CheckCircle, Clock, ListTodo } from "lucide-react";
 
 import useDashboard from "../hooks/useDashboard";
-import formatTimeAgo from "../utils/formatTimeAgo";
-import { NavLink } from "react-router-dom";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import StatCard from "../components/common/StatCard";
 import ProgressBar from "../components/dashboard/ProgressBar";
-import ActivityItem from "../components/dashboard/ActivityItem";
 import OverviewItem from "../components/dashboard/OverviewItem";
 import CompletionRateChart from "../components/dashboard/CompletionRateChart";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
+import RecentActivity from "../components/dashboard/RecentActivity";
 
 const Dashboard = () => {
   const { stats, loading } = useDashboard();
@@ -26,7 +18,6 @@ const Dashboard = () => {
       {/* Header */}
       <DashboardHeader />
 
-      {/* Welcome */}
       <div className="mb-8 ml-6">
         <h1 className="text-4xl font-bold text-white">Dashboard</h1>
 
@@ -87,7 +78,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Quick Overview */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
           <h2 className="text-white text-xl font-semibold mb-5">
             Quick Overview
@@ -109,36 +99,10 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Bottom Section */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        {/* Completion Rate */}
         <CompletionRateChart completionRate={stats.completionRate} />
 
-        {/* Recent Activity */}
-        <div className="xl:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6">
-          <h2 className="text-white text-xl font-semibold mb-6">
-            Recent Activity
-          </h2>
-
-          <div className="space-y-5 max-h-64 overflow-y-auto scroll-smooth p-1 scrollbar-none">
-            {stats?.activities.map((activity) => (
-              <ActivityItem
-                key={activity._id}
-                text={activity.action}
-                time={formatTimeAgo(activity.createdAt)}
-              />
-            ))}
-            <div className="flex items-center justify-end">
-              <NavLink
-                to="activities"
-                className="flex items-center pt-2 gap-2 text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
-              >
-                <span>View all activities</span>
-                <ArrowRight className="w-4 h-4" />
-              </NavLink>
-            </div>
-          </div>
-        </div>
+        <RecentActivity stats={stats} />
       </div>
     </div>
   );

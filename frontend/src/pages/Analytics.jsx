@@ -7,10 +7,11 @@ import ContributorsTable from "../components/analytics/ContributorsTable";
 import OverdueTasksTable from "../components/analytics/OverdueTasksTable";
 import useAnalytics from "../hooks/useAnalytics";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import ProjectChart from "../components/dashboard/ProjectChart";
 
 const Analytics = () => {
-  const { overview, monthTasks, fetching } = useAnalytics();
-console.log(monthTasks)
+  const { overview, monthTasks, projectAnalytics, fetching } = useAnalytics();
+  
   if (fetching) return <LoadingSpinner />;
   return (
     <div className="space-y-8">
@@ -23,6 +24,7 @@ console.log(monthTasks)
 
       <MonthlyTasksChart data={monthTasks} />
 
+      <ProjectChart data={projectAnalytics} />
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <ProjectProgress />
         <ContributorsTable />

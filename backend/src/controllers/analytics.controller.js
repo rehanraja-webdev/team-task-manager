@@ -98,6 +98,18 @@ const analyticsOverview = asyncHandler(async (req, res) => {
 });
 
 const monthlyTask = asyncHandler(async (req, res) => {
+  const cacheKey = "monthly_tasks";
+  const cached = cacheHelper.getCache(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log("Cache Hit:", cacheKey);
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Monthly task fetched from cache", cached.data));
+  } else {
+    console.log("Cache Miss:", cacheKey);
+    cacheHelper.deleteCache(cacheKey);
+  }
   const monthlyTasks = await Task.aggregate([
     {
       $group: {
@@ -135,6 +147,8 @@ const monthlyTask = asyncHandler(async (req, res) => {
     month: `${monthNames[item._id.month - 1]} ${item._id.year}`,
     tasks: item.tasks,
   }));
+
+  cacheHelper.setCache(cacheKey, monthlyChart);
 
   res
     .status(200)

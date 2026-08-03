@@ -19,3 +19,8 @@ export const getMonthlyTask = async () => {
   const response = await api.get("/v1/analytics/monthly-task");
   return response.data.data;
 };
+
+export const getProjectProgress = async () => {
+  const response = await api.get("/v1/analytics/progress");
+  return response.data.data;
+};

@@ -24,3 +24,13 @@ export const getProjectProgress = async () => {
   const response = await api.get("/v1/analytics/progress");
   return response.data.data;
 };
+
+export const getTopContributors = async () => {
+  const response = await api.get("/v1/analytics/contributors");
+  return response.data.data;
+};
+
+export const getOverdueTasks = async () => {
+  const response = await api.get("/v1/analytics/overdue");
+  return response.data.data;
+};

@@ -105,7 +105,9 @@ const monthlyTask = asyncHandler(async (req, res) => {
     console.log("Cache Hit:", cacheKey);
     return res
       .status(200)
-      .json(new ApiResponse(200, "Monthly task fetched from cache", cached.data));
+      .json(
+        new ApiResponse(200, "Monthly task fetched from cache", cached.data),
+      );
   } else {
     console.log("Cache Miss:", cacheKey);
     cacheHelper.deleteCache(cacheKey);
@@ -155,4 +157,61 @@ const monthlyTask = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "monthly tasks fetched!", monthlyChart));
 });
 
-export default { analyticsOverview, monthlyTask };
+const projectProgress = asyncHandler(async (req, res) => {
+  const cacheKey = "analytics_progress";
+  const cached = cacheHelper.getCache(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log("Cache Hit:", cacheKey);
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          "Project progress fetched from cache",
+          cached.data,
+        ),
+      );
+  } else {
+    console.log("Cache Miss:", cacheKey);
+    cacheHelper.deleteCache(cacheKey);
+  }
+
+  const projectStats = await Task.aggregate([
+    {
+      $sortByCount: "$project",
+    },
+    {
+      $limit: 3,
+    },
+    {
+      // Join with the 'projects' collection
+      $lookup: {
+        from: "projects", // Collection name in MongoDB (usually lowercase plural)
+        localField: "_id",
+        foreignField: "_id",
+        as: "projectDetails",
+      },
+    },
+    {
+      // Unwind the array returned by $lookup
+      $unwind: "$projectDetails",
+    },
+    {
+      // Format the output structure
+      $project: {
+        _id: 0,
+        projectName: "$projectDetails.name",
+        taskCount: "$count",
+      },
+    },
+  ]);
+
+  cacheHelper.setCache(cacheKey, projectStats);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "Project Stats fetched!", projectStats));
+});
+
+export default { analyticsOverview, monthlyTask, projectProgress };

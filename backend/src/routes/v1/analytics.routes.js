@@ -19,4 +19,11 @@ router.get(
   analyticController.monthlyTask,
 );
 
+router.get(
+  "/progress",
+  authMiddleware,
+  authorizeRoles("super-admin", "admin"),
+  analyticController.projectProgress,
+);
+
 export default router;

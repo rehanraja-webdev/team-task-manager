@@ -16,8 +16,8 @@ export const getProjectMembers = async (projectId) => {
   return response.data.data;
 };
 
-export const getProjectTasks = async (projectId) => {
-  const response = await api.get(`/tasks/project/${projectId}`);
+export const getProjectTasks = async (projectId, queryParams) => {
+  const response = await api.get(`/tasks/project/${projectId}?${queryParams}`);
   return response.data.data || [];
 };
 

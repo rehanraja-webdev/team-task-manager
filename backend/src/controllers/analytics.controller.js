@@ -179,30 +179,50 @@ const projectProgress = asyncHandler(async (req, res) => {
 
   const projectStats = await Task.aggregate([
     {
-      $sortByCount: "$project",
+      $group: {
+        _id: "$project",
+        tasks: { $sum: 1 },
+        completedTasks: {
+          $sum: {
+            $cond: [{ $eq: ["$status", "done"] }, 1, 0],
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        completionRate: {
+          $cond: [
+            { $eq: ["$tasks", 0] },
+            0,
+            { $multiply: [{ $divide: ["$completedTasks", "$tasks"] }, 100] },
+          ],
+        },
+      },
+    },
+    {
+      $sort: { tasks: -1 },
     },
     {
       $limit: 3,
     },
     {
-      // Join with the 'projects' collection
       $lookup: {
-        from: "projects", // Collection name in MongoDB (usually lowercase plural)
+        from: "projects",
         localField: "_id",
         foreignField: "_id",
         as: "projectDetails",
       },
     },
     {
-      // Unwind the array returned by $lookup
       $unwind: "$projectDetails",
     },
     {
-      // Format the output structure
       $project: {
         _id: 0,
         project: "$projectDetails.name",
-        tasks: "$count",
+        tasks: 1,
+        completionRate: { $round: "$completionRate" },
       },
     },
   ]);
@@ -214,4 +234,114 @@ const projectProgress = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Project Stats fetched!", projectStats));
 });
 
-export default { analyticsOverview, monthlyTask, projectProgress };
+const getTopContributors = asyncHandler(async (req, res) => {
+  const contributors = await Task.aggregate([
+    {
+      $match: {
+        status: "done",
+      },
+    },
+    {
+      $group: {
+        _id: "$assignedTo",
+        completedTasks: { $sum: 1 },
+      },
+    },
+    {
+      $sort: {
+        completedTasks: -1,
+      },
+    },
+    {
+      $limit: 10,
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "_id",
+        foreignField: "_id",
+        as: "user",
+      },
+    },
+    {
+      $unwind: "$user",
+    },
+    {
+      $project: {
+        _id: 0,
+        fullname: "$user.fullname",
+        email: "$user.email",
+        completedTasks: 1,
+      },
+    },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Top contributors fetched", contributors));
+});
+
+const getOverdueTasks = asyncHandler(async (req, res) => {
+  const overdueTasks = await Task.aggregate([
+    {
+      $match: {
+        dueDate: {
+          $lt: new Date(),
+        },
+        status: {
+          $ne: "done",
+        },
+      },
+    },
+    {
+      $sort: {
+        dueDate: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "assignedTo",
+        foreignField: "_id",
+        as: "assignedUser",
+      },
+    },
+    {
+      $unwind: "$assignedUser",
+    },
+    {
+      $lookup: {
+        from: "projects",
+        localField: "project",
+        foreignField: "_id",
+        as: "project",
+      },
+    },
+    {
+      $unwind: "$project",
+    },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        dueDate: 1,
+        priority: 1,
+        status: 1,
+        assignedTo: "$assignedUser.fullname",
+        project: "$project.name",
+      },
+    },
+  ]);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Overdue tasks fetched", overdueTasks));
+});
+
+export default {
+  analyticsOverview,
+  monthlyTask,
+  projectProgress,
+  getTopContributors,
+  getOverdueTasks,
+};

@@ -26,4 +26,18 @@ router.get(
   analyticController.projectProgress,
 );
 
+router.get(
+  "/contributors",
+  authMiddleware,
+  authorizeRoles("super-admin", "admin"),
+  analyticController.getTopContributors,
+);
+
+router.get(
+  "/overdue",
+  authMiddleware,
+  authorizeRoles("super-admin", "admin"),
+  analyticController.getOverdueTasks,
+);
+
 export default router;

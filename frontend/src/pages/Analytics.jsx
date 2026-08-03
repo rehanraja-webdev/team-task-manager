@@ -10,8 +10,15 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import ProjectChart from "../components/dashboard/ProjectChart";
 
 const Analytics = () => {
-  const { overview, monthTasks, projectAnalytics, fetching } = useAnalytics();
-  
+  const {
+    overview,
+    monthTasks,
+    projectAnalytics,
+    contributors,
+    overdue,
+    fetching,
+  } = useAnalytics();
+
   if (fetching) return <LoadingSpinner />;
   return (
     <div className="space-y-8">
@@ -26,11 +33,11 @@ const Analytics = () => {
 
       <ProjectChart data={projectAnalytics} />
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <ProjectProgress />
-        <ContributorsTable />
+        <ProjectProgress data={projectAnalytics} />
+        <ContributorsTable data={contributors} />
       </div>
 
-      <OverdueTasksTable />
+      <OverdueTasksTable data={overdue} />
     </div>
   );
 };

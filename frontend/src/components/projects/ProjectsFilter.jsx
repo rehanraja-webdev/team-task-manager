@@ -4,7 +4,7 @@ const ProjectsFilter = () => {
       <input
         type="text"
         placeholder="Search projects..."
-        className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white flex-1"
+        className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white flex-1 focus:outline focus:outline-purple-500"
       />
 
       <select className="bg-slate-900 border border-slate-800 rounded-xl px-4 text-white">

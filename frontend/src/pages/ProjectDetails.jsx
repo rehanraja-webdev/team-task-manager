@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useState, useMemo } from "react";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import ProjectHeader from "../components/Project Details/ProjectHeader";
 import ProjectInfoCard from "../components/Project Details/ProjectInfoCard";
@@ -14,9 +15,17 @@ const ProjectDetails = () => {
     useProject(projectId);
   const { updateProject, deleteMember, deleteProject, loading } =
     useProjectActions();
-  const { tasks, loadingTasks } = useProjectTasks(projectId);
+
+  const [page, setPage] = useState(1);
+  const queryParams = useMemo(() => {
+    return new URLSearchParams({ page, limit: 10 }).toString();
+  }, [page]);
+  console.log(queryParams);
+
+  const { tasks, loadingTasks } = useProjectTasks(projectId, queryParams);
 
   if (fetching || loadingTasks) return <LoadingSpinner />;
+
   return (
     <div className="flex flex-col space-y-6">
       <ProjectHeader />
@@ -38,7 +47,7 @@ const ProjectDetails = () => {
         loading={loading}
       />
 
-      <TaskList tasks={tasks} />
+      <TaskList tasks={tasks} page={page} setPage={setPage} />
     </div>
   );
 };

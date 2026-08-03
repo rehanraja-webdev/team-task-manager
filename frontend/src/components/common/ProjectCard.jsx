@@ -1,64 +1,73 @@
 import { NavLink } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Users, Calendar, User } from "lucide-react";
+import formatDate from "../../utils/formatDate";
 
 const ProjectCard = ({ project }) => {
   const memberCount = project.members?.length || 0;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-indigo-500 transition-all duration-300">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h3 className="text-xl font-semibold text-white">{project.name}</h3>
+    <div className="group relative bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-6 transition-all duration-300 hover:border-indigo-500/40 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 flex flex-col justify-between">
+      <div>
+        {/* Header: Title & Action Button */}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h3 className="text-xl font-bold tracking-tight text-white group-hover:text-indigo-400 transition-colors duration-200">
+              {project.name}
+            </h3>
+            <p className="text-sm text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+              {project.description || "No description provided."}
+            </p>
+          </div>
 
-          <p className="text-slate-400 mt-2 line-clamp-2">
-            {project.description}
-          </p>
-        </div>
-
-        <div className="">
           <NavLink
             to={project._id}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-300 bg-slate-800/60 border border-slate-700/50 hover:bg-slate-800 hover:text-purple-400 hover:border-purple-500/40 hover:shadow-md hover:shadow-purple-500/5 active:scale-[0.98] transition-all duration-200"
+            className="shrink-0 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 bg-slate-800/80 border border-slate-700/60 hover:bg-indigo-600 hover:text-white hover:border-indigo-500 active:scale-95 transition-all duration-200 shadow-sm"
           >
-            <span>View Project</span>
-            <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+            <span>View</span>
+            <ArrowRight className="size-3.5 transition-transform duration-200 group-hover/btn:translate-x-1" />
           </NavLink>
         </div>
-      </div>
 
-      {/* Owner & Members*/}
-      <div className="mt-5 space-y-6 sm:flex sm:justify-between">
-        <div>
-          <p className="text-xs text-slate-500 uppercase">Owner</p>
+        {/* Stats Row: Owner & Team Members */}
+        <div className="mt-6 grid grid-cols-2 gap-4 p-3 rounded-xl bg-slate-800/40 border border-slate-800/60">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-lg bg-slate-800 text-slate-400">
+              <User className="size-4 text-indigo-400" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase">
+                Owner
+              </p>
+              <p className="text-xs font-medium text-slate-200 truncate">
+                {project.owner?.fullname || "Unassigned"}
+              </p>
+            </div>
+          </div>
 
-          <p className="text-slate-200 mt-1">{project.owner?.fullname}</p>
-        </div>
-        <div>
-          <div>
-            <p className="text-xs text-slate-500 uppercase">Team Members</p>
-
-            <p className="text-slate-200 mt-1">{memberCount} Members</p>
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-lg bg-slate-800 text-slate-400">
+              <Users className="size-4 text-purple-400" />
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold tracking-wider text-slate-500 uppercase">
+                Team
+              </p>
+              <p className="text-xs font-medium text-slate-200">
+                {memberCount} {memberCount === 1 ? "Member" : "Members"}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Dates */}
-      <div className="border-t border-slate-800 pt-4">
-        <div className="flex justify-between text-sm">
-          <span className="text-slate-500">Created</span>
-
-          <span className="text-slate-300">
-            {new Date(project.createdAt).toLocaleDateString()}
-          </span>
+      {/* Footer: Timeline Info */}
+      <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+        <div className="flex items-center gap-1.5">
+          <Calendar className="size-3.5 text-slate-500" />
+          <span>Created {formatDate(project.createdAt)}</span>
         </div>
-
-        <div className="flex justify-between text-sm mt-2">
-          <span className="text-slate-500">Updated</span>
-
-          <span className="text-slate-300">
-            {new Date(project.updatedAt).toLocaleDateString()}
-          </span>
+        <div className="text-slate-500 text-[11px]">
+          Updated {formatDate(project.updatedAt)}
         </div>
       </div>
     </div>

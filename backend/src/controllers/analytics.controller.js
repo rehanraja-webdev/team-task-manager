@@ -237,14 +237,14 @@ const projectProgress = asyncHandler(async (req, res) => {
 const getTopContributors = asyncHandler(async (req, res) => {
   const contributors = await Task.aggregate([
     {
-      $match: {
-        status: "done",
-      },
-    },
-    {
       $group: {
         _id: "$assignedTo",
-        completedTasks: { $sum: 1 },
+        assignedTasks: { $sum: 1 },
+        completedTasks: {
+          $sum: {
+            $cond: [{ $eq: ["$status", "done"] }, 1, 0],
+          },
+        },
       },
     },
     {
@@ -272,6 +272,7 @@ const getTopContributors = asyncHandler(async (req, res) => {
         fullname: "$user.fullname",
         email: "$user.email",
         completedTasks: 1,
+        assignedTasks: 1,
       },
     },
   ]);

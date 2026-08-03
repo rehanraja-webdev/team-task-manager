@@ -7,7 +7,7 @@ import ContributorsTable from "../components/analytics/ContributorsTable";
 import OverdueTasksTable from "../components/analytics/OverdueTasksTable";
 import useAnalytics from "../hooks/useAnalytics";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import ProjectChart from "../components/dashboard/ProjectChart";
+import ProjectChart from "../components/analytics/ProjectChart";
 
 const Analytics = () => {
   const {

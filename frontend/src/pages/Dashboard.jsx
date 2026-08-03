@@ -1,7 +1,4 @@
 import {
-  Search,
-  Mail,
-  Bell,
   FolderKanban,
   CheckCircle,
   Clock,
@@ -13,12 +10,12 @@ import useDashboard from "../hooks/useDashboard";
 import formatTimeAgo from "../utils/formatTimeAgo";
 import { NavLink } from "react-router-dom";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import profileImg from "../assets/profile.png";
 import StatCard from "../components/common/StatCard";
 import ProgressBar from "../components/dashboard/ProgressBar";
 import ActivityItem from "../components/dashboard/ActivityItem";
 import OverviewItem from "../components/dashboard/OverviewItem";
 import CompletionRateChart from "../components/dashboard/CompletionRateChart";
+import DashboardHeader from "../components/dashboard/DashboardHeader";
 
 const Dashboard = () => {
   const { stats, loading } = useDashboard();
@@ -27,32 +24,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-slate-950 ">
       {/* Header */}
-      <div className="flex justify-between items-center bg-slate-900 rounded-2xl p-4 border border-slate-800 mb-8">
-        <div className="flex items-center gap-3 bg-slate-950 px-4 py-3 rounded-full border border-slate-800 md:w-80 w-52">
-          <Search size={18} className="text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent outline-none text-white w-full"
-          />
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="bg-slate-950 p-3 rounded-full cursor-pointer">
-            <Mail className="text-slate-300" />
-          </div>
-
-          <div className="bg-slate-950 p-3 rounded-full cursor-pointer">
-            <Bell className="text-slate-300" />
-          </div>
-
-          <img
-            src={profileImg}
-            alt="profile"
-            className="w-10 h-10 rounded-full"
-          />
-        </div>
-      </div>
+      <DashboardHeader />
 
       {/* Welcome */}
       <div className="mb-8 ml-6">

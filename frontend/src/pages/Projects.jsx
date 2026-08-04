@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import ProjectCard from "../components/common/ProjectCard";
+import ProjectCard from "../components/projects/ProjectCard";
 import useProjects from "../hooks/useProjects";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import ProjectsHeader from "../components/projects/ProjectsHeader";

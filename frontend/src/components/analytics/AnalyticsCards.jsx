@@ -2,14 +2,11 @@ import {
   Users,
   FolderKanban,
   ClipboardList,
-  CheckCircle2,
-  Clock3,
-  CircleDashed,
   AlertTriangle,
 } from "lucide-react";
 import OverviewCard from "./OverviewCard";
 
-const AnalyticsCards = ({overview}) => {
+const AnalyticsCards = ({ overview }) => {
   if (!overview) return <p>Loading...</p>;
 
   const cards = [
@@ -27,21 +24,6 @@ const AnalyticsCards = ({overview}) => {
       title: "Total Tasks",
       value: overview.totalTasks,
       icon: ClipboardList,
-    },
-    {
-      title: "Completed",
-      value: overview.doneTasks,
-      icon: CheckCircle2,
-    },
-    {
-      title: "In Progress",
-      value: overview.inProgressTasks,
-      icon: Clock3,
-    },
-    {
-      title: "Todo",
-      value: overview.todoTasks,
-      icon: CircleDashed,
     },
     {
       title: "Overdue",

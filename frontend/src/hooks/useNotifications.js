@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 import {
@@ -26,10 +26,6 @@ const useNotifications = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
 
   const markAsRead = async (id) => {
     try {
@@ -70,9 +66,9 @@ const useNotifications = () => {
     notifications,
     unreadCount,
     loading,
+    fetchNotifications,
     markAsRead,
     markAllRead,
-    reloadNotifications: fetchNotifications,
   };
 };
 

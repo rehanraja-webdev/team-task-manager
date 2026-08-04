@@ -20,12 +20,12 @@ export const getUser = async () => {
   return response.data;
 };
 
-export const updateUserProfile = async () => {
+export const updateProfileService = async () => {
   const response = await api.patch("/v1/auth/profile");
   return response.data;
 };
 
-export const changePassword = async () => {
+export const changePasswordService = async () => {
   const response = await api.patch("/v1/auth/change-password");
   return response.data;
 };

@@ -16,6 +16,7 @@ import Tasks from "./pages/Tasks";
 import ActivityPage from "./pages/ActivityPage";
 import Analytics from "./pages/Analytics";
 import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingPage";
 
 const App = () => {
   return (
@@ -30,6 +31,8 @@ const App = () => {
             <Route index element={<Dashboard />} />
 
             <Route path="profile" element={<ProfilePage />} />
+
+            <Route path="settings" element={<SettingsPage />} />
 
             <Route path="analytics" element={<Analytics />} />
 

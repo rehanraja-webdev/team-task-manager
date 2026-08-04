@@ -98,4 +98,81 @@ const getCurrentUser = async (req, res) => {
     .json(new ApiResponse(200, "User details fetched successfully!", user));
 };
 
-export default { registerUser, loginUser, logoutUser, getCurrentUser };
+const updateProfile = asyncHandler(async (req, res) => {
+  const { fullname } = req.body;
+  const user = req.user;
+
+  if (fullname) user.fullname = fullname;
+
+  await user.save();
+
+  res.json(new ApiResponse(200, "Profile Updated", user));
+});
+
+const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw new ApiError(400, "Both current and new passwords are required");
+  }
+
+  const user = await User.findById(req.user._id).select("+password");
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+  if (!isMatch) {
+    throw new ApiError(400, "Current password incorrect");
+  }
+
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedNewPassword;
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Password updated successfully"));
+});
+
+const getUserStatistics = asyncHandler(async (req, res) => {
+  const createdProjects = await Project.countDocuments({
+    createdBy: req.user._id,
+  });
+
+  const assignedTasks = await Task.countDocuments({
+    assignedTo: req.user._id,
+  });
+
+  const completedTasks = await Task.countDocuments({
+    assignedTo: req.user._id,
+    status: "done",
+  });
+
+  const completionRate =
+    assignedTasks === 0
+      ? 0
+      : Math.round((completedTasks / assignedTasks) * 100);
+
+  res.json(
+    new ApiResponse(200, "Statistics", {
+      createdProjects,
+      assignedTasks,
+      completedTasks,
+      completionRate,
+    }),
+  );
+});
+
+export default {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+  updateProfile,
+  changePassword,
+  getUserStatistics,
+};

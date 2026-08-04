@@ -9,6 +9,8 @@ router.get(
   "/stats",
   authMiddleware,
   authorizeRoles("super-admin", "admin"),
-  dashboardController.getDashboardStats,
+  dashboardController.getAdminDashboard,
 );
+
+router.get("/member", authMiddleware, dashboardController.getMemberDashboard);
 export default router;

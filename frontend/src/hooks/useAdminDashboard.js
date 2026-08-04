@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { getDashboardStats } from "../services/admin.service";
+import { getAdminDashboard } from "../services/dashboard.service";
 import toast from "react-hot-toast";
 
-const useDashboard = () => {
+const useAdminDashboard = () => {
   const [stats, setstats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getDashboard = async () => {
       try {
-        const statsRes = await getDashboardStats();
+        const statsRes = await getAdminDashboard();
         setstats(statsRes);
       } catch (error) {
         toast.error(error.response?.data?.message);
@@ -24,4 +24,4 @@ const useDashboard = () => {
   return { stats, loading };
 };
 
-export default useDashboard;
+export default useAdminDashboard;

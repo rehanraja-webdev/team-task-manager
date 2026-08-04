@@ -23,10 +23,12 @@ const SearchDropdown = ({ results, loading, onClose }) => {
   }
 
   return (
-    <div className="absolute top-14 left-0 w-full overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-2xl z-50">
+    <div className="absolute top-14 left-0 w-full overflow-hidden text-white rounded-xl border border-slate-700 bg-slate-900 shadow-2xl z-50">
       {projects.length > 0 && (
         <>
-          <p className="px-4 py-2 text-xs uppercase text-slate-500">Projects</p>
+          <p className="px-4 py-2 text-xs uppercase text-slate-500 font-bold">
+            Projects
+          </p>
 
           {projects.map((project) => (
             <Link
@@ -44,7 +46,9 @@ const SearchDropdown = ({ results, loading, onClose }) => {
 
       {tasks.length > 0 && (
         <>
-          <p className="px-4 py-2 text-xs uppercase text-slate-500">Tasks</p>
+          <p className="px-4 py-2 text-xs uppercase text-slate-500 font-bold">
+            Tasks
+          </p>
 
           {tasks.map((task) => (
             <Link
@@ -62,7 +66,9 @@ const SearchDropdown = ({ results, loading, onClose }) => {
 
       {users.length > 0 && (
         <>
-          <p className="px-4 py-2 text-xs uppercase text-slate-500">Users</p>
+          <p className="px-4 py-2 text-xs uppercase text-slate-500 font-bold">
+            Users
+          </p>
 
           {users.map((user) => (
             <Link

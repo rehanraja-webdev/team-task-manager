@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import profileImg from "../../assets/profile.png";
 
 const ProfileDropdown = () => {
-  const {user, logout } = useAuth();
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
 
   const ref = useRef(null);
@@ -60,7 +60,7 @@ const ProfileDropdown = () => {
 
           <div className="py-2">
             <Link
-              to="/dashboard/profile"
+              to="profile"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-5 py-3 text-slate-300 hover:bg-slate-800 transition"
             >
@@ -69,7 +69,7 @@ const ProfileDropdown = () => {
             </Link>
 
             <Link
-              to="/dashboard/settings"
+              to="settings"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-5 py-3 text-slate-300 hover:bg-slate-800 transition"
             >

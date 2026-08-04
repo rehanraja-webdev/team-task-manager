@@ -15,6 +15,7 @@ import Users from "./pages/Users";
 import Tasks from "./pages/Tasks";
 import ActivityPage from "./pages/ActivityPage";
 import Analytics from "./pages/Analytics";
+import ProfilePage from "./pages/ProfilePage";
 
 const App = () => {
   return (
@@ -27,6 +28,8 @@ const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
+
+            <Route path="profile" element={<ProfilePage />} />
 
             <Route path="analytics" element={<Analytics />} />
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getStatistics } from "../services/auth.service";
 
@@ -18,6 +18,11 @@ const useUserStatistics = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line
+    fetchStatistics();
+  }, []);
 
   return {
     statistics,

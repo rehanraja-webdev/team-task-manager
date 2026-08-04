@@ -32,5 +32,5 @@ export const changePasswordService = async () => {
 
 export const getStatistics = async () => {
   const response = await api.get("/v1/auth/statistics");
-  return response.data;
+  return response.data.data;
 };

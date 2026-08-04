@@ -19,3 +19,18 @@ export const getUser = async () => {
   const response = await api.get("/v1/auth/me");
   return response.data;
 };
+
+export const updateUserProfile = async () => {
+  const response = await api.patch("/v1/auth/profile");
+  return response.data;
+};
+
+export const changePassword = async () => {
+  const response = await api.patch("/v1/auth/change-password");
+  return response.data;
+};
+
+export const getStatistics = async () => {
+  const response = await api.get("/v1/auth/statistics");
+  return response.data;
+};

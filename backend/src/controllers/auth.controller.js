@@ -5,6 +5,8 @@ import ApiError from "../utils/ApiError.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import jobQueue from "../utils/jobQueue.js";
+import Project from "../models/project.model.js";
+import Task from "../models/task.model.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -140,7 +142,7 @@ const changePassword = asyncHandler(async (req, res) => {
 
 const getUserStatistics = asyncHandler(async (req, res) => {
   const createdProjects = await Project.countDocuments({
-    createdBy: req.user._id,
+    owner: req.user._id,
   });
 
   const assignedTasks = await Task.countDocuments({

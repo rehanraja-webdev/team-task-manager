@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/v1/auth.routes.js";
+import searchRoutes from "./routes/v1/search.routes.js";
+import notificationRoutes from "./routes/v1/notification.routes.js";
 import projectRoutes from "./routes/v1/project.routes.js";
 import errorHandler from "./middlewares/error.middleware.js";
 import taskRoutes from "./routes/task.routes.js";
@@ -37,6 +39,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api", rateLimiter);
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/search", searchRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/projects", projectRoutes);
 app.use("/api/v1/analytics", analyticRoutes);
 app.use("/api/tasks", taskRoutes);

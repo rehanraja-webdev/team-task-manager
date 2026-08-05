@@ -13,7 +13,7 @@ const Sidebar = () => {
   const links = user.role === "admin" ? adminLinks : memberLinks;
 
   return (
-    <aside className="sticky top-6 h-[calc(100vh-3rem)] lg:w-72 md:w-60 w-52 rounded-3xl border border-slate-800 bg-slate-900 p-6 flex flex-col">
+    <aside className="sticky top-6 h-[calc(100vh-3rem)] w-72 rounded-3xl border border-slate-800 bg-slate-900 p-6 flex flex-col">
       {/* Logo */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">

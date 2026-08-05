@@ -19,6 +19,7 @@ const MobileNavbar = () => {
             <li key={item.name}>
               <NavLink
                 to={item.path}
+                end={item.path === "/dashboard"}
                 className={({ isActive }) =>
                   `flex flex-col items-center text-xs transition ${
                     isActive ? "text-indigo-500" : "text-slate-400"

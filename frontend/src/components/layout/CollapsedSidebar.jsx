@@ -28,6 +28,7 @@ const CollapsedSidebar = () => {
             <NavLink
               key={item.name}
               to={item.path}
+              end={item.path === "/dashboard"}
               title={item.name}
               className={({ isActive }) =>
                 `w-12 h-12 rounded-xl flex items-center justify-center transition-all

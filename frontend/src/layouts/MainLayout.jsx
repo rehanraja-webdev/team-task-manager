@@ -1,15 +1,30 @@
 import { Outlet } from "react-router";
 import Sidebar from "../components/layout/Sidebar";
+import CollapsedSidebar from "../components/layout/CollapsedSidebar";
+import MobileNavbar from "../components/layout/MobileNavbar";
 
 const MainLayout = () => {
   return (
-    <div className="bg-slate-950 min-h-screen p-6">
+    <div className="bg-slate-950 min-h-screen px-3 py-4 md:p-6">
       <div className="flex">
-        <Sidebar />
+        {/* Desktop Sidebar */}
+        <div className="hidden lg:block">
+          <Sidebar />
+        </div>
 
-        <main className="flex-1 pl-6">
+        {/* Tablet Sidebar */}
+        <div className="hidden md:block lg:hidden">
+          <CollapsedSidebar />
+        </div>
+
+        {/* Main Content */}
+        <main className="flex-1 lg:pl-6 md:pl-4 pb-20 md:pb-0">
           <Outlet />
         </main>
+      </div>
+      
+      <div className="md:hidden">
+        <MobileNavbar />
       </div>
     </div>
   );

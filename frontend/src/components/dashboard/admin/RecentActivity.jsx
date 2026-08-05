@@ -1,9 +1,9 @@
-import { NavLink } from "react-router";
+import { NavLink } from "react-router-dom";
 import formatTimeAgo from "../../../utils/formatTimeAgo";
 import ActivityItem from "../ActivityItem";
 import { ArrowRight } from "lucide-react";
 
-const RecentActivity = ({stats}) => {
+const RecentActivity = ({ stats }) => {
   return (
     <div className="xl:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6">
       <h2 className="text-white text-xl font-semibold mb-6">Recent Activity</h2>

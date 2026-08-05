@@ -5,9 +5,11 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import ProjectsHeader from "../components/projects/ProjectsHeader";
 import ProjectsFilter from "../components/projects/ProjectsFilter";
 import { useState } from "react";
+import useAuth from '../hooks/useAuth'
 
 const Projects = () => {
   const { projects, loading } = useProjects();
+  const { user } = useAuth();
   const [filter, setFilter] = useState("");
   const navigate = useNavigate();
 
@@ -21,7 +23,7 @@ const Projects = () => {
 
   return (
     <div className="space-y-6">
-      <ProjectsHeader navigate={navigate} />
+      <ProjectsHeader navigate={navigate} role={user.role} />
 
       <ProjectsFilter setFilter={setFilter} />
 

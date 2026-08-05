@@ -1,4 +1,4 @@
-const ProjectsHeader = ({navigate}) => {
+const ProjectsHeader = ({ navigate, role }) => {
   return (
     <div className="flex justify-between items-center">
       <div>
@@ -9,12 +9,14 @@ const ProjectsHeader = ({navigate}) => {
         </p>
       </div>
 
-      <button
-        onClick={() => navigate("create")}
-        className="bg-indigo-600 hover:bg-indigo-700 px-5 py-3 rounded-xl text-white"
-      >
-        + New Project
-      </button>
+      {role === "admin" && (
+        <button
+          onClick={() => navigate("create")}
+          className="bg-indigo-600 hover:bg-indigo-700 px-5 py-3 rounded-xl text-white"
+        >
+          + New Project
+        </button>
+      )}
     </div>
   );
 };

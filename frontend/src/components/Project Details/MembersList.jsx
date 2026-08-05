@@ -4,6 +4,7 @@ import MemberCard from "./MemberCard";
 
 const MembersList = ({
   members,
+  role,
   deleteMember,
   reloadMembers,
   projectId,
@@ -29,21 +30,24 @@ const MembersList = ({
           <p className="text-slate-400 text-sm">All members of this project</p>
         </div>
 
-        <div className="ml-auto">
-          <NavLink
-            to="add-member"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
-          >
-            <Plus className="size-4 stroke-[2.5]" />
-            <span className="hidden lg:inline-block">Add Member</span>
-          </NavLink>
-        </div>
+        {role === "admin" && (
+          <div className="ml-auto">
+            <NavLink
+              to="add-member"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
+            >
+              <Plus className="size-4 stroke-[2.5]" />
+              <span className="hidden lg:inline-block">Add Member</span>
+            </NavLink>
+          </div>
+        )}
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {members.map((member) => (
           <MemberCard
             key={member.user._id}
+            role={role}
             onDelete={handleDelete}
             member={member}
             loading={loading}

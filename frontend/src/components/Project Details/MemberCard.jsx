@@ -1,6 +1,6 @@
 import { Trash2, User } from "lucide-react";
 
-const MemberCard = ({ onDelete, member, loading }) => {
+const MemberCard = ({ role, onDelete, member, loading }) => {
   return (
     <div className="flex justify-between bg-slate-800/60 rounded-xl border border-slate-700 p-5">
       <div className="space-y-4">
@@ -15,15 +15,17 @@ const MemberCard = ({ onDelete, member, loading }) => {
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={() => onDelete(member.user._id)}
-        disabled={loading}
-        className="text-red-400 hover:text-red-300 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        title="Remove Member"
-      >
-        <Trash2 className="size-5" />
-      </button>
+      {role === "admin" && (
+        <button
+          type="button"
+          onClick={() => onDelete(member.user._id)}
+          disabled={loading}
+          className="text-red-400 hover:text-red-300 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Remove Member"
+        >
+          <Trash2 className="size-5" />
+        </button>
+      )}
     </div>
   );
 };

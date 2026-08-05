@@ -13,6 +13,7 @@ import LoadingSpinner from "../common/LoadingSpinner";
 
 const ProjectInfoCard = ({
   project,
+  role,
   deleteProject,
   updateProject,
   reloadProject,
@@ -69,38 +70,40 @@ const ProjectInfoCard = ({
           <p className="text-slate-400 text-sm">Overview of this project</p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0 pt-1 ml-auto">
-          {modelActive && (
-            <ProjectModal
-              modalActive={modelActive}
-              onSubmit={handleUpdate}
-              formData={formData}
-              setFormData={setFormData}
-              loading={loading}
-              onClose={() => setModelActive(false)}
-            />
-          )}
+        {role === "admin" && (
+          <div className="flex items-center gap-3 shrink-0 pt-1 ml-auto">
+            {modelActive && (
+              <ProjectModal
+                modalActive={modelActive}
+                onSubmit={handleUpdate}
+                formData={formData}
+                setFormData={setFormData}
+                loading={loading}
+                onClose={() => setModelActive(false)}
+              />
+            )}
 
-          <button
-            type="button"
-            onClick={handleOpenModal}
-            aria-label="Edit project"
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 rounded-lg transition-all duration-200 active:scale-95 shadow-sm cursor-pointer"
-          >
-            <Pencil className="w-4 h-4 text-slate-400" />
-            <span>Edit</span>
-          </button>
+            <button
+              type="button"
+              onClick={handleOpenModal}
+              aria-label="Edit project"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 rounded-lg transition-all duration-200 active:scale-95 shadow-sm cursor-pointer"
+            >
+              <Pencil className="w-4 h-4 text-slate-400" />
+              <span>Edit</span>
+            </button>
 
-          <button
-            onClick={handleDelete}
-            type="button"
-            aria-label="Delete project"
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all duration-200 active:scale-95 shadow-sm cursor-pointer"
-          >
-            <Trash2 className="w-4 h-4" />
-            <span>Delete</span>
-          </button>
-        </div>
+            <button
+              onClick={handleDelete}
+              type="button"
+              aria-label="Delete project"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all duration-200 active:scale-95 shadow-sm cursor-pointer"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Delete</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Content */}

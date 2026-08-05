@@ -6,10 +6,11 @@ import ActivityTimeline from "../components/taskDetails/ActivityTimeline";
 import CommentList from "../components/taskDetails/CommentList";
 import useTask from "../hooks/useTask";
 import useTaskActions from "../hooks/UseTaskActions";
+import useAuth from "../hooks/useAuth";
 
 const TaskDetails = () => {
   const { projectId, taskId } = useParams();
-
+  const { user } = useAuth();
   const { task, activities, comments, reloadTask, fetchingTaskDetails } =
     useTask(taskId);
   const { deleteTask, loading } = useTaskActions();
@@ -19,6 +20,7 @@ const TaskDetails = () => {
   return (
     <div className="space-y-6">
       <TaskHeader
+        role={user.role}
         projectId={projectId ? projectId : task.project._id}
         task={task}
         deleteTask={deleteTask}

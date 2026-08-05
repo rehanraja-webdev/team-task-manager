@@ -8,9 +8,11 @@ import TaskList from "../components/Project Details/TaskList";
 import useProject from "../hooks/useProject";
 import useProjectActions from "../hooks/useProjectActions";
 import useProjectTasks from "../hooks/useProjectTasks";
+import useAuth from "../hooks/useAuth";
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
+  const { user } = useAuth();
   const { project, members, reloadMembers, reloadProject, fetching } =
     useProject(projectId);
   const { updateProject, deleteMember, deleteProject, loading } =
@@ -20,7 +22,6 @@ const ProjectDetails = () => {
   const queryParams = useMemo(() => {
     return new URLSearchParams({ page, limit: 10 }).toString();
   }, [page]);
-  console.log(queryParams);
 
   const { tasks, loadingTasks } = useProjectTasks(projectId, queryParams);
 
@@ -32,6 +33,7 @@ const ProjectDetails = () => {
 
       <ProjectInfoCard
         project={project}
+        role={user.role}
         updateProject={updateProject}
         deleteProject={deleteProject}
         reloadProject={reloadProject}
@@ -41,13 +43,14 @@ const ProjectDetails = () => {
 
       <MembersList
         members={members}
+        role={user.role}
         deleteMember={deleteMember}
         reloadMembers={reloadMembers}
         projectId={projectId}
         loading={loading}
       />
 
-      <TaskList tasks={tasks} page={page} setPage={setPage} />
+      <TaskList role={user.role} tasks={tasks} page={page} setPage={setPage} />
     </div>
   );
 };

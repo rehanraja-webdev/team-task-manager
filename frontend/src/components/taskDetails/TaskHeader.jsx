@@ -4,7 +4,14 @@ import { useState } from "react";
 import TaskUpdateModal from "./TaskUpdateModal";
 import useProject from "../../hooks/useProject";
 
-const TaskHeader = ({ projectId, task, deleteTask, reloadTask, loading }) => {
+const TaskHeader = ({
+  role,
+  projectId,
+  task,
+  deleteTask,
+  reloadTask,
+  loading,
+}) => {
   const { members } = useProject(projectId);
   const [modalActive, setModalActive] = useState(false);
   const navigate = useNavigate();
@@ -50,28 +57,30 @@ const TaskHeader = ({ projectId, task, deleteTask, reloadTask, loading }) => {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 shrink-0 pt-1">
-        <button
-          onClick={() => setModalActive(true)}
-          type="button"
-          aria-label="Edit task"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 rounded-lg transition-all duration-200 active:scale-95 shadow-sm"
-        >
-          <Pencil className="w-4 h-4 text-slate-400" />
-          <span>Edit</span>
-        </button>
+      {role === "admin" && (
+        <div className="flex items-center gap-3 shrink-0 pt-1">
+          <button
+            onClick={() => setModalActive(true)}
+            type="button"
+            aria-label="Edit task"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 rounded-lg transition-all duration-200 active:scale-95 shadow-sm"
+          >
+            <Pencil className="w-4 h-4 text-slate-400" />
+            <span>Edit</span>
+          </button>
 
-        <button
-          onClick={handleDelete}
-          type="button"
-          disabled={loading}
-          aria-label="Delete task"
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all duration-200 active:scale-95 shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <Trash2 className="w-4 h-4" />
-          <span>{loading ? "Deleting..." : "Delete"}</span>
-        </button>
-      </div>
+          <button
+            onClick={handleDelete}
+            type="button"
+            disabled={loading}
+            aria-label="Delete task"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all duration-200 active:scale-95 shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>{loading ? "Deleting..." : "Delete"}</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

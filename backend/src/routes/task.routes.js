@@ -2,6 +2,7 @@ import express from "express";
 import taskController from "../controllers/task.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 import validateTask from "../middlewares/validateTask.middleware.js";
+import authorizeRoles from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
@@ -52,7 +53,13 @@ const router = express.Router();
  *       500:
  *         description: Failed to create task
  */
-router.post("/", authMiddleware, validateTask, taskController.createTask);
+router.post(
+  "/",
+  authMiddleware,
+  authorizeRoles("admin"),
+  validateTask,
+  taskController.createTask,
+);
 
 router.get("/", authMiddleware, taskController.getTasks);
 
@@ -81,7 +88,12 @@ router.get(
 
 router.get("/:taskId", authMiddleware, taskController.getTask);
 
-router.delete("/:taskId", authMiddleware, taskController.deleteTask);
+router.delete(
+  "/:taskId",
+  authMiddleware,
+  authorizeRoles("admin"),
+  taskController.deleteTask,
+);
 
 /**
  * @swagger
@@ -115,6 +127,7 @@ router.patch(
 router.patch(
   "/:taskId/details",
   authMiddleware,
+  authorizeRoles("admin"),
   taskController.updateTaskDetails,
 );
 

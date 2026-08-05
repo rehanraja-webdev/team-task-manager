@@ -10,8 +10,8 @@ const Dashboard = () => {
     <div className="min-h-screen bg-slate-950 ">
       <DashboardHeader />
 
-      {user.role === "member" && <MemberDashboard />}
-      {user.role === "admin" && <AdminDashboard />}
+      {user.role === "member" && <MemberDashboard fullname={user.fullname} />}
+      {user.role === "admin" && <AdminDashboard fullname={user.fullname} />}
     </div>
   );
 };

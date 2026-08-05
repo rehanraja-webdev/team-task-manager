@@ -6,14 +6,24 @@ import DashboardOverview from "./DashboardOverview";
 import DashboardTaskAnalytics from "./DashboardTaskAnalytics";
 import RecentActivity from "./RecentActivity";
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ fullname }) => {
   const { stats, loading } = useAdminDashboard();
+
+  const greeting = () => {
+    const hour = new Date().getHours();
+
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
 
   if (loading) return <LoadingSpinner />;
   return (
     <div>
       <div className="mb-8 ml-6">
-        <h1 className="text-4xl font-bold text-white">Dashboard</h1>
+        <h1 className="text-4xl font-bold text-white">
+          {greeting()}, {fullname.split(" ")[0]} 👋
+        </h1>
 
         <p className="text-slate-400 mt-2">
           Track projects, tasks and team performance.

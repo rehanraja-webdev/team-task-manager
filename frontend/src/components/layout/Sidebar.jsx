@@ -7,37 +7,50 @@ import {
   Settings,
   LifeBuoy,
   LogOut,
+  Activity,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
 const Sidebar = () => {
-  const { logout, user } = useAuth();
-  const menuItems = [
+  const { logout, user, loading } = useAuth();
+
+  const navigation = [
     {
       name: "Dashboard",
       icon: LayoutDashboard,
       path: "",
+      roles: ["admin", "member", "super-admin"],
     },
     {
       name: "Projects",
       icon: FolderOpen,
       path: "/projects",
+      roles: ["admin", "member"],
     },
     {
       name: "Tasks",
       icon: ClipboardList,
       path: "/tasks",
+      roles: ["admin", "member"],
     },
     {
       name: "Analytics",
       icon: ChartNoAxesCombined,
       path: "/analytics",
+      roles: ["admin"],
+    },
+    {
+      name: "Activity",
+      icon: Activity,
+      path: "/activities",
+      roles: ["admin"],
     },
     {
       name: "Users",
       icon: Users,
       path: "/users",
+      roles: ["admin"],
     },
   ];
 
@@ -54,35 +67,36 @@ const Sidebar = () => {
     },
   ];
 
+  const links = navigation.filter((item) => item.roles.includes(user.role));
+
   return (
-    <aside className="sticky top-6 h-[calc(100vh-3rem)] lg:w-72 md:w-60 w-52 bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col">
+    <aside className="sticky top-6 h-[calc(100vh-3rem)] lg:w-72 md:w-60 w-52 rounded-3xl border border-slate-800 bg-slate-900 p-6 flex flex-col">
       {/* Logo */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">
           Team<span className="text-indigo-500">Task</span>
         </h1>
 
-        <p className="text-sm text-slate-400 mt-1">Project Management</p>
+        <p className="mt-1 text-sm text-slate-400">Project Management</p>
       </div>
 
       {/* Menu */}
       <div>
-        <p className="text-xs uppercase tracking-wider text-slate-500 mb-3">
+        <p className="mb-3 text-xs uppercase tracking-wider text-slate-500">
           Menu
         </p>
 
         <ul className="space-y-2">
-          {menuItems.map((item) => {
+          {links.map((item) => {
             const Icon = item.icon;
 
             return (
               <li key={item.name}>
                 <NavLink
                   to={`/dashboard${item.path}`}
-                  end
+                  end={item.path === ""}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-200
-                    ${
+                    `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${
                       isActive
                         ? "bg-indigo-600 text-white shadow-lg"
                         : "text-slate-400 hover:bg-slate-800 hover:text-white"
@@ -90,6 +104,7 @@ const Sidebar = () => {
                   }
                 >
                   <Icon size={20} />
+
                   <span>{item.name}</span>
                 </NavLink>
               </li>
@@ -99,8 +114,8 @@ const Sidebar = () => {
       </div>
 
       {/* General */}
-      <div className="mt-6">
-        <p className="text-xs uppercase tracking-wider text-slate-500 mb-3">
+      <div className="mt-8">
+        <p className="mb-3 text-xs uppercase tracking-wider text-slate-500">
           General
         </p>
 
@@ -111,10 +126,17 @@ const Sidebar = () => {
             return (
               <li key={item.name}>
                 <NavLink
-                  to={item.path}
-                  className="flex items-center gap-3 px-4 py-2 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+                  to={`/dashboard${item.path}`}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${
+                      isActive
+                        ? "bg-indigo-600 text-white shadow-lg"
+                        : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                    }`
+                  }
                 >
                   <Icon size={20} />
+
                   <span>{item.name}</span>
                 </NavLink>
               </li>
@@ -124,35 +146,38 @@ const Sidebar = () => {
       </div>
 
       {/* User Card */}
-      <div className="mt-4">
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4">
-          <div className="flex items-center gap-3 mb-4">
+      <div className="mt-auto pt-6">
+        <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
+          <div className="mb-4 flex items-center gap-3">
             <img
-              src={`https://ui-avatars.com/api/?name=${user.fullname.split(" ")[0]}`}
-              alt="profile"
-              className="w-10 h-10 rounded-full"
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                user?.fullname || "User",
+              )}&background=4f46e5&color=fff`}
+              alt="Profile"
+              className="h-10 w-10 rounded-full"
             />
 
-            <div>
-              <h4 className="text-white font-medium">
-                {user?.fullname.split(" ")[0]}
+            <div className="min-w-0">
+              <h4 className="truncate font-medium text-white">
+                {user?.fullname}
               </h4>
 
-              <p className="text-xs text-slate-500">{user?.role}</p>
+              <p className="text-xs capitalize text-slate-500">{user?.role}</p>
             </div>
           </div>
 
           <button
             onClick={logout}
-            className="w-full flex items-center justify-center gap-2 bg-red-500/10 text-red-400 hover:bg-red-500/20 rounded-xl py-3 transition-all"
+            disabled={loading}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-red-500/10 py-3 text-red-400 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <LogOut size={18} />
-            Logout
+
+            {loading ? "Logging out..." : "Logout"}
           </button>
         </div>
       </div>
     </aside>
   );
 };
-
 export default Sidebar;

@@ -7,19 +7,21 @@ const TaskTabs = ({ activeTab, setActiveTab, isAdmin }) => {
       label: "Assigned To Me",
       icon: <UserCheck size={18} />,
     },
-    {
-      id: "created",
-      label: "Created By Me",
-      icon: <ClipboardList size={18} />,
-    },
   ];
 
   if (isAdmin) {
-    tabs.unshift({
-      id: "all",
-      label: "All Tasks",
-      icon: <ListTodo size={18} />,
-    });
+    tabs.unshift(
+      {
+        id: "all",
+        label: "All Tasks",
+        icon: <ListTodo size={18} />,
+      },
+      {
+        id: "created",
+        label: "Created By Me",
+        icon: <ClipboardList size={18} />,
+      },
+    );
   }
 
   return (

@@ -157,6 +157,10 @@ const getProjectTasks = asyncHandler(async (req, res) => {
 
   const filter = { project: req.params.projectId };
 
+  if (req.user.role === "member") {
+    filter.assignedTo = req.user._id;
+  }
+
   //add query in filter one by one if found
   if (status) {
     filter.status = status;
@@ -173,7 +177,7 @@ const getProjectTasks = asyncHandler(async (req, res) => {
     };
   }
 
-  if (assignedTo) {
+  if (assignedTo && req.user.role !== "member") {
     filter.assignedTo = assignedTo;
   }
 

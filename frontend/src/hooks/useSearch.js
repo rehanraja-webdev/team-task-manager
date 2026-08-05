@@ -3,21 +3,20 @@ import { search } from "../services/search.service";
 import toast from "react-hot-toast";
 
 const useSearch = (query) => {
-  const [results, setResults] = useState({
+  const EMPTY_RESULTS = {
     users: [],
     projects: [],
     tasks: [],
-  });
+  };
+
+  const [results, setResults] = useState(EMPTY_RESULTS);
 
   const [loading, setLoading] = useState(false);
+  const trimmedQuery = query.trim();
 
   useEffect(() => {
-    if (!query.trim()) {
-      setResults({
-        users: [],
-        projects: [],
-        tasks: [],
-      });
+    if (trimmedQuery.length < 2) {
+      setResults(EMPTY_RESULTS);
       return;
     }
 

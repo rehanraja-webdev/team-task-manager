@@ -2,13 +2,15 @@ import { Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useSearch from "../../hooks/useSearch";
 import SearchDropdown from "./SearchDropdown";
+import useDebounce from "../../hooks/useDebounce";
 
 const SearchBox = () => {
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const { results, loading } = useSearch(query);
+  const debouncedQuery = useDebounce(query, 300);
+  const { results, loading } = useSearch(debouncedQuery);
 
   const wrapperRef = useRef(null);
 

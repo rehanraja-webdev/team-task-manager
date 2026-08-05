@@ -17,7 +17,7 @@ const CollapsedSidebar = () => {
       {/* Logo */}
 
       <NavLink to="/dashboard">
-        <h1 className="text-2xl font-bold text-indigo-500">T</h1>
+        <h1 className="text-2xl mb-2 font-bold text-indigo-500">T</h1>
       </NavLink>
 
       <div className="flex flex-col gap-3">

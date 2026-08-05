@@ -1,73 +1,16 @@
+import { LogOut } from "lucide-react";
 import {
-  LayoutDashboard,
-  FolderOpen,
-  ClipboardList,
-  ChartNoAxesCombined,
-  Users,
-  Settings,
-  LifeBuoy,
-  LogOut,
-  Activity,
-} from "lucide-react";
+  adminLinks,
+  memberLinks,
+  generalLinks,
+} from "../../constants/navigation";
 import { NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
 const Sidebar = () => {
   const { logout, user, loading } = useAuth();
 
-  const navigation = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: "",
-      roles: ["admin", "member", "super-admin"],
-    },
-    {
-      name: "Projects",
-      icon: FolderOpen,
-      path: "/projects",
-      roles: ["admin", "member"],
-    },
-    {
-      name: "Tasks",
-      icon: ClipboardList,
-      path: "/tasks",
-      roles: ["admin", "member"],
-    },
-    {
-      name: "Analytics",
-      icon: ChartNoAxesCombined,
-      path: "/analytics",
-      roles: ["admin"],
-    },
-    {
-      name: "Activity",
-      icon: Activity,
-      path: "/activities",
-      roles: ["admin"],
-    },
-    {
-      name: "Users",
-      icon: Users,
-      path: "/users",
-      roles: ["admin"],
-    },
-  ];
-
-  const generalItems = [
-    {
-      name: "Settings",
-      icon: Settings,
-      path: "/settings",
-    },
-    {
-      name: "Help",
-      icon: LifeBuoy,
-      path: "/help",
-    },
-  ];
-
-  const links = navigation.filter((item) => item.roles.includes(user.role));
+  const links = user.role === "admin" ? adminLinks : memberLinks;
 
   return (
     <aside className="sticky top-6 h-[calc(100vh-3rem)] lg:w-72 md:w-60 w-52 rounded-3xl border border-slate-800 bg-slate-900 p-6 flex flex-col">
@@ -93,7 +36,7 @@ const Sidebar = () => {
             return (
               <li key={item.name}>
                 <NavLink
-                  to={`/dashboard${item.path}`}
+                  to={item.path}
                   end={item.path === ""}
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${
@@ -120,7 +63,7 @@ const Sidebar = () => {
         </p>
 
         <ul className="space-y-2">
-          {generalItems.map((item) => {
+          {generalLinks.map((item) => {
             const Icon = item.icon;
 
             return (

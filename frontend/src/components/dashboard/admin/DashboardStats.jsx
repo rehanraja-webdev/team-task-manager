@@ -1,7 +1,7 @@
-import StatCard from '../common/StatCard';
-import { CheckCircle, Clock, FolderKanban, ListTodo } from 'lucide-react';
+import StatCard from "../../common/StatCard";
+import { CheckCircle, Clock, FolderKanban, ListTodo } from "lucide-react";
 
-const DashboardStats = ({stats}) => {
+const DashboardStats = ({ stats }) => {
   return (
     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4 mb-8">
       <StatCard
@@ -25,6 +25,6 @@ const DashboardStats = ({stats}) => {
       <StatCard title="Todo" value={stats?.todoTasks ?? 0} icon={<Clock />} />
     </div>
   );
-}
+};
 
-export default DashboardStats
+export default DashboardStats;

@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
-import formatTimeAgo from "../../utils/formatTimeAgo";
-import ActivityItem from "./ActivityItem";
+import formatTimeAgo from "../../../utils/formatTimeAgo";
+import ActivityItem from "../ActivityItem";
 import { ArrowRight } from "lucide-react";
 
 const RecentActivity = ({stats}) => {

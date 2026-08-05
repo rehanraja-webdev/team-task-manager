@@ -1,7 +1,15 @@
 import { FolderOpen, ClipboardList, User } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const SearchDropdown = ({ results, loading, onClose }) => {
+const SearchDropdown = ({ query, results, loading, onClose }) => {
+  if (query.trim().length > 0 && query.trim().length < 2) {
+    return (
+      <div className="absolute top-14 left-0 w-full rounded-xl border border-slate-700 bg-slate-900 shadow-xl z-50 p-4 text-slate-400 text-sm">
+        Type at least 2 characters to search.
+      </div>
+    );
+  }
+  
   if (loading) {
     return (
       <div className="absolute top-14 left-0 w-full rounded-xl border border-slate-700 bg-slate-900 shadow-xl z-50">

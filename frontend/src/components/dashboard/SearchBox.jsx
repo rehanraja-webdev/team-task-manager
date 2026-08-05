@@ -47,6 +47,7 @@ const SearchBox = () => {
 
         {focused && query.trim() && (
           <SearchDropdown
+            query={query}
             results={results}
             loading={loading}
             onClose={() => {

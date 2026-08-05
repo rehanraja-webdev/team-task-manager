@@ -69,7 +69,12 @@ router.delete(
   projectController.deleteProject,
 );
 
-router.patch("/:projectId", authMiddleware, projectController.updateProject);
+router.patch(
+  "/:projectId",
+  authMiddleware,
+  authorizeRoles("super-admin", "admin"),
+  projectController.updateProject,
+);
 
 /**
  * @swagger
@@ -85,7 +90,7 @@ router.patch("/:projectId", authMiddleware, projectController.updateProject);
  */
 router.get("/", authMiddleware, projectController.getProjects);
 
-/**
+/**a
  * @swagger
  * /api/v1/projects/{projectId}:
  *   get:
@@ -129,11 +134,17 @@ router.get("/:projectId", authMiddleware, projectController.getProject);
  *       404:
  *         description: User not found
  */
-router.post("/:projectId/member", authMiddleware, projectController.addMember);
+router.post(
+  "/:projectId/member",
+  authMiddleware,
+  authorizeRoles("super-admin", "admin"),
+  projectController.addMember,
+);
 
 router.delete(
   "/:projectId/members/:memberId",
   authMiddleware,
+  authorizeRoles("super-admin", "admin"),
   projectController.removeMember,
 );
 

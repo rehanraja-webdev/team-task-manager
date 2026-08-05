@@ -175,14 +175,13 @@ const getProjects = asyncHandler(async (req, res) => {
   }
 
   const projects = await Project.find({
-    owner: req.user._id,
+    $or: [{ owner: req.user._id }, { "members.user": req.user._id }],
     name: {
       $regex: search || "",
       $options: "i",
     },
   }).populate("owner", "fullname email");
 
-  //set data in cache after fetching data from the database
   cacheHelper.setCache(cacheKey, projects);
 
   return res

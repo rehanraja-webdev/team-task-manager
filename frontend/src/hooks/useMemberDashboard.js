@@ -3,25 +3,25 @@ import { getMemberDashboard } from "../services/dashboard.service";
 import toast from "react-hot-toast";
 
 const useMemberDashboard = () => {
-  const [memberStats, setMemberStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [dashboard, setDashboard] = useState(null);
+  const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
     const getDashboard = async () => {
       try {
         const statsRes = await getMemberDashboard();
-        setMemberStats(statsRes);
+        setDashboard(statsRes);
       } catch (error) {
         toast.error(error.response?.data?.message);
       } finally {
-        setLoading(false);
+        setFetching(false);
       }
     };
 
     getDashboard();
   }, []);
 
-  return { memberStats, loading };
+  return { dashboard, fetching };
 };
 
 export default useMemberDashboard;

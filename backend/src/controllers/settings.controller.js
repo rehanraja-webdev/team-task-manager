@@ -42,11 +42,11 @@ const updateSettings = asyncHandler(async (req, res) => {
     { $set: updates },
     {
       new: true,
+      upsert: true,
       runValidators: true,
+      setDefaultsOnInsert: true,
     },
   );
-
-  await settings.save();
 
   return res
     .status(200)

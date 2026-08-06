@@ -69,7 +69,7 @@ const Sidebar = () => {
             return (
               <li key={item.name}>
                 <NavLink
-                  to={`/dashboard${item.path}`}
+                  to={item.path}
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${
                       isActive

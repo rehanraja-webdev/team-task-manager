@@ -8,10 +8,6 @@ const getSettings = asyncHandler(async (req, res) => {
     user: req.user._id,
   });
 
-  if (!settings) {
-    throw new ApiError(404, "Settings not found");
-  }
-
   return res
     .status(200)
     .json(new ApiResponse(200, "Settings fetched successfully", settings));

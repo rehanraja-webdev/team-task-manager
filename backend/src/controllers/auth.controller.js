@@ -7,6 +7,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 import jobQueue from "../utils/jobQueue.js";
 import Project from "../models/project.model.js";
 import Task from "../models/task.model.js";
+import UserSettings from "../models/userSettings.model.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -25,6 +26,10 @@ const registerUser = asyncHandler(async (req, res) => {
     fullname,
     email,
     password: hashPassword,
+  });
+
+  await UserSettings.create({
+    user: user._id,
   });
 
   jobQueue.addJob({

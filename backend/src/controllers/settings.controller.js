@@ -8,6 +8,12 @@ const getSettings = asyncHandler(async (req, res) => {
     user: req.user._id,
   });
 
+  if (!settings) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Currently settings are empty!", []));
+  }
+
   return res
     .status(200)
     .json(new ApiResponse(200, "Settings fetched successfully", settings));

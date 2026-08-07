@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { createContext, useEffect, useState } from "react";
 import { getUser, loginUser, logoutUser } from "../services/auth.service";
+import ThemeProvider from "./ThemeContext";
 
 export const AuthContext = createContext();
 
@@ -46,7 +47,13 @@ const AuthProvider = ({ children }) => {
     checkAuth,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <ThemeProvider>
+      <AuthContext.Provider value={value}>
+        {children}
+      </AuthContext.Provider>
+    </ThemeProvider>
+  );
 };
 
 export default AuthProvider;

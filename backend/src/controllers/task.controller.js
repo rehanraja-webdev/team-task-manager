@@ -9,6 +9,7 @@ import validateObjectId from "../utils/validateObjectId.js";
 import cache from "../utils/cache.js";
 import { getIO } from "../socket/socket.js";
 import cacheHelper from "../utils/cache.helper.js";
+import createNotification from "../utils/createNotification.js";
 
 const createTask = asyncHandler(async (req, res) => {
   const { title, description, projectId, assignedTo, priority, dueDate } =
@@ -50,6 +51,15 @@ const createTask = asyncHandler(async (req, res) => {
     task: task._id,
     user: req.user._id,
     action: "Task Created",
+  });
+
+  await createNotification({
+    user: assignedTo,
+    type: "task",
+    title: "New Task Assigned",
+    message: `You have been assigned the task "${task.title}"`,
+    task: task._id,
+    project: projectId,
   });
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
@@ -119,6 +129,15 @@ const deleteTask = asyncHandler(async (req, res) => {
   }
 
   await task.deleteOne();
+
+  createNotification({
+    user: assignedTo,
+    type: "task",
+    title: "Task deleted",
+    message: `Task has been deleted "${task.title}"`,
+    task: task._id,
+    project: projectId,
+  });
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
   cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
@@ -323,6 +342,17 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
     user: req.user._id,
     action: "Task details updated!",
   });
+
+  if (!task.assignedTo.equals(req.user._id)) {
+    await createNotification({
+      user: task.assignedTo,
+      type: "task",
+      title: "Task details updated",
+      message: `${req.user.fullname} updates "${task}"`,
+      task: task._id,
+      project: task.project,
+    });
+  }
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
   cacheHelper.deleteByPrefix(`project_${req.user._id}`);

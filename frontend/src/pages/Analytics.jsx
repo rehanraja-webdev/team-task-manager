@@ -8,6 +8,7 @@ import OverdueTasksTable from "../components/analytics/OverdueTasksTable";
 import useAnalytics from "../hooks/useAnalytics";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import ProjectChart from "../components/analytics/ProjectChart";
+import AnalyticsHeader from "../components/analytics/AnalyticsHeader";
 
 const Analytics = () => {
   const {
@@ -22,6 +23,7 @@ const Analytics = () => {
   if (fetching) return <LoadingSpinner />;
   return (
     <div className="space-y-8">
+      <AnalyticsHeader />
       <AnalyticsCards overview={overview} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

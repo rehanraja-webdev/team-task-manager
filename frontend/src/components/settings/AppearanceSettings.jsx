@@ -1,44 +1,23 @@
-import { useEffect, useState } from "react";
-import { Check, Monitor, Moon, Sun } from "lucide-react";
-
-const themes = [
-  {
-    value: "dark",
-    title: "Dark",
-    description: "Dark appearance for low-light environments.",
-    icon: Moon,
-  },
-  {
-    value: "light",
-    title: "Light",
-    description: "Bright appearance for daytime use.",
-    icon: Sun,
-  },
-  {
-    value: "system",
-    title: "System",
-    description: "Automatically match your device settings.",
-    icon: Monitor,
-  },
-];
+import { useEffect } from "react";
+import { Check } from "lucide-react";
+import useTheme from "../../hooks/useTheme";
+import { themes } from "../../constants/theme";
 
 const AppearanceSettings = ({ settings, saveSettings, saving }) => {
-  const [selectedTheme, setSelectedTheme] = useState("dark");
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    if (settings) {
-      setSelectedTheme(settings.theme);
+    if (settings?.theme) {
+      setTheme(settings.theme);
     }
-  }, [settings]);
+  }, [settings, setTheme]);
 
-  const hasChanges = selectedTheme !== settings?.theme;
+  const hasChanges = theme !== settings?.theme;
 
   const handleSave = async () => {
-    if (!hasChanges) return;
+    if (!hasChanges || saving) return;
 
-    await saveSettings({
-      theme: selectedTheme,
-    });
+    await saveSettings({ theme });
   };
 
   return (
@@ -50,53 +29,53 @@ const AppearanceSettings = ({ settings, saveSettings, saving }) => {
       </div>
 
       <div className="grid md:grid-cols-3 gap-5">
-        {themes.map((theme) => {
-          const Icon = theme.icon;
-
-          const active = selectedTheme === theme.value;
+        {themes.map((item) => {
+          const Icon = item.icon;
+          const active = theme === item.value;
 
           return (
             <button
-              key={theme.value}
+              key={item.value}
               type="button"
-              onClick={() => setSelectedTheme(theme.value)}
-              className={`relative rounded-2xl border p-5 transition-all text-left cursor-pointer
+              onClick={() => setTheme(item.value)}
+              className={`relative rounded-2xl border p-5 text-left transition-all duration-200 cursor-pointer
                 ${
                   active
                     ? "border-indigo-500 bg-indigo-500/10"
-                    : "border-slate-800 hover:border-slate-700 bg-slate-950"
-                }
-              `}
+                    : "border-slate-800 bg-slate-950 hover:border-slate-700 hover:-translate-y-1"
+                }`}
             >
               {active && (
-                <div className="absolute top-4 right-4 bg-indigo-600 rounded-full p-1">
+                <div className="absolute top-4 right-4 rounded-full bg-indigo-600 p-1">
                   <Check size={14} className="text-white" />
                 </div>
               )}
 
-              <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center mb-4">
+              <div
+                className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl
+                  ${active ? "bg-indigo-600" : "bg-slate-800"}`}
+              >
                 <Icon className="text-white" size={22} />
               </div>
 
-              <h3 className="text-white font-semibold">{theme.title}</h3>
+              <h3 className="font-semibold text-white">{item.title}</h3>
 
-              <p className="text-sm text-slate-400 mt-2">{theme.description}</p>
+              <p className="mt-2 text-sm text-slate-400">{item.description}</p>
             </button>
           );
         })}
       </div>
 
-      <div className="flex justify-end mt-8">
+      <div className="mt-8 flex justify-end">
         <button
           onClick={handleSave}
           disabled={!hasChanges || saving}
-          className={`px-6 py-3 rounded-xl font-medium transition-all
+          className={`rounded-xl px-6 py-3 font-medium transition-all
             ${
-              hasChanges
-                ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                : "bg-slate-800 text-slate-500 cursor-not-allowed"
-            }
-          `}
+              hasChanges && !saving
+                ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                : "cursor-not-allowed bg-slate-800 text-slate-500"
+            }`}
         >
           {saving ? "Saving..." : "Save Changes"}
         </button>

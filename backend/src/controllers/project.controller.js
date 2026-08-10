@@ -8,7 +8,7 @@ import cacheHelper from "../utils/cache.helper.js";
 import Task from "../models/task.model.js";
 import Activity from "../models/activity.model.js";
 import mongoose from "mongoose";
-
+import createNotification from "../utils/createNotification.js";
 const createProject = asyncHandler(async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -112,12 +112,36 @@ const deleteProject = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Access denied!");
   }
 
+  const memberIds = project.members
+    .map((member) => member.user)
+    .filter((userId) => !userId.equals(req.user._id));
+
+  await Promise.all(
+    memberIds.map((userId) =>
+      createNotification({
+        user: userId,
+        title: "Project deleted",
+        message: `${project.name} has been deleted!`,
+        type: "project",
+      }),
+    ),
+  );
+
   await project.deleteOne();
 
   cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
   cacheHelper.deleteByPrefix(`project_${req.user._id}`);
   cacheHelper.deleteByPrefix(`members_${req.user._id}`);
+
+  await Promise.all(
+    memberIds.map((userId) => {
+      cacheHelper.deleteCache(`dashboard_${userId}`);
+      cacheHelper.deleteByPrefix(`projects_${userId}`);
+      cacheHelper.deleteByPrefix(`project_${userId}`);
+      cacheHelper.deleteByPrefix(`members_${userId}`);
+    }),
+  );
 
   res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
 });
@@ -132,31 +156,70 @@ const updateProject = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Project not found!");
   }
 
-  if (project.name === name && project.description === description) {
-    throw new ApiError(400, "No change found!");
-  }
-
   const isOwner = project.owner.toString() === req.user._id.toString();
+
   const isAdmin = req.user.role === "admin";
 
   if (!isOwner && !isAdmin) {
     throw new ApiError(403, "You can't update the project!");
   }
 
+  const changes = {};
+
+  if (name !== undefined && name !== project.name) {
+    changes.name = name;
+  }
+
+  if (description !== undefined && description !== project.description) {
+    changes.description = description;
+  }
+
+  if (Object.keys(changes).length === 0) {
+    throw new ApiError(400, "No change found!");
+  }
+
   const updatedProject = await Project.findByIdAndUpdate(
     projectId,
-    { $set: { name, description } },
-    { new: true, runValidators: true },
+    { $set: changes },
+    {
+      new: true,
+      runValidators: true,
+    },
   );
+
+  const memberIds = project.members
+    .map((member) => member.user)
+    .filter((userId) => !userId.equals(req.user._id));
+
+  if (memberIds.length > 0) {
+    await Promise.all(
+      memberIds.map((userId) =>
+        createNotification({
+          user: userId,
+          title: "Project updated",
+          message: `"${project.name}" has been updated.`,
+          type: "project",
+        }),
+      ),
+    );
+  }
 
   cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
   cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
 
+  await Promise.all(
+    memberIds.map((userId) => {
+      cacheHelper.deleteCache(`project_${userId}_${projectId}`);
+      cacheHelper.deleteByPrefix(`projects_${userId}`);
+      cacheHelper.deleteCache(`dashboard_${userId}`);
+    }),
+  );
+
   res
     .status(200)
     .json(
-      new ApiResponse(200, "Project Updated successfully!", updatedProject),
+      new ApiResponse(200, "Project updated successfully!", updatedProject),
     );
 });
 
@@ -192,12 +255,16 @@ const getProjects = asyncHandler(async (req, res) => {
 const addMember = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
   const { email } = req.body;
+
   const project = await Project.findById(projectId);
+
   if (!project) {
     throw new ApiError(404, "Project not found!");
   }
 
-  const member = await User.findOne({ email: email.toLowerCase() });
+  const member = await User.findOne({
+    email: email.toLowerCase(),
+  });
 
   if (!member) {
     throw new ApiError(404, "User not found!");
@@ -215,14 +282,28 @@ const addMember = asyncHandler(async (req, res) => {
     throw new ApiError(400, "User already a member!");
   }
 
-  project.members.push({ user: member._id, role: member.role || "member" });
+  project.members.push({
+    user: member._id,
+    role: member.role || "member",
+  });
+
   await project.save();
 
+  await createNotification({
+    user: member._id,
+    title: "Added to project",
+    message: `You have been added to "${project.name}".`,
+    type: "project",
+  });
+
   cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
+
   cacheHelper.deleteCache(`members_${req.user._id}_${projectId}`);
+
   cacheHelper.deleteCache(`dashboard_${member._id}`);
   cacheHelper.deleteCache(`project_${member._id}_${projectId}`);
   cacheHelper.deleteCache(`members_${member._id}_${projectId}`);
+
   cacheHelper.deleteByPrefix(`project_tasks_${projectId}`);
 
   res.status(200).json(new ApiResponse(200, "Member added successfully!"));
@@ -238,6 +319,7 @@ const removeMember = asyncHandler(async (req, res) => {
   }
 
   const project = await Project.findById(projectId);
+
   if (!project) {
     throw new ApiError(404, "Project not found!");
   }
@@ -256,7 +338,7 @@ const removeMember = asyncHandler(async (req, res) => {
   }
 
   if (project.owner.toString() === member._id.toString()) {
-    throw new ApiError(403, "You cann't remove project Owner!");
+    throw new ApiError(403, "You can't remove project Owner!");
   }
 
   project.members = project.members.filter(
@@ -264,6 +346,7 @@ const removeMember = asyncHandler(async (req, res) => {
   );
 
   await project.save();
+
   await Task.updateMany(
     {
       project: project._id,
@@ -282,7 +365,15 @@ const removeMember = asyncHandler(async (req, res) => {
     action: `${member.fullname} has been removed from the project`,
   });
 
+  await createNotification({
+    user: member._id,
+    title: "Removed from project",
+    message: `You have been removed from "${project.name}".`,
+    type: "project",
+  });
+
   cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
+
   cacheHelper.deleteCache(`members_${req.user._id}_${projectId}`);
 
   cacheHelper.deleteCache(`project_${memberId}_${projectId}`);

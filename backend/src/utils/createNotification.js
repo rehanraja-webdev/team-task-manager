@@ -6,6 +6,7 @@ const createNotification = async ({
   message,
   type = "system",
   referenceId = null,
+  project,
 }) => {
   await Notification.create({
     user,
@@ -13,6 +14,7 @@ const createNotification = async ({
     message,
     type,
     referenceId,
+    project,
   });
 };
 

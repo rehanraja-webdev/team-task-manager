@@ -274,6 +274,15 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     action: `Changed status to ${status}`,
   });
 
+  await createNotification({
+    user: task.createdBy,
+    type: "task",
+    title: "Task status updated!",
+    message: `Task status updated to "${task.status}"`,
+    task: task._id,
+    project: projectId,
+  });
+
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);
   cacheHelper.deleteByPrefix(`project_${req.user._id}`);
   cacheHelper.deleteByPrefix(`projects_${req.user._id}`);

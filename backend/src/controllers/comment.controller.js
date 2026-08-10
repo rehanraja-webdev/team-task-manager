@@ -4,10 +4,12 @@ import ApiError from "../utils/ApiError.js";
 import Comment from "../models/comment.model.js";
 import Activity from "../models/activity.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
+import createNotification from "../utils/createNotification.js";
 
 const addComment = asyncHandler(async (req, res) => {
   const { content } = req.body;
-  const task = await Task.findById(req.params.taskId);
+  const { projectId, taskId } = req.params;
+  const task = await Task.findById(taskId);
 
   if (!task) {
     throw new ApiError(404, "No task found!");
@@ -23,6 +25,15 @@ const addComment = asyncHandler(async (req, res) => {
     task: task._id,
     user: req.user._id,
     action: "Added Comment",
+  });
+
+  await createNotification({
+    user: task.createdBy,
+    type: "comment",
+    title: "New Comment Added!",
+    message: `${(req, user.fullname)} commented on ${task.title}`,
+    task: task._id,
+    project: projectId,
   });
 
   res

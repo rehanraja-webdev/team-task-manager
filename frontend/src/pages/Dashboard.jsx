@@ -7,7 +7,7 @@ const Dashboard = () => {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-slate-950 ">
+    <div>
       <DashboardHeader />
 
       {user.role === "member" && <MemberDashboard fullname={user.fullname} />}

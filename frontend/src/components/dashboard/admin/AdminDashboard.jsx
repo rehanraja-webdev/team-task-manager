@@ -21,11 +21,11 @@ const AdminDashboard = ({ fullname }) => {
   return (
     <div>
       <div className="mb-8 ml-6">
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
           {greeting()}, {fullname.split(" ")[0]} 👋
         </h1>
 
-        <p className="text-slate-400 mt-2">
+        <p className="text-slate-600 dark:text-slate-400 mt-2">
           Track projects, tasks and team performance.
         </p>
       </div>

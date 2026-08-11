@@ -9,10 +9,12 @@ const CompletionRateChart = ({ completionRate }) => {
   ];
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
-      <h2 className="text-white text-xl font-semibold">Completion Rate</h2>
+    <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+      <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+        Completion Rate
+      </h2>
 
-      <div className="relative flex items-center justify-center h-48 mt-2">
+      <div className="relative mt-2 flex h-48 items-center justify-center">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -28,23 +30,28 @@ const CompletionRateChart = ({ completionRate }) => {
               stroke="none"
               cornerRadius={6}
             >
-              {/* Progress Color */}
+              {/* Progress */}
               <Cell key="completed" fill="#818cf8" />
-              {/* Track / Background Color */}
-              <Cell key="remaining" fill="#1e293b" />
+
+              {/* Track */}
+              <Cell
+                key="remaining"
+                fill="currentColor"
+                className="text-slate-200 dark:text-slate-800"
+              />
             </Pie>
           </PieChart>
         </ResponsiveContainer>
 
-        {/* Center Percentage Display */}
-        <div className="absolute top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-          <span className="text-4xl font-extrabold text-indigo-400 tracking-tight">
+        {/* Center Percentage */}
+        <div className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 text-center">
+          <span className="text-4xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">
             {rate}%
           </span>
         </div>
       </div>
 
-      <p className="text-slate-400 text-sm text-center -mt-2">
+      <p className="text-center text-sm text-slate-600 dark:text-slate-400">
         Overall Project Progress
       </p>
     </div>

@@ -25,20 +25,36 @@ const PriorityChart = ({ analytics }) => {
   ];
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-      <h2 className="mb-6 text-lg font-semibold text-white">
+    <div
+      className="
+      rounded-2xl
+      border border-slate-200 dark:border-slate-800
+      bg-white dark:bg-slate-900
+      p-6
+    "
+    >
+      <h2 className="mb-6 text-lg font-semibold text-slate-900 dark:text-white">
         Priority Distribution
       </h2>
 
       <ResponsiveContainer width="100%" height={320}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="4 4" stroke="#334155" />
+          <CartesianGrid strokeDasharray="4 4" stroke="var(--chart-grid)" />
 
-          <XAxis dataKey="priority" tick={{ fill: "#CBD5E1" }} />
+          <XAxis dataKey="priority" tick={{ fill: "var(--chart-text)" }} />
 
-          <YAxis tick={{ fill: "#CBD5E1" }} />
+          <YAxis tick={{ fill: "var(--chart-text)" }} />
 
-          <Tooltip />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "var(--chart-tooltip-bg)",
+              border: "1px solid var(--chart-tooltip-border)",
+              borderRadius: "8px",
+            }}
+            labelStyle={{
+              color: "var(--chart-text)",
+            }}
+          />
 
           <Bar dataKey="tasks" radius={[8, 8, 0, 0]} fill="#6366F1" />
         </BarChart>

@@ -26,8 +26,10 @@ const TaskStatusChart = ({ analytics }) => {
   ];
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-      <h2 className="mb-6 text-lg font-semibold text-white">Task Status</h2>
+    <div className="rounded-2xl border border-slate-200  dark:border-slate-800 bg-white dark:bg-slate-900 p-6">
+      <h2 className="mb-6 text-lg font-semibold text-slate-900 dark:text-white">
+        Task Status
+      </h2>
 
       <ResponsiveContainer width="100%" height={320}>
         <PieChart>
@@ -43,9 +45,19 @@ const TaskStatusChart = ({ analytics }) => {
             ))}
           </Pie>
 
-          <Tooltip />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "var(--chart-tooltip-bg)",
+              border: "1px solid var(--chart-tooltip-border)",
+              borderRadius: "8px",
+            }}
+          />
 
-          <Legend />
+          <Legend
+            wrapperStyle={{
+              color: "var(--chart-text)",
+            }}
+          />
         </PieChart>
       </ResponsiveContainer>
     </div>

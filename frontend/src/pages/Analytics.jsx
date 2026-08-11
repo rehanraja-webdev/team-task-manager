@@ -34,6 +34,7 @@ const Analytics = () => {
       <MonthlyTasksChart data={monthTasks} />
 
       <ProjectChart data={projectAnalytics} />
+      
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <ProjectProgress data={projectAnalytics} />
         <ContributorsTable data={contributors} />

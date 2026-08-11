@@ -5,7 +5,7 @@ import ProfileDropdown from "./ProfileDropdown";
 const DashboardHeader = () => {
   return (
     <>
-      <div className="flex justify-between items-center bg-slate-900 rounded-2xl p-4 border border-slate-800 mb-8">
+      <div className="flex justify-between items-center bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 mb-8">
         <SearchBox />
 
         <div className="flex items-center gap-4">

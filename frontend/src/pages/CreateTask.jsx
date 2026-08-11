@@ -18,6 +18,7 @@ const CreateTask = () => {
     priority: "medium",
     dueDate: "",
   });
+
   const { members, reloadMembers } = useProject(formData.projectId);
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const CreateTask = () => {
     };
 
     fetchMembers();
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [formData.projectId]);
 
   const handleChange = (e) => {
@@ -40,25 +41,31 @@ const CreateTask = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     await createTask(formData);
     navigate(-1);
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-slate-900 rounded-3xl p-8 border border-slate-800">
-      <h1 className="text-4xl font-bold text-white">
+    <div
+      className="
+        max-w-4xl mx-auto rounded-3xl p-8
+        bg-white dark:bg-slate-900
+        border border-slate-200 dark:border-slate-800
+      "
+    >
+      <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
         Create <span className="text-purple-500">Task</span>
       </h1>
 
-      <p className="text-slate-400 mt-2">
+      <p className="mt-2 text-slate-600 dark:text-slate-400">
         Create and assign a new task to a team member.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-6">
         {/* Title */}
-
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
+          <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
             Task Title
           </label>
 
@@ -68,15 +75,22 @@ const CreateTask = () => {
             value={formData.title}
             onChange={handleChange}
             placeholder="Design Dashboard UI"
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+            className="
+              w-full rounded-xl px-4 py-3 outline-none
+              bg-slate-50 dark:bg-slate-950
+              border border-slate-200 dark:border-slate-700
+              text-slate-900 dark:text-white
+              placeholder-slate-400 dark:placeholder-slate-500
+              focus:border-purple-500
+              focus:ring-2 focus:ring-purple-500/20
+            "
             required
           />
         </div>
 
         {/* Description */}
-
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
+          <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
             Description
           </label>
 
@@ -86,13 +100,22 @@ const CreateTask = () => {
             value={formData.description}
             onChange={handleChange}
             placeholder="Describe the task..."
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none resize-none focus:border-purple-500"
+            className="
+              w-full resize-none rounded-xl px-4 py-3 outline-none
+              bg-slate-50 dark:bg-slate-950
+              border border-slate-200 dark:border-slate-700
+              text-slate-900 dark:text-white
+              placeholder-slate-400 dark:placeholder-slate-500
+              focus:border-purple-500
+              focus:ring-2 focus:ring-purple-500/20
+            "
           />
         </div>
 
+        {/* Projects */}
         {!projectId && (
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
+            <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
               Projects
             </label>
 
@@ -100,14 +123,21 @@ const CreateTask = () => {
               name="projectId"
               value={formData.projectId}
               onChange={handleChange}
-              className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+              className="
+                w-full rounded-xl px-4 py-3 outline-none
+                bg-slate-50 dark:bg-slate-950
+                border border-slate-200 dark:border-slate-700
+                text-slate-900 dark:text-white
+                focus:border-purple-500
+                focus:ring-2 focus:ring-purple-500/20
+              "
               required
             >
               <option value="">Select Project</option>
 
               {projects.map((project) => (
                 <option key={project._id} value={project._id}>
-                  {project.name}{" "}
+                  {project.name}
                 </option>
               ))}
             </select>
@@ -116,7 +146,7 @@ const CreateTask = () => {
 
         {/* Assigned To */}
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
+          <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
             Assign Member
           </label>
 
@@ -124,14 +154,21 @@ const CreateTask = () => {
             name="assignedTo"
             value={formData.assignedTo}
             onChange={handleChange}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+            className="
+              w-full rounded-xl px-4 py-3 outline-none
+              bg-slate-50 dark:bg-slate-950
+              border border-slate-200 dark:border-slate-700
+              text-slate-900 dark:text-white
+              focus:border-purple-500
+              focus:ring-2 focus:ring-purple-500/20
+            "
             required
           >
             <option value="">Select Member</option>
 
             {members.map((member) => (
               <option key={member.user._id} value={member.user._id}>
-                {member.user.fullname} ( {member.user.email} )
+                {member.user.fullname} ({member.user.email})
               </option>
             ))}
           </select>
@@ -139,7 +176,7 @@ const CreateTask = () => {
 
         {/* Priority */}
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
+          <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
             Priority
           </label>
 
@@ -147,7 +184,14 @@ const CreateTask = () => {
             name="priority"
             value={formData.priority}
             onChange={handleChange}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white"
+            className="
+              w-full rounded-xl px-4 py-3 outline-none
+              bg-slate-50 dark:bg-slate-950
+              border border-slate-200 dark:border-slate-700
+              text-slate-900 dark:text-white
+              focus:border-purple-500
+              focus:ring-2 focus:ring-purple-500/20
+            "
           >
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -156,9 +200,8 @@ const CreateTask = () => {
         </div>
 
         {/* Due Date */}
-
         <div>
-          <label className="block text-sm font-medium text-slate-300 mb-2">
+          <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
             Due Date
           </label>
 
@@ -167,18 +210,33 @@ const CreateTask = () => {
             name="dueDate"
             value={formData.dueDate}
             onChange={handleChange}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+            className="
+              w-full rounded-xl px-4 py-3 outline-none
+              bg-slate-50 dark:bg-slate-950
+              border border-slate-200 dark:border-slate-700
+              text-slate-900 dark:text-white
+              focus:border-purple-500
+              focus:ring-2 focus:ring-purple-500/20
+            "
           />
         </div>
 
         {/* Buttons */}
-
         <div className="flex justify-end gap-4 pt-4">
           <button
             type="button"
             disabled={loading}
             onClick={() => navigate(-1)}
-            className="px-6 py-3 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 transition disabled:cursor-not-allowed disabled:opacity-50"
+            className="
+              px-6 py-3 rounded-xl
+              bg-slate-100 dark:bg-slate-800
+              text-slate-600 dark:text-slate-300
+              border border-slate-200 dark:border-slate-700
+              hover:bg-slate-200 dark:hover:bg-slate-700
+              hover:text-slate-900 dark:hover:text-white
+              transition
+              disabled:cursor-not-allowed disabled:opacity-50
+            "
           >
             Cancel
           </button>
@@ -186,7 +244,13 @@ const CreateTask = () => {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition disabled:cursor-not-allowed disabled:opacity-50"
+            className="
+              px-6 py-3 rounded-xl
+              bg-purple-600 hover:bg-purple-500
+              text-white
+              transition
+              disabled:cursor-not-allowed disabled:opacity-50
+            "
           >
             {loading ? "Creating..." : "Create Task"}
           </button>

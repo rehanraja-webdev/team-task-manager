@@ -37,19 +37,24 @@ const StatisticsCards = ({ statistics }) => {
         return (
           <div
             key={item.title}
-            className="rounded-2xl border border-slate-800 bg-slate-900 p-6 transition hover:border-indigo-500"
+            className="rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-indigo-500 dark:border-slate-800 dark:bg-slate-900"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-400">{item.title}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  {item.title}
+                </p>
 
-                <h3 className="mt-2 text-3xl font-bold text-white">
+                <h3 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
                   {item.value}
                 </h3>
               </div>
 
               <div className="rounded-xl bg-indigo-500/20 p-3">
-                <Icon className="text-indigo-400" size={28} />
+                <Icon
+                  className="text-indigo-600 dark:text-indigo-400"
+                  size={28}
+                />
               </div>
             </div>
           </div>

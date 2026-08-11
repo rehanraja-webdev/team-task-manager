@@ -6,3 +6,19 @@ html {
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --chart-grid: #e2e8f0;
+  --chart-text: #475569;
+  --chart-axis: #cbd5e1;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #e2e8f0;
+}
+
+.dark {
+  --chart-grid: #334155;
+  --chart-text: #cbd5e1;
+  --chart-axis: #475569;
+  --chart-tooltip-bg: #1e293b;
+  --chart-tooltip-border: #334155;
+}

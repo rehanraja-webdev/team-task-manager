@@ -22,15 +22,21 @@ const ProjectInfoCard = ({
 }) => {
   const navigate = useNavigate();
   const [modelActive, setModelActive] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     projectId: "",
   });
+
   if (fetching) return <LoadingSpinner />;
 
   if (!project) {
-    return <div className="p-4 text-slate-400">Loading project details...</div>;
+    return (
+      <div className="p-4 text-slate-600 dark:text-slate-400">
+        Loading project details...
+      </div>
+    );
   }
 
   const handleOpenModal = () => {
@@ -39,6 +45,7 @@ const ProjectInfoCard = ({
       description: project?.description || "",
       projectId: project?._id || "",
     });
+
     setModelActive(true);
   };
 
@@ -52,26 +59,34 @@ const ProjectInfoCard = ({
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+
     await updateProject(project._id, formData);
+
     setModelActive(false);
+
     await reloadProject();
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:col-span-2 shadow-lg">
+    <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg dark:border-slate-800 dark:bg-slate-900">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-slate-800 pb-5">
-        <div className="p-3 rounded-xl bg-purple-600/15">
+      <div className="flex items-center gap-3 border-b border-slate-200 pb-5 dark:border-slate-800">
+        <div className="rounded-xl bg-purple-500/15 p-3">
           <FolderKanban className="text-purple-500" size={24} />
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold text-white">Project Information</h2>
-          <p className="text-slate-400 text-sm">Overview of this project</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Project Information
+          </h2>
+
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Overview of this project
+          </p>
         </div>
 
         {role === "admin" && (
-          <div className="flex items-center gap-3 shrink-0 pt-1 ml-auto">
+          <div className="ml-auto flex shrink-0 items-center gap-3 pt-1">
             {modelActive && (
               <ProjectModal
                 modalActive={modelActive}
@@ -86,20 +101,18 @@ const ProjectInfoCard = ({
             <button
               type="button"
               onClick={handleOpenModal}
-              aria-label="Edit project"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 rounded-lg transition-all duration-200 active:scale-95 shadow-sm cursor-pointer"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
-              <Pencil className="w-4 h-4 text-slate-400" />
+              <Pencil className="h-4 w-4 text-slate-500 dark:text-slate-400" />
               <span>Edit</span>
             </button>
 
             <button
               onClick={handleDelete}
               type="button"
-              aria-label="Delete project"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all duration-200 active:scale-95 shadow-sm cursor-pointer"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-100 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="h-4 w-4" />
               <span>Delete</span>
             </button>
           </div>
@@ -107,7 +120,7 @@ const ProjectInfoCard = ({
       </div>
 
       {/* Content */}
-      <div className="grid md:grid-cols-2 gap-6 mt-8">
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
         <InfoItem label="Project Name" value={project.name} />
 
         <InfoItem
@@ -131,12 +144,12 @@ const ProjectInfoCard = ({
 
       {/* Description */}
       <div className="mt-8">
-        <h3 className="text-sm uppercase tracking-wide text-slate-500 mb-3">
+        <h3 className="mb-3 text-sm uppercase tracking-wide text-slate-500">
           Description
         </h3>
 
-        <div className="bg-slate-800/60 rounded-2xl p-5 border border-slate-700">
-          <p className="text-slate-300 leading-7">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/60">
+          <p className="leading-7 text-slate-700 dark:text-slate-300">
             {project.description || "No description provided."}
           </p>
         </div>
@@ -147,13 +160,13 @@ const ProjectInfoCard = ({
 
 const InfoItem = ({ label, value, icon }) => {
   return (
-    <div className="bg-slate-800/60 border border-slate-700 rounded-2xl p-5">
-      <div className="flex items-center gap-2 text-slate-400 text-sm">
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/60">
+      <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
         {icon}
         <span>{label}</span>
       </div>
 
-      <p className="mt-3 text-lg font-semibold text-white wrap-break-word">
+      <p className="mt-3 wrap-break-word text-lg font-semibold text-slate-900 dark:text-white">
         {value}
       </p>
     </div>

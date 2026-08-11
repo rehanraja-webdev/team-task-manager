@@ -13,17 +13,20 @@ const TaskCard = ({ task, from }) => {
   const statusConfig = {
     todo: {
       icon: <Circle size={16} />,
-      className: "bg-slate-700 text-slate-300",
+      className:
+        "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300",
       label: "Todo",
     },
+
     "in-progress": {
       icon: <Clock3 size={16} />,
-      className: "bg-amber-500/20 text-amber-400",
+      className: "bg-amber-500/20 text-amber-600 dark:text-amber-400",
       label: "In Progress",
     },
+
     done: {
       icon: <CircleCheckBig size={16} />,
-      className: "bg-green-500/20 text-green-400",
+      className: "bg-green-500/20 text-green-600 dark:text-green-400",
       label: "Done",
     },
   };
@@ -31,39 +34,43 @@ const TaskCard = ({ task, from }) => {
   const priorityConfig = {
     low: {
       icon: <Flag size={16} />,
-      className: "bg-blue-500/20 text-blue-400",
+      className: "bg-blue-500/20 text-blue-600 dark:text-blue-400",
       label: "Low",
     },
+
     medium: {
       icon: <TrendingUp size={16} />,
-      className: "bg-yellow-500/20 text-yellow-400",
+      className: "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400",
       label: "Medium",
     },
+
     high: {
       icon: <TriangleAlert size={16} />,
-      className: "bg-red-500/20 text-red-400",
+      className: "bg-red-500/20 text-red-600 dark:text-red-400",
       label: "High",
     },
   };
 
   const status = statusConfig[task.status] || {
     icon: <Circle size={16} />,
-    className: "bg-slate-700 text-slate-300",
+    className:
+      "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300",
     label: task.status,
   };
 
   const priority = priorityConfig[task.priority] || {
     icon: <Flag size={16} />,
-    className: "bg-slate-700 text-slate-300",
+    className:
+      "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300",
     label: task.priority,
   };
 
   return (
-    <div className="bg-slate-900 border border-b-4 border-b-amber-600/80 border-slate-800 rounded-2xl p-6 ">
+    <div className="rounded-2xl border border-slate-200 border-b-4 border-b-amber-500/80 bg-white p-6 dark:border-slate-800 dark:border-b-amber-600/80 dark:bg-slate-900">
       {/* Header */}
-      <div className="flex justify-between ">
+      <div className="flex justify-between gap-3">
         <span
-          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${priority.className}`}
+          className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium ${priority.className}`}
         >
           Priority
           {priority.icon}
@@ -71,28 +78,33 @@ const TaskCard = ({ task, from }) => {
         </span>
 
         <span
-          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap ${status.className}`}
+          className={`inline-flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium ${status.className}`}
         >
           {status.icon}
           {status.label}
         </span>
       </div>
 
+      {/* Content */}
       <div>
-        <h2 className="text-xl font-semibold text-white mt-4">{task.title}</h2>
+        <h2 className="mt-4 text-xl font-semibold text-slate-900 dark:text-white">
+          {task.title}
+        </h2>
 
-        <p className="mt-2 text-slate-400 leading-6">
+        <p className="mt-2 leading-6 text-slate-600 dark:text-slate-400">
           {task.description || "No description provided."}
         </p>
       </div>
 
+      {/* Action */}
       <div className="flex justify-end">
         <NavLink
           to={from === "tasks" ? `${task._id}` : `tasks/${task._id}`}
-          className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-300 bg-slate-800/60 border border-slate-700/50 hover:bg-slate-800 hover:text-purple-400 hover:border-purple-500/40 hover:shadow-md hover:shadow-purple-500/5 active:scale-[0.98] transition-all duration-200"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition-all duration-200 hover:border-purple-500/40 hover:bg-slate-200 hover:text-purple-600 active:scale-[0.98] dark:border-slate-700/50 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-purple-400"
         >
           <span>View Task</span>
-          <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+
+          <ArrowRight className="size-4 transition-transform duration-200" />
         </NavLink>
       </div>
     </div>

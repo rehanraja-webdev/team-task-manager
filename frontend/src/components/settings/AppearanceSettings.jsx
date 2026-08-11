@@ -50,7 +50,7 @@ const AppearanceSettings = ({ settings, saveSettings, saving }) => {
               } ${
                 active
                   ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10"
-                  : "border-slate-200 bg-slate-50 hover:-translate-y-1 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-slate-700"
+                  : "border-slate-300 bg-slate-50 hover:-translate-y-1 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-slate-700"
               }`}
             >
               {/* Selected indicator */}

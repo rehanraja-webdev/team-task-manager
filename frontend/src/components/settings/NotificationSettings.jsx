@@ -72,11 +72,11 @@ const NotificationSettings = ({ settings, saveSettings, saving }) => {
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-white">Notifications</h2>
+        <h2 className="text-xl font-semibold dark:text-white">Notifications</h2>
 
-        <p className="text-slate-400 mt-1">
+        <p className="text-slate-600 dark:text-slate-400 mt-1">
           Manage how you receive notifications.
         </p>
       </div>
@@ -102,7 +102,7 @@ const NotificationSettings = ({ settings, saveSettings, saving }) => {
             ${
               hasChanges
                 ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                : "bg-slate-800 text-slate-500 cursor-not-allowed"
+                : "bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed"
             }`}
         >
           {saving ? "Saving..." : "Save Changes"}

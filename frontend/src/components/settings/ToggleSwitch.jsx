@@ -8,10 +8,12 @@ const ToggleSwitch = ({
   return (
     <div className="flex items-center justify-between py-4">
       <div>
-        <h3 className="text-white font-medium">{label}</h3>
+        <h3 className="text-slate-900 dark:text-white font-medium">{label}</h3>
 
         {description && (
-          <p className="text-sm text-slate-400 mt-1">{description}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+            {description}
+          </p>
         )}
       </div>
 

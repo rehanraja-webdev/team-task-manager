@@ -5,7 +5,7 @@ import MobileNavbar from "../components/layout/MobileNavbar";
 
 const MainLayout = () => {
   return (
-    <div className="bg-slate-950 min-h-screen px-3 py-4 md:p-6">
+    <div className="dark:bg-slate-950 bg-slate-100 min-h-screen px-3 py-4 md:p-6">
       <div className="flex">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block">
@@ -22,7 +22,7 @@ const MainLayout = () => {
           <Outlet />
         </main>
       </div>
-      
+
       <div className="md:hidden">
         <MobileNavbar />
       </div>

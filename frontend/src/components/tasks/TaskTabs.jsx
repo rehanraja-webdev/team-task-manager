@@ -25,7 +25,7 @@ const TaskTabs = ({ activeTab, setActiveTab, isAdmin }) => {
   }
 
   return (
-    <div className="mt-8 border-b border-slate-800">
+    <div className="mt-8 border-b border-slate-200 dark:border-slate-800">
       <div className="flex gap-8 overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => (
           <button
@@ -33,8 +33,8 @@ const TaskTabs = ({ activeTab, setActiveTab, isAdmin }) => {
             onClick={() => setActiveTab(tab.id)}
             className={`pb-4 flex items-center gap-2 whitespace-nowrap transition-all duration-200 border-b-2 ${
               activeTab === tab.id
-                ? "border-purple-500 text-white"
-                : "border-transparent text-slate-400 hover:text-white"
+                ? "border-purple-500 text-slate-900 dark:text-white"
+                : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             {tab.icon}

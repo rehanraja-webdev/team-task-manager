@@ -1,23 +1,26 @@
 import { Plus } from "lucide-react";
-import { NavLink } from "react-router";
+import { NavLink } from "react-router-dom";
 
 const TasksHeader = () => {
   return (
-    <div className="flex items-center justify-between bg-slate-900 rounded-3xl p-6">
-      <div className="text-white">
-        <h1 className="text-4xl font-bold mb-2">Tasks</h1>
-        <p className="text-slate-400">Manage and organize all your tasks.</p>
+    <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6">
+      <div>
+        <h1 className="text-4xl font-bold mb-2 text-slate-900 dark:text-white">
+          Tasks
+        </h1>
+
+        <p className="text-slate-600 dark:text-slate-400">
+          Manage and organize all your tasks.
+        </p>
       </div>
 
-      <div>
-        <NavLink
-          to="new"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
-        >
-          <Plus className="size-4 stroke-[2.5]" />
-          <span className="">Create Task</span>
-        </NavLink>
-      </div>
+      <NavLink
+        to="new"
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
+      >
+        <Plus className="size-4 stroke-[2.5]" />
+        <span>Create Task</span>
+      </NavLink>
     </div>
   );
 };

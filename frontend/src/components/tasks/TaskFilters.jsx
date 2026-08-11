@@ -10,15 +10,17 @@ const TaskFilters = ({
   sort,
   setSort,
 }) => {
+  const selectClass =
+    "bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20";
+
   return (
-    <div className="mt-6 bg-slate-900 border border-slate-800 rounded-2xl p-5">
+    <div className="mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {/* Search */}
-
         <div className="relative">
           <Search
             size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
           />
 
           <input
@@ -26,16 +28,15 @@ const TaskFilters = ({
             placeholder="Search tasks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 outline-none focus:border-purple-500"
+            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
           />
         </div>
 
         {/* Status */}
-
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+          className={selectClass}
         >
           <option value="">All Status</option>
           <option value="todo">Todo</option>
@@ -44,11 +45,10 @@ const TaskFilters = ({
         </select>
 
         {/* Priority */}
-
         <select
           value={priority}
           onChange={(e) => setPriority(e.target.value)}
-          className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+          className={selectClass}
         >
           <option value="">All Priority</option>
           <option value="low">Low</option>
@@ -57,11 +57,10 @@ const TaskFilters = ({
         </select>
 
         {/* Sort */}
-
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          className="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+          className={selectClass}
         >
           <option value="latest">Latest</option>
           <option value="oldest">Oldest</option>

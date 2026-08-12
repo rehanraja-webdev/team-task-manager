@@ -1,5 +1,5 @@
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { NavLink } from "react-router";
+import { NavLink } from "react-router-dom";
 
 const Hero = () => {
   return (

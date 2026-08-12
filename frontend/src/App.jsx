@@ -17,6 +17,7 @@ import ActivityPage from "./pages/ActivityPage";
 import Analytics from "./pages/Analytics";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingPage";
+import HelpPage from "./pages/HelpPage";
 
 const App = () => {
   return (
@@ -59,6 +60,8 @@ const App = () => {
             <Route path="users" element={<Users />} />
 
             <Route path="activities" element={<ActivityPage />} />
+
+            <Route path="help" element={<HelpPage />} />
           </Route>
         </Route>
       </Routes>

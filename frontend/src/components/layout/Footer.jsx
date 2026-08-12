@@ -1,4 +1,4 @@
-import { CheckSquare, Mail, Heart } from "lucide-react";
+import { Mail, Heart } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
@@ -11,19 +11,20 @@ const Footer = () => {
         <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4 lg:gap-12">
           {/* Column 1: Brand & Description */}
           <div className="sm:col-span-2 md:col-span-1">
-            <Link
-              to="/dashboard"
-              className="inline-flex items-center gap-2.5 text-xl font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg"
-            >
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm shadow-indigo-500/30">
-                <CheckSquare size={20} />
-              </div>
-              <span className="text-slate-900 dark:text-white">
-                Team
-                <span className="text-indigo-600 dark:text-indigo-400">
-                  Task
-                </span>
-              </span>
+            <Link to="/dashboard">
+              {/* Light mode */}
+              <img
+                src="/logo/teamtask-logo.svg"
+                alt="TeamTask"
+                className="h-12 w-auto dark:hidden"
+              />
+
+              {/* Dark mode */}
+              <img
+                src="/logo/teamtask-logo-white.svg"
+                alt="TeamTask"
+                className="hidden h-12 w-auto dark:block"
+              />
             </Link>
 
             <p className="mt-3.5 max-w-sm text-sm leading-relaxed text-slate-500 dark:text-slate-400">

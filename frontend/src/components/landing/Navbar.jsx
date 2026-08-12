@@ -6,9 +6,15 @@ const Navbar = () => {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
         <NavLink to="/" className="flex items-center gap-2">
           <img
+            src="/logo/teamtask-logo.svg"
+            alt="TeamTask"
+            className="h-12 w-auto dark:hidden"
+          />
+
+          <img
             src="/logo/teamtask-logo-white.svg"
             alt="TeamTask"
-            className="h-10 w-auto"
+            className="hidden h-12 w-auto dark:block"
           />
         </NavLink>
 

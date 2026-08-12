@@ -24,9 +24,17 @@ const Sidebar = () => {
     >
       {/* Logo */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-          Team<span className="text-indigo-500">Task</span>
-        </h1>
+        <img
+          src="/logo/teamtask-logo.svg"
+          alt="TeamTask"
+          className="h-12 w-auto dark:hidden"
+        />
+
+        <img
+          src="/logo/teamtask-logo-white.svg"
+          alt="TeamTask"
+          className="hidden h-12 w-auto dark:block"
+        />
 
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           Project Management

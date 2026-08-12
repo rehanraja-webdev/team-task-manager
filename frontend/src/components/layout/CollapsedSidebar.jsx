@@ -25,10 +25,15 @@ const CollapsedSidebar = () => {
       "
     >
       {/* Logo */}
-      <NavLink to="/">
-        <h1 className="mb-2 text-2xl font-bold text-indigo-600 dark:text-indigo-500">
-          T
-        </h1>
+      <NavLink
+        to="/"
+        className="mb-3"
+      >
+        <img
+          src="/logo/teamtask-icon.svg"
+          alt="TeamTask"
+          className="h-10 w-10"
+        />
       </NavLink>
 
       {/* Main Navigation */}

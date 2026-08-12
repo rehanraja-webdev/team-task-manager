@@ -27,7 +27,7 @@ const Hero = () => {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <NavLink
-              to="/signup"
+              to="/register"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3.5 font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-500"
             >
               Get Started Free

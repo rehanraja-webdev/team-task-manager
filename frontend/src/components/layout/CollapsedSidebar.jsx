@@ -25,7 +25,7 @@ const CollapsedSidebar = () => {
       "
     >
       {/* Logo */}
-      <NavLink to="/dashboard">
+      <NavLink to="/">
         <h1 className="mb-2 text-2xl font-bold text-indigo-600 dark:text-indigo-500">
           T
         </h1>

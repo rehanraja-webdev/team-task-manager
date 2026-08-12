@@ -18,12 +18,15 @@ import Analytics from "./pages/Analytics";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingPage";
 import HelpPage from "./pages/HelpPage";
+import LandingPage from "./pages/LandingPage";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Toaster />
+
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 

@@ -45,14 +45,14 @@ export const memberLinks = [
     path: "/dashboard",
   },
   {
-    name: "My Tasks",
-    icon: ClipboardList,
-    path: "/dashboard/tasks",
-  },
-  {
     name: "Projects",
     icon: FolderOpen,
     path: "/dashboard/projects",
+  },
+  {
+    name: "My Tasks",
+    icon: ClipboardList,
+    path: "/dashboard/tasks",
   },
   {
     name: "Activities",

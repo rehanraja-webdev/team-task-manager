@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
-const TasksHeader = () => {
+const TasksHeader = ({ role }) => {
   return (
     <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6">
       <div>
@@ -14,13 +14,15 @@ const TasksHeader = () => {
         </p>
       </div>
 
-      <NavLink
-        to="new"
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
-      >
-        <Plus className="size-4 stroke-[2.5]" />
-        <span>Create Task</span>
-      </NavLink>
+      {role === "admin" && (
+        <NavLink
+          to="new"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
+        >
+          <Plus className="size-4 stroke-[2.5]" />
+          <span>Create Task</span>
+        </NavLink>
+      )}
     </div>
   );
 };

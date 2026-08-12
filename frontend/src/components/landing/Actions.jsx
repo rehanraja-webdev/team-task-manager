@@ -15,7 +15,7 @@ const Actions = () => {
         </p>
 
         <NavLink
-          to="/signup"
+          to="/register"
           className="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 font-semibold text-indigo-600 transition hover:bg-indigo-50"
         >
           Create Your Account

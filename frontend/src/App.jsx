@@ -19,6 +19,7 @@ import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingPage";
 import HelpPage from "./pages/HelpPage";
 import LandingPage from "./pages/LandingPage";
+import PublicLayout from "./layouts/PublicLayout";
 
 const App = () => {
   return (
@@ -26,9 +27,11 @@ const App = () => {
       <Toaster />
 
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
 
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<MainLayout />}>

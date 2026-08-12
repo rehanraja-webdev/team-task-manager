@@ -96,39 +96,11 @@ const Sidebar = () => {
         </ul>
       </div>
 
-      {/* User Card */}
-      <div className="mt-auto pt-6">
-        <div
+      <div className="mt-auto">
+        <button
+          onClick={logout}
+          disabled={loading}
           className="
-            rounded-2xl border p-4
-            bg-slate-50 border-slate-200
-            dark:bg-slate-950 dark:border-slate-800
-          "
-        >
-          <div className="mb-4 flex items-center gap-3">
-            <img
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                user?.fullname || "User",
-              )}&background=4f46e5&color=fff`}
-              alt="Profile"
-              className="h-10 w-10 rounded-full"
-            />
-
-            <div className="min-w-0">
-              <h4 className="truncate font-medium text-slate-900 dark:text-white">
-                {user?.fullname}
-              </h4>
-
-              <p className="text-xs capitalize text-slate-500 dark:text-slate-400">
-                {user?.role}
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={logout}
-            disabled={loading}
-            className="
               flex w-full items-center justify-center gap-2 rounded-xl py-3
               bg-red-500/10 text-red-500
               transition
@@ -136,12 +108,11 @@ const Sidebar = () => {
               disabled:cursor-not-allowed disabled:opacity-50
               dark:text-red-400
             "
-          >
-            <LogOut size={18} />
+        >
+          <LogOut size={18} />
 
-            {loading ? "Logging out..." : "Logout"}
-          </button>
-        </div>
+          {loading ? "Logging out..." : "Logout"}
+        </button>
       </div>
     </aside>
   );

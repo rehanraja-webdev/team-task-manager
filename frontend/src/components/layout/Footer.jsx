@@ -63,28 +63,28 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <a
-                  href="#documentation"
+                <Link
+                  to="#documentation"
                   className="text-slate-500 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
                 >
                   Documentation
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#api"
+                <Link
+                  to="#api"
                   className="text-slate-500 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
                 >
                   API Status
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#support"
+                <Link
+                  to="help"
                   className="text-slate-500 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
                 >
                   Help & Support
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -95,33 +95,33 @@ const Footer = () => {
               Connect
             </h3>
             <div className="flex items-center gap-2.5">
-              <a
-                href="https://github.com/rehanraja-webdev/"
+              <Link
+                to="https://github.com/rehanraja-webdev/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
                 className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
               >
                 <FaGithub size={18} />
-              </a>
+              </Link>
 
-              <a
-                href="https://www.linkedin.com/in/rehan-raja-devs"
+              <Link
+                to="https://www.linkedin.com/in/rehan-raja-devs"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
                 className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
               >
                 <FaLinkedin size={18} />
-              </a>
+              </Link>
 
-              <a
-                href="mailto:rehanraja.dev@gmail.com"
+              <Link
+                to="mailto:rehanraja.dev@gmail.com"
                 aria-label="Email"
                 className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
               >
                 <Mail size={18} />
-              </a>
+              </Link>
             </div>
 
             <p className="mt-4 text-xs leading-relaxed text-slate-500 dark:text-slate-400">

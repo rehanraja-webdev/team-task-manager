@@ -15,7 +15,7 @@ const Sidebar = () => {
   return (
     <aside
       className="
-        sticky top-6 flex h-[calc(100vh-3rem)] w-52 flex-col
+        sticky top-6 flex min-h-[calc(100vh-3rem)] w-52 flex-col
         rounded-3xl border p-6
         bg-white border-slate-200
         dark:bg-slate-900 dark:border-slate-800
@@ -96,7 +96,7 @@ const Sidebar = () => {
         </ul>
       </div>
 
-      <div className="mt-auto">
+      <div className="mt-auto pt-6">
         <button
           onClick={logout}
           disabled={loading}
@@ -114,6 +114,39 @@ const Sidebar = () => {
           {loading ? "Logging out..." : "Logout"}
         </button>
       </div>
+
+      {/* User Card */}
+      {/* 
+        <div
+          className="
+            rounded-2xl border p-4
+            bg-slate-50 border-slate-200
+            dark:bg-slate-950 dark:border-slate-800
+          "
+        >
+          <div className="mb-4 flex items-center gap-3">
+            <img
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                user?.fullname || "User",
+              )}&background=4f46e5&color=fff`}
+              alt="Profile"
+              className="h-10 w-10 rounded-full"
+            />
+
+            <div className="min-w-0">
+              <h4 className="truncate font-medium text-slate-900 dark:text-white">
+                {user?.fullname}
+              </h4>
+
+              <p className="text-xs capitalize text-slate-500 dark:text-slate-400">
+                {user?.role}
+              </p>
+            </div>
+          </div>
+
+          
+        </div>
+      </div> */}
     </aside>
   );
 };

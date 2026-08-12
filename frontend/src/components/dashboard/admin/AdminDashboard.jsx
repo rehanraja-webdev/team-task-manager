@@ -30,7 +30,7 @@ const AdminDashboard = ({ fullname }) => {
         </p>
       </div>
       <DashboardStats stats={stats} />
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
         <DashboardTaskAnalytics stats={stats} />
 
         <DashboardOverview stats={stats} />

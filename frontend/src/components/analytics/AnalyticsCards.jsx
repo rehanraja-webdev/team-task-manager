@@ -12,7 +12,7 @@ const AnalyticsCards = ({ overview }) => {
   const cards = [
     {
       title: "Total Users",
-      value: overview.totalUsers,
+      value: overview.totalMembers,
       icon: Users,
     },
     {

@@ -20,27 +20,62 @@ export const globalSearch = asyncHandler(async (req, res) => {
 
   const regex = new RegExp(q, "i");
 
-  const [users, projects, tasks] = await Promise.all([
-    User.find({
+  let projectQuery;
+
+  if (req.user.role === "admin") {
+    projectQuery = {
+      owner: req.user._id,
+    };
+  } else {
+    projectQuery = {
+      "members.user": req.user._id,
+    };
+  }
+
+  const accessibleProjects = await Project.find(projectQuery)
+    .select("_id name status members")
+    .lean();
+
+  const projectIds = accessibleProjects.map((project) => project._id);
+
+  const projects = accessibleProjects
+    .filter((project) => regex.test(project.name))
+    .slice(0, 5)
+    .map(({ _id, name, status }) => ({
+      _id,
+      name,
+      status,
+    }));
+
+  const tasks = await Task.find({
+    project: { $in: projectIds },
+    title: regex,
+  })
+    .select("title status priority project")
+    .limit(5)
+    .lean();
+
+  let users = [];
+
+  if (req.user.role === "admin") {
+    const memberIds = [
+      ...new Set(
+        accessibleProjects.flatMap((project) =>
+          project.members.map((member) => member.user?.toString()),
+        ),
+      ),
+    ];
+
+    users = await User.find({
+      _id: { $in: memberIds },
       fullname: regex,
     })
       .select("fullname email role")
-      .limit(5),
+      .limit(5)
+      .lean();
+  }
 
-    Project.find({
-      name: regex,
-    })
-      .select("name status")
-      .limit(5),
-
-    Task.find({
-      title: regex,
-    })
-      .select("title status priority")
-      .limit(5),
-  ]);
-
-  res.json(
+  return res.json(
     new ApiResponse(200, "Search Result", {
       users,
       projects,

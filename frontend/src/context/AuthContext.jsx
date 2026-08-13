@@ -1,6 +1,15 @@
 /* eslint-disable */
 import { createContext, useEffect, useState } from "react";
-import { getUser, loginUser, logoutUser } from "../services/auth.service";
+import toast from "react-hot-toast";
+
+import {
+  getUser,
+  loginUser,
+  logoutUser,
+  registerUser,
+} from "../services/auth.service";
+
+import LoadingSpinner from "../components/common/LoadingSpinner";
 import ThemeProvider from "./ThemeContext";
 
 export const AuthContext = createContext();
@@ -13,22 +22,65 @@ const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+  // LOGIN
   const login = async (formData) => {
-    const res = await loginUser(formData);
+    try {
+      const res = await loginUser(formData);
 
-    setUser(res.data);
-    return res;
+      setUser(res.data);
+
+      toast.success("Login successful!");
+
+      return res;
+    } catch (error) {
+      const message =
+        error?.response?.data?.message || "Login failed. Please try again.";
+
+      toast.error(message);
+
+      throw error;
+    }
+  };
+
+  const register = async (formData) => {
+    try {
+      const res = await registerUser(formData);
+
+      toast.success("Account created successfully!");
+
+      return res;
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        "Registration failed. Please try again.";
+
+      toast.error(message);
+
+      throw error;
+    }
   };
 
   const logout = async () => {
-    await logoutUser();
+    try {
+      await logoutUser();
 
-    setUser(null);
+      setUser(null);
+
+      toast.success("Logged out successfully!");
+    } catch (error) {
+      const message =
+        error?.response?.data?.message || "Logout failed. Please try again.";
+
+      toast.error(message);
+
+      throw error;
+    }
   };
 
   const checkAuth = async () => {
     try {
       const res = await getUser();
+
       setUser(res.data);
     } catch {
       setUser(null);
@@ -43,15 +95,18 @@ const AuthProvider = ({ children }) => {
     loading,
     setLoading,
     login,
+    register,
     logout,
     checkAuth,
   };
 
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <ThemeProvider>
-      <AuthContext.Provider value={value}>
-        {children}
-      </AuthContext.Provider>
+      <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
     </ThemeProvider>
   );
 };

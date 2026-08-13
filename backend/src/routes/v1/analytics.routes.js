@@ -1,43 +1,50 @@
 import express from "express";
 import authMiddleware from "../../middlewares/auth.middleware.js";
-import analyticController from "../../controllers/analytics.controller.js";
+import analyticsController from "../../controllers/analytics.controller.js";
 import authorizeRoles from "../../middlewares/role.middleware.js";
-
+import { getAdminAnalytics } from "../../controllers/adminAnalytics.controller.js";
 const router = express.Router();
 
 router.get(
   "/overview",
   authMiddleware,
   authorizeRoles("super-admin", "admin"),
-  analyticController.analyticsOverview,
+  analyticsController.analyticsOverview,
 );
 
 router.get(
   "/monthly-task",
   authMiddleware,
   authorizeRoles("super-admin", "admin"),
-  analyticController.monthlyTask,
+  analyticsController.monthlyTask,
 );
 
 router.get(
   "/progress",
   authMiddleware,
   authorizeRoles("super-admin", "admin"),
-  analyticController.projectProgress,
+  analyticsController.projectProgress,
 );
 
 router.get(
   "/contributors",
   authMiddleware,
   authorizeRoles("super-admin", "admin"),
-  analyticController.getTopContributors,
+  analyticsController.getTopContributors,
 );
 
 router.get(
   "/overdue",
   authMiddleware,
   authorizeRoles("super-admin", "admin"),
-  analyticController.getOverdueTasks,
+  analyticsController.getOverdueTasks,
+);
+
+router.get(
+  "/admin",
+  authMiddleware,
+  authorizeRoles("admin"),
+  getAdminAnalytics,
 );
 
 export default router;

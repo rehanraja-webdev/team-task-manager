@@ -18,11 +18,6 @@ const router = express.Router();
  */
 router.get("/:taskId", authMiddleware, activityController.getTaskActivities);
 
-router.get(
-  "/",
-  authMiddleware,
-  authorizeRoles("admin", "super-admin"),
-  activityController.getAllActivities,
-);
+router.get("/", authMiddleware, activityController.getAllActivities);
 
 export default router;

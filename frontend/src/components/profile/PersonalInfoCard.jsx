@@ -77,7 +77,7 @@ const PersonalInfoCard = ({ user }) => {
                       {item.label}
                     </p>
 
-                    <p className="mt-1 font-medium capitalize text-slate-900 dark:text-white">
+                    <p className="mt-1 font-medium  text-slate-900 dark:text-white">
                       {item.value}
                     </p>
                   </div>

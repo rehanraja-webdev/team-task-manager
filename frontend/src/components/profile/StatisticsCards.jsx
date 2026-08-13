@@ -9,7 +9,7 @@ const StatisticsCards = ({ statistics }) => {
   const stats = [
     {
       title: "Projects",
-      value: statistics.createdProjects,
+      value: statistics.projectsCount,
       icon: FolderKanban,
     },
     {

@@ -146,16 +146,26 @@ const changePassword = asyncHandler(async (req, res) => {
 });
 
 const getUserStatistics = asyncHandler(async (req, res) => {
-  const createdProjects = await Project.countDocuments({
-    owner: req.user._id,
-  });
+  const userId = req.user._id;
+
+  let projectsCount;
+
+  if (req.user.role === "admin") {
+    projectsCount = await Project.countDocuments({
+      owner: userId,
+    });
+  } else {
+    projectsCount = await Project.countDocuments({
+      "members.user": userId,
+    });
+  }
 
   const assignedTasks = await Task.countDocuments({
-    assignedTo: req.user._id,
+    assignedTo: userId,
   });
 
   const completedTasks = await Task.countDocuments({
-    assignedTo: req.user._id,
+    assignedTo: userId,
     status: "done",
   });
 
@@ -164,9 +174,9 @@ const getUserStatistics = asyncHandler(async (req, res) => {
       ? 0
       : Math.round((completedTasks / assignedTasks) * 100);
 
-  res.json(
-    new ApiResponse(200, "Statistics", {
-      createdProjects,
+  res.status(200).json(
+    new ApiResponse(200, "Statistics fetched successfully", {
+      projectsCount,
       assignedTasks,
       completedTasks,
       completionRate,

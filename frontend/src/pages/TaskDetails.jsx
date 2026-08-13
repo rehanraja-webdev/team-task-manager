@@ -5,7 +5,7 @@ import TaskInfoCard from "../components/taskDetails/TaskInfoCard";
 import ActivityTimeline from "../components/taskDetails/ActivityTimeline";
 import CommentList from "../components/taskDetails/CommentList";
 import useTask from "../hooks/useTask";
-import useTaskActions from "../hooks/UseTaskActions";
+import useTaskActions from "../hooks/useTaskActions";
 import useAuth from "../hooks/useAuth";
 
 const TaskDetails = () => {

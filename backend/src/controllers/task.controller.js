@@ -280,7 +280,7 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     title: "Task status updated!",
     message: `Task status updated to "${task.status}"`,
     task: task._id,
-    project: projectId,
+    project: task.project,
   });
 
   cacheHelper.deleteCache(`dashboard_${req.user._id}`);

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useTaskActions from "../../hooks/UseTaskActions";
+import useTaskActions from "../../hooks/useTaskActions";
 
 const UpdateTaskModal = ({
   members,

@@ -28,10 +28,12 @@ const useTaskActions = () => {
     try {
       setLoading(true);
       const updateRes = await changeTaskStatus(taskId, status);
+      
       toast.success(updateRes.message || `Task status updated to ${status}`);
+      
       return true;
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Failed to update status");
     } finally {
       setLoading(false);
     }

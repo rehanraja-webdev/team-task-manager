@@ -33,12 +33,9 @@ const MemberDashboard = ({ fullname }) => {
 
       <MemberStats dashboard={dashboard} />
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <MyTasks tasks={dashboard.upcomingTasks} />
         <UpcomingDeadlines tasks={dashboard.upcomingTasks} />
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
         <MyProjects projects={dashboard.projects} />
         <RecentActivities activities={dashboard.recentActivities} />
       </div>

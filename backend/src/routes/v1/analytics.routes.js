@@ -40,11 +40,4 @@ router.get(
   analyticsController.getOverdueTasks,
 );
 
-router.get(
-  "/admin",
-  authMiddleware,
-  authorizeRoles("admin"),
-  getAdminAnalytics,
-);
-
 export default router;

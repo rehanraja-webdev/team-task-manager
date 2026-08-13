@@ -20,6 +20,7 @@ import SettingsPage from "./pages/SettingPage";
 import HelpPage from "./pages/HelpPage";
 import LandingPage from "./pages/LandingPage";
 import PublicLayout from "./layouts/PublicLayout";
+import Help from "./pages/public/Help";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/help" element={<Help />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>

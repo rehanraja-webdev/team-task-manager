@@ -68,7 +68,7 @@ const analyticsOverview = asyncHandler(async (req, res) => {
   const mediumPriority = priorityCounts.medium || 0;
   const highPriority = priorityCounts.high || 0;
 
-  cacheHelper.setCache(cacheKey, {
+  const data = {
     totalUsers,
     totalProjects,
     totalTasks,
@@ -79,22 +79,13 @@ const analyticsOverview = asyncHandler(async (req, res) => {
     lowPriority,
     mediumPriority,
     highPriority,
-  });
+  };
 
-  res.status(200).json(
-    new ApiResponse(200, "analytics overview fetched!", {
-      totalUsers,
-      totalProjects,
-      totalTasks,
-      todoTasks,
-      inProgressTasks,
-      doneTasks,
-      overdueTasks,
-      lowPriority,
-      mediumPriority,
-      highPriority,
-    }),
-  );
+  cacheHelper.setCache(cacheKey, data);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, "analytics overview fetched!", data));
 });
 
 const monthlyTask = asyncHandler(async (req, res) => {
@@ -112,6 +103,7 @@ const monthlyTask = asyncHandler(async (req, res) => {
     console.log("Cache Miss:", cacheKey);
     cacheHelper.deleteCache(cacheKey);
   }
+  
   const monthlyTasks = await Task.aggregate([
     {
       $group: {

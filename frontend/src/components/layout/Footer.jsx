@@ -1,4 +1,4 @@
-import { Mail, Heart } from "lucide-react";
+import { Mail, Heart, ArrowUpRight } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
@@ -7,140 +7,150 @@ const Footer = () => {
 
   return (
     <footer className="mt-12 border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-      <div className="mx-auto max-w-7xl px-6 pt-12 pb-8">
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4 lg:gap-12">
-          {/* Column 1: Brand & Description */}
-          <div className="sm:col-span-2 md:col-span-1">
-            <Link to="/dashboard">
-              {/* Light mode */}
+      <div className="mx-auto max-w-7xl px-6 py-10 sm:py-12">
+        {/* Main Footer */}
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Brand */}
+          <div className="lg:col-span-1">
+            <Link to="/dashboard" className="inline-block">
+              {/* Light */}
               <img
                 src="/logo/teamtask-logo.svg"
                 alt="TeamTask"
-                className="h-12 w-auto dark:hidden"
+                className="h-11 w-auto dark:hidden"
               />
 
-              {/* Dark mode */}
+              {/* Dark */}
               <img
                 src="/logo/teamtask-logo-white.svg"
                 alt="TeamTask"
-                className="hidden h-12 w-auto dark:block"
+                className="hidden h-11 w-auto dark:block"
               />
             </Link>
 
-            <p className="mt-3.5 max-w-sm text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-              A collaborative task management platform built to help teams
-              organize work, track progress, and ship products faster.
+            <p className="mt-4 max-w-xs text-sm leading-6 text-slate-500 dark:text-slate-400">
+              A simple project and task management platform that helps teams
+              organize work, track progress, and stay productive.
             </p>
           </div>
 
-          {/* Column 2: Navigation Links */}
+          {/* Product */}
           <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
-              Navigation
+            <h3 className="mb-4 text-sm font-semibold text-slate-900 dark:text-white">
+              Product
             </h3>
-            <ul className="space-y-2.5 text-sm">
+
+            <ul className="space-y-3">
               {[
                 { label: "Dashboard", path: "/dashboard" },
-                { label: "Tasks", path: "/dashboard/tasks" },
                 { label: "Projects", path: "/dashboard/projects" },
-                { label: "Profile", path: "/dashboard/profile" },
-              ].map((link) => (
-                <li key={link.path}>
+                { label: "My Tasks", path: "/dashboard/tasks" },
+                { label: "Activities", path: "/dashboard/activities" },
+              ].map((item) => (
+                <li key={item.path}>
                   <Link
-                    to={link.path}
-                    className="text-slate-500 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 focus:outline-none focus:underline"
+                    to={item.path}
+                    className="text-sm text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
                   >
-                    {link.label}
+                    {item.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Column 3: Resources & Support */}
+          {/* Support */}
           <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
-              Resources
+            <h3 className="mb-4 text-sm font-semibold text-slate-900 dark:text-white">
+              Support
             </h3>
-            <ul className="space-y-2.5 text-sm">
+
+            <ul className="space-y-3">
               <li>
                 <Link
-                  to="#documentation"
-                  className="text-slate-500 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
-                >
-                  Documentation
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="#api"
-                  className="text-slate-500 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
-                >
-                  API Status
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="help"
-                  className="text-slate-500 transition hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                  to="/dashboard/help"
+                  className="inline-flex items-center gap-1.5 text-sm text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
                 >
                   Help & Support
+                  <ArrowUpRight size={13} />
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/dashboard/profile"
+                  className="text-sm text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                >
+                  Profile
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/dashboard/settings"
+                  className="text-sm text-slate-500 transition-colors hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                >
+                  Settings
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Social Connect */}
+          {/* Connect */}
           <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+            <h3 className="mb-4 text-sm font-semibold text-slate-900 dark:text-white">
               Connect
             </h3>
+
+            <p className="mb-4 text-sm leading-6 text-slate-500 dark:text-slate-400">
+              Have feedback or want to connect? Find me here.
+            </p>
+
             <div className="flex items-center gap-2.5">
-              <Link
-                to="https://github.com/rehanraja-webdev/"
+              {/* GitHub */}
+              <a
+                href="https://github.com/rehanraja-webdev/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
               >
                 <FaGithub size={18} />
-              </Link>
+              </a>
 
-              <Link
-                to="https://www.linkedin.com/in/rehan-raja-devs"
+              {/* LinkedIn */}
+              <a
+                href="https://www.linkedin.com/in/rehan-raja-devs"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
               >
                 <FaLinkedin size={18} />
-              </Link>
+              </a>
 
-              <Link
-                to="mailto:rehanraja.dev@gmail.com"
+              {/* Email */}
+              <a
+                href="mailto:rehanraja.dev@gmail.com"
                 aria-label="Email"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-indigo-500/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
               >
                 <Mail size={18} />
-              </Link>
+              </a>
             </div>
-
-            <p className="mt-4 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-              Designed for modern software teams.
-            </p>
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="mt-12 flex flex-col gap-4 border-t border-slate-200 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
-          <p className="text-slate-500 dark:text-slate-400">
+        {/* Bottom */}
+        <div className="mt-10 flex flex-col gap-3 border-t border-slate-200 pt-6 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             © {currentYear} TeamTask. All rights reserved.
           </p>
 
-          <p className="inline-flex items-center gap-1 text-slate-500 dark:text-slate-400">
-            Made with{" "}
-            <Heart size={14} className="fill-red-500 text-red-500 inline" /> for
-            productive teams.
+          <p className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+            Built with
+            <Heart size={13} className="fill-rose-500 text-rose-500" />
+            for better teamwork.
           </p>
         </div>
       </div>

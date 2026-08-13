@@ -24,7 +24,7 @@ const RecentActivities = ({ activities = [] }) => {
         </div>
 
         <Link
-          to="/dashboard/activity"
+          to="/dashboard/activities"
           className="group inline-flex items-center gap-1 text-xs font-medium text-indigo-600 dark:text-indigo-400"
         >
           View all

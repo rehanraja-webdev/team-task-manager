@@ -4,7 +4,7 @@ const MyProjects = ({ projects }) => {
       <h2 className="mb-5 text-xl font-semibold text-white">My Projects</h2>
 
       <div className="space-y-4">
-        {projects.map((project) => (
+        {projects.slice(0, 5).map((project) => (
           <div
             key={project._id}
             className="rounded-xl border border-slate-800 bg-slate-950 p-4"

@@ -8,7 +8,7 @@ const RecentActivities = ({ activities }) => {
       </h2>
 
       <div className="space-y-4">
-        {activities.map((activity) => (
+        {activities.slice(0, 5).map((activity) => (
           <div
             key={activity._id}
             className="rounded-xl border border-slate-800 bg-slate-950 p-4"

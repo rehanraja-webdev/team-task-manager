@@ -33,7 +33,7 @@ const Tasks = () => {
     <div className="space-y-6">
       <TasksHeader role={user.role} />
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4 mb-8">
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4 mb-8">
         <StatCard title="Total Tasks" value={totalTasks} icon={<ListTodo />} />
 
         <StatCard title="Todo" value={todoTasks} icon={<Circle />} />

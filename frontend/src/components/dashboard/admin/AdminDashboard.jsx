@@ -1,10 +1,14 @@
+import { lazy, Suspense } from "react";
 import useAdminDashboard from "../../../hooks/useAdminDashboard";
 import LoadingSpinner from "../../common/LoadingSpinner";
+import ChartSkeleton from "../../common/ChartSkeleton";
+
 import DashboardStats from "./DashboardStats";
-import CompletionRateChart from "./CompletionRateChart";
 import DashboardOverview from "./DashboardOverview";
 import DashboardTaskAnalytics from "./DashboardTaskAnalytics";
 import RecentActivity from "./RecentActivity";
+
+const CompletionRateChart = lazy(() => import("./CompletionRateChart"));
 
 const AdminDashboard = ({ fullname }) => {
   const { stats, loading } = useAdminDashboard();
@@ -37,7 +41,9 @@ const AdminDashboard = ({ fullname }) => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <CompletionRateChart completionRate={stats.completionRate} />
+        <Suspense fallback={<ChartSkeleton />}>
+          <CompletionRateChart completionRate={stats.completionRate} />
+        </Suspense>
 
         <RecentActivity stats={stats} />
       </div>

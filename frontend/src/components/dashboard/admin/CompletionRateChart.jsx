@@ -1,50 +1,48 @@
-import { ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-
 const CompletionRateChart = ({ completionRate }) => {
   const rate = Math.min(Math.max(completionRate ?? 0, 0), 100);
 
-  const data = [
-    { name: "Completed", value: rate },
-    { name: "Remaining", value: 100 - rate },
-  ];
+  const radius = 90;
+  const circumference = Math.PI * radius;
+  const progress = circumference * (rate / 100);
 
   return (
-    <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+    <div className="flex min-h-70 flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
       <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
         Completion Rate
       </h2>
 
-      <div className="relative mt-2 flex h-48 items-center justify-center">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="70%"
-              startAngle={180}
-              endAngle={0}
-              innerRadius={70}
-              outerRadius={90}
-              paddingAngle={0}
-              dataKey="value"
-              stroke="none"
-              cornerRadius={6}
-            >
-              {/* Progress */}
-              <Cell key="completed" fill="#818cf8" />
+      <div className="relative mx-auto mt-4 w-full max-w-65">
+        <svg
+          viewBox="0 0 220 120"
+          className="h-auto w-full overflow-visible"
+          aria-label={`Project completion rate: ${rate}%`}
+          role="img"
+        >
+          {/* Background */}
+          <path
+            d="M 20 110 A 90 90 0 0 1 200 110"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="20"
+            strokeLinecap="round"
+            className="text-slate-200 dark:text-slate-800"
+          />
 
-              {/* Track */}
-              <Cell
-                key="remaining"
-                fill="currentColor"
-                className="text-slate-200 dark:text-slate-800"
-              />
-            </Pie>
-          </PieChart>
-        </ResponsiveContainer>
+          {/* Progress */}
+          <path
+            d="M 20 110 A 90 90 0 0 1 200 110"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="20"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={circumference - progress}
+            className="text-indigo-500 transition-all duration-700 ease-out"
+          />
+        </svg>
 
-        {/* Center Percentage */}
-        <div className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 text-center">
+        {/* Percentage */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-center">
           <span className="text-4xl font-extrabold tracking-tight text-indigo-600 dark:text-indigo-400">
             {rate}%
           </span>

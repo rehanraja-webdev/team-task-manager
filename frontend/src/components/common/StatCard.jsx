@@ -3,7 +3,7 @@ const StatCard = ({ title, value, icon }) => {
     <div className="dark:bg-slate-900 bg-white border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-slate-400 dark:text-slate-600">{title}</p>
+          <p className="text-slate-400 dark:text-slate-500">{title}</p>
 
           <h2 className="text-4xl font-bold text-slate-900 dark:text-white mt-2">
             {value}

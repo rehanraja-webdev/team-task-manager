@@ -3,7 +3,7 @@ import { LogOut, Settings, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-import profileImg from "../../assets/profile.png";
+import profileImg from "../../assets/profile.jpg";
 
 const ProfileDropdown = () => {
   const { user, logout } = useAuth();
@@ -32,7 +32,9 @@ const ProfileDropdown = () => {
         <img
           src={profileImg}
           alt="Profile"
-          className="h-10 w-10 rounded-full border-2 border-slate-300 object-cover dark:border-slate-700"
+          width={40}
+          height={40}
+          className="rounded-full border-2 border-slate-300 object-cover dark:border-slate-700"
         />
       </button>
 
@@ -50,6 +52,8 @@ const ProfileDropdown = () => {
               <img
                 src={profileImg}
                 alt="Profile"
+                width={56}
+                height={56}
                 className="h-14 w-14 rounded-full border border-slate-300 object-cover dark:border-slate-700"
               />
 

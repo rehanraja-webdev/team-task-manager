@@ -46,7 +46,7 @@ const OverdueTasksTable = ({ data = [] }) => {
       {/* Table */}
       {data.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] text-left">
+          <table className="w-full min-w-190 text-left">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/70 dark:border-slate-800 dark:bg-slate-950/30">
                 <th className="px-6 py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -85,7 +85,7 @@ const OverdueTasksTable = ({ data = [] }) => {
                       </div>
 
                       <div className="min-w-0">
-                        <p className="max-w-[240px] truncate text-sm font-semibold text-slate-800 dark:text-slate-200">
+                        <p className="max-w-60 truncate text-sm font-semibold text-slate-800 dark:text-slate-200">
                           {task.title}
                         </p>
 

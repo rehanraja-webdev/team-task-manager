@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import { getProjects } from "../services/project.service";
 import toast from "react-hot-toast";
 
-const useProjects = () => {
-  const [projects, setProjects] = useState([]);
+const useProjects = (params) => {
+  const [projectList, setProjectList] = useState([]);
+  const [pagination, setPagination] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const data = await getProjects();
-        setProjects(data);
+        const data = await getProjects(params);
+        setProjectList(data.projects);
+        setPagination(data.pagination);
       } catch (error) {
         toast.error(
           error.response?.data?.message || "Failed to fetch projects",
@@ -21,10 +23,11 @@ const useProjects = () => {
     };
 
     fetchProjects();
-  }, []);
+  }, [params]);
 
   return {
-    projects,
+    projectList,
+    pagination,
     loading,
   };
 };

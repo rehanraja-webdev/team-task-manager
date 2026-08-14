@@ -5,33 +5,59 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import ProjectsHeader from "../components/projects/ProjectsHeader";
 import ProjectsFilter from "../components/projects/ProjectsFilter";
 import { useState } from "react";
-import useAuth from '../hooks/useAuth'
+import useAuth from "../hooks/useAuth";
+import Pagination from "../components/common/Pagination";
 
 const Projects = () => {
-  const { projects, loading } = useProjects();
-  const { user } = useAuth();
   const [filter, setFilter] = useState("");
+  const [page, setPage] = useState(1);
+
+  const params = {
+    page,
+    limit: 10,
+  };
+
+  const queryParams = new URLSearchParams(params).toString();
+  const { projectList, pagination, loading } = useProjects(queryParams);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   if (loading) return <LoadingSpinner />;
 
-  const filterProjects = projects?.filter(
+  const currentPage = pagination?.currentPage || page;
+  const totalPages = pagination?.totalPages || 1;
+  const projects = projectList || [];
+
+  const filterProjects = projects.filter(
     (project) =>
-      project.name.toLowerCase().includes(filter.toLowerCase()) ||
-      project.description.toLowerCase().includes(filter.toLowerCase()),
+      project.name?.toLowerCase().includes(filter.toLowerCase()) ||
+      project.description?.toLowerCase().includes(filter.toLowerCase()) ||
+      project.owner?.fullname?.toLowerCase().includes(filter.toLowerCase()),
   );
 
   return (
     <div className="space-y-6">
-      <ProjectsHeader navigate={navigate} role={user.role} />
+      <ProjectsHeader navigate={navigate} role={user?.role} />
 
       <ProjectsFilter setFilter={setFilter} />
 
-      <div className="grid xl:grid-cols-2 gap-6">
-        {filterProjects.map((project) => (
-          <ProjectCard key={project._id} project={project} />
-        ))}
-      </div>
+      {filterProjects.length > 0 ? (
+        <div className="grid xl:grid-cols-2 gap-6">
+          {filterProjects.map((project) => (
+            <ProjectCard key={project._id} project={project} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12 text-slate-500 dark:text-slate-400">
+          No projects found.
+        </div>
+      )}
+
+      <Pagination
+        totalPages={totalPages}
+        setPage={setPage}
+        currentPage={currentPage}
+      />
     </div>
   );
 };

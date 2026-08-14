@@ -225,9 +225,17 @@ const updateProject = asyncHandler(async (req, res) => {
 });
 
 const getProjects = asyncHandler(async (req, res) => {
-  const { search } = req.query;
-  const cacheKey = `projects_${req.user._id}_${search?.toLowerCase()}`;
+  const { page = 1, limit = 10 } = req.query;
 
+  const pageNum = Math.max(1, parseInt(page, 10));
+  const limitNum = Math.max(1, parseInt(limit, 10));
+  const skip = (pageNum - 1) * limitNum;
+
+  const query = {
+    $or: [{ owner: req.user._id }, { "members.user": req.user._id }],
+  };
+
+  const cacheKey = `projects_${req.user._id}_p${pageNum}_l${limitNum}`;
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
@@ -238,19 +246,32 @@ const getProjects = asyncHandler(async (req, res) => {
     cacheHelper.deleteCache(cacheKey);
   }
 
-  const projects = await Project.find({
-    $or: [{ owner: req.user._id }, { "members.user": req.user._id }],
-    name: {
-      $regex: search || "",
-      $options: "i",
-    },
-  }).populate("owner", "fullname email");
+  const [projects, totalProjects] = await Promise.all([
+    Project.find(query)
+      .populate("owner", "fullname role")
+      .populate("members.user", "fullname email role")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum),
+    Project.countDocuments(query),
+  ]);
 
-  cacheHelper.setCache(cacheKey, projects);
+  const responseData = {
+    projects,
+    pagination: {
+      currentPage: pageNum,
+      totalPages: Math.ceil(totalProjects / limitNum),
+      limit: limitNum,
+    },
+  };
+
+  cacheHelper.setCache(cacheKey, responseData);
 
   return res
     .status(200)
-    .json(new ApiResponse(200, "Projects Find Successfully!", projects));
+    .json(
+      new ApiResponse(200, "Projects retrieved successfully", responseData),
+    );
 });
 
 const addMember = asyncHandler(async (req, res) => {

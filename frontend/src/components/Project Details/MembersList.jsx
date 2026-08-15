@@ -26,9 +26,9 @@ const MembersList = ({
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
             Project Members
-          </h1>
+          </h2>
 
           <p className="text-sm text-slate-500 dark:text-slate-400">
             All members of this project
@@ -39,6 +39,7 @@ const MembersList = ({
           <div className="ml-auto">
             <NavLink
               to="add-member"
+              title="Add new member"
               className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-purple-500"
             >
               <Plus className="size-4 stroke-[2.5]" />

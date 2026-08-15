@@ -21,7 +21,7 @@ const TaskList = ({ role, tasks, setPage }) => {
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold">Task List</h1>
+          <h2 className="text-2xl font-bold">Task List</h2>
 
           <p className="text-sm text-slate-500 dark:text-slate-400">
             All tasks of this project
@@ -32,6 +32,7 @@ const TaskList = ({ role, tasks, setPage }) => {
           <div className="ml-auto">
             <NavLink
               to="tasks/new"
+              title="Create new task"
               className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-purple-500"
             >
               <Plus className="size-4 stroke-[2.5]" />

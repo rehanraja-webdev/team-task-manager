@@ -100,6 +100,7 @@ const ProjectInfoCard = ({
 
             <button
               type="button"
+              title="Edit project details"
               onClick={handleOpenModal}
               className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
             >
@@ -109,6 +110,7 @@ const ProjectInfoCard = ({
 
             <button
               onClick={handleDelete}
+              title="Delete project permanently"
               type="button"
               className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-100 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20"
             >
@@ -144,7 +146,7 @@ const ProjectInfoCard = ({
 
       {/* Description */}
       <div className="mt-8">
-        <h3 className="mb-3 text-sm uppercase tracking-wide text-slate-500">
+        <h3 className="mb-3 text-sm uppercase tracking-wide text-slate-600 dark:text-slate-400">
           Description
         </h3>
 

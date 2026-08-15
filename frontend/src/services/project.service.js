@@ -1,7 +1,7 @@
 import api from "../api/axios";
 
 export const getProjects = async (params) => {
-  const response = await api.get(`/v1/projects?${params}`);
+  const response = await api.get("/v1/projects", { params });
   return response.data.data;
 };
 

@@ -225,34 +225,46 @@ const updateProject = asyncHandler(async (req, res) => {
 });
 
 const getProjects = asyncHandler(async (req, res) => {
-  const { page = 1, limit = 10 } = req.query;
+  const userId = req.user._id;
 
-  const pageNum = Math.max(1, parseInt(page, 10));
-  const limitNum = Math.max(1, parseInt(limit, 10));
+  const pageNum = Math.max(1, Number(req.query.page, 10) || 1);
+  const limitNum = Math.min(
+    50,
+    Math.max(1, Number(req.query.limit, 10) || 10),
+  );
+
   const skip = (pageNum - 1) * limitNum;
 
   const query = {
-    $or: [{ owner: req.user._id }, { "members.user": req.user._id }],
+    $or: [{ owner: userId }, { "members.user": userId }],
   };
 
-  const cacheKey = `projects_${req.user._id}_p${pageNum}_l${limitNum}`;
+  const cacheKey = `projects_${userId}_p${pageNum}_l${limitNum}`;
+
   const cached = cacheHelper.getCache(cacheKey);
 
-  if (cached && cached.expiresAt > Date.now()) {
-    return res
-      .status(200)
-      .json(new ApiResponse(200, "Projects fetched from cache!", cached.data));
-  } else {
+  if (cached) {
+    if (cached.expiresAt > Date.now()) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(200, "Projects fetched from cache!", cached.data),
+        );
+    }
+
     cacheHelper.deleteCache(cacheKey);
   }
 
   const [projects, totalProjects] = await Promise.all([
     Project.find(query)
+      .select("name description owner members createdAt updatedAt")
       .populate("owner", "fullname role")
       .populate("members.user", "fullname email role")
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limitNum),
+      .limit(limitNum)
+      .lean(),
+
     Project.countDocuments(query),
   ]);
 
@@ -261,7 +273,10 @@ const getProjects = asyncHandler(async (req, res) => {
     pagination: {
       currentPage: pageNum,
       totalPages: Math.ceil(totalProjects / limitNum),
+      totalProjects,
       limit: limitNum,
+      hasNextPage: pageNum < Math.ceil(totalProjects / limitNum),
+      hasPreviousPage: pageNum > 1,
     },
   };
 

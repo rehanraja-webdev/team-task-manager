@@ -1,46 +1,62 @@
-import AnalyticsCards from "../components/analytics/AnalyticsCards";
-import TaskStatusChart from "../components/analytics/TaskStatusChart";
-import PriorityChart from "../components/analytics/PriorityChart";
-import MonthlyTasksChart from "../components/analytics/MonthlyTasksChart";
-import ProjectProgress from "../components/analytics/ProjectProgress";
-import ContributorsTable from "../components/analytics/ContributorsTable";
-import OverdueTasksTable from "../components/analytics/OverdueTasksTable";
+import { lazy, Suspense } from "react";
 import useAnalytics from "../hooks/useAnalytics";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import ProjectChart from "../components/analytics/ProjectChart";
 import AnalyticsHeader from "../components/analytics/AnalyticsHeader";
+import ChartSkeleton from "../components/common/ChartSkeleton";
+
+import AnalyticsCards from "../components/analytics/AnalyticsCards";
+import ContributorsTable from "../components/analytics/ContributorsTable";
+import OverdueTasksTable from "../components/analytics/OverdueTasksTable";
+import ProjectProgress from "../components/analytics/ProjectProgress";
+
+const TaskStatusChart = lazy(
+  () => import("../components/analytics/TaskStatusChart"),
+);
+
+const PriorityChart = lazy(
+  () => import("../components/analytics/PriorityChart"),
+);
+
+const MonthlyTasksChart = lazy(
+  () => import("../components/analytics/MonthlyTasksChart"),
+);
+
+const ProjectChart = lazy(() => import("../components/analytics/ProjectChart"));
 
 const Analytics = () => {
-  const {
-    overview,
-    monthTasks,
-    projectAnalytics,
-    contributors,
-    overdue,
-    fetching,
-  } = useAnalytics();
+  const { data, fetching } = useAnalytics();
 
-  if (fetching) return <LoadingSpinner />;
+  if (fetching) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="space-y-8">
       <AnalyticsHeader />
-      <AnalyticsCards overview={overview} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TaskStatusChart analytics={overview} />
-        <PriorityChart analytics={overview} />
+      <AnalyticsCards overview={data.overview} />
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <ProjectProgress data={data.projectAnalytics} />
+        <ContributorsTable data={data.contributors} />
       </div>
 
-      <MonthlyTasksChart data={monthTasks} />
+      <Suspense fallback={<ChartSkeleton />}>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <TaskStatusChart analytics={data.overview} />
+          <PriorityChart analytics={data.overview} />
+        </div>
+      </Suspense>
 
-      <ProjectChart data={projectAnalytics} />
-      
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <ProjectProgress data={projectAnalytics} />
-        <ContributorsTable data={contributors} />
-      </div>
+      <Suspense fallback={<ChartSkeleton />}>
+        <MonthlyTasksChart data={data.monthTasks} />
+      </Suspense>
 
-      <OverdueTasksTable data={overdue} />
+      <Suspense fallback={<ChartSkeleton />}>
+        <ProjectChart data={data.projectAnalytics} />
+      </Suspense>
+
+      <OverdueTasksTable data={data.overdue} />
     </div>
   );
 };

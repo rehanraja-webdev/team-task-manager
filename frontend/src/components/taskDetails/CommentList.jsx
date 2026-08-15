@@ -35,6 +35,7 @@ const CommentList = ({ reloadTask, comments = [] }) => {
 
           <button
             onClick={() => setModalActive(true)}
+            title="Add new comment"
             className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98]"
           >
             <Plus className="size-4 stroke-[2.5]" />

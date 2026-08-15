@@ -15,16 +15,14 @@ const getTaskActivities = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Task not found");
   }
 
-  const project = await Project.findById(task.project).select(
-    "createdBy members",
-  );
+  const project = await Project.findById(task.project).select("owner members");
 
   if (!project) {
     throw new ApiError(404, "Project not found");
   }
 
   if (req.user.role === "admin") {
-    if (project.createdBy.toString() !== req.user._id.toString()) {
+    if (project.owner.toString() !== req.user._id.toString()) {
       throw new ApiError(
         403,
         "You do not have access to this project's activities",

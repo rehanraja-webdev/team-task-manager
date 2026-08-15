@@ -85,7 +85,6 @@ const TaskCard = ({ task, from }) => {
         </span>
       </div>
 
-      {/* Content */}
       <div>
         <h2 className="mt-4 text-xl font-semibold text-slate-900 dark:text-white">
           {task.title}
@@ -96,10 +95,10 @@ const TaskCard = ({ task, from }) => {
         </p>
       </div>
 
-      {/* Action */}
       <div className="flex justify-end">
         <NavLink
           to={from === "tasks" ? `${task._id}` : `tasks/${task._id}`}
+          title="View task details"
           className="mt-6 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition-all duration-200 hover:border-purple-500/40 hover:bg-slate-200 hover:text-purple-600 active:scale-[0.98] dark:border-slate-700/50 dark:bg-slate-800/60 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-purple-400"
         >
           <span>View Task</span>

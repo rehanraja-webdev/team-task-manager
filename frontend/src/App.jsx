@@ -6,6 +6,7 @@ import LandingPage from "./pages/LandingPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import PublicLayout from "./layouts/PublicLayout";
+import NotFound from "./components/common/NotFound";
 
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -31,6 +32,8 @@ const App = () => {
       <Toaster />
       <Suspense fallback={<div className="loading-spinner">Loading...</div>}>
         <Routes>
+          <Route path="*" element={<NotFound />} />
+
           <Route element={<PublicLayout />}>
             <Route path="/" element={<LandingPage />} />
             <Route path="/help" element={<Help />} />

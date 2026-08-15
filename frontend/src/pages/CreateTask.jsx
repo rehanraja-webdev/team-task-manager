@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useProject from "../hooks/useProject";
 import useTaskActions from "../hooks/UseTaskActions";
@@ -8,7 +8,9 @@ const CreateTask = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
   const { createTask, loading } = useTaskActions();
-  const { projects } = useProjects();
+
+  const projectParams = useMemo(() => ({ mode: "options" }), []);
+  const { projectList } = useProjects(projectParams);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -135,7 +137,7 @@ const CreateTask = () => {
             >
               <option value="">Select Project</option>
 
-              {projects.map((project) => (
+              {projectList.map((project) => (
                 <option key={project._id} value={project._id}>
                   {project.name}
                 </option>

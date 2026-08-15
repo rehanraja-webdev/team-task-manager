@@ -4,22 +4,24 @@ import useProjects from "../hooks/useProjects";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import ProjectsHeader from "../components/projects/ProjectsHeader";
 import ProjectsFilter from "../components/projects/ProjectsFilter";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import Pagination from "../components/common/Pagination";
 
 const Projects = () => {
+  const { user } = useAuth();
   const [filter, setFilter] = useState("");
   const [page, setPage] = useState(1);
 
-  const params = {
-    page,
-    limit: 10,
-  };
+  const params = useMemo(
+    () => ({
+      page,
+      limit: 10,
+    }),
+    [page],
+  );
 
-  const queryParams = new URLSearchParams(params).toString();
-  const { projectList, pagination, loading } = useProjects(queryParams);
-  const { user } = useAuth();
+  const { projectList, pagination, loading } = useProjects(params);
   const navigate = useNavigate();
 
   if (loading) return <LoadingSpinner />;

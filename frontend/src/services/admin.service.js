@@ -5,27 +5,7 @@ export const getAllUsers = async () => {
   return res.data.data;
 };
 
-export const getAnalyticsOverview = async () => {
-  const response = await api.get("/v1/analytics/overview");
-  return response.data.data;
-};
-
-export const getMonthlyTask = async () => {
-  const response = await api.get("/v1/analytics/monthly-task");
-  return response.data.data;
-};
-
-export const getProjectProgress = async () => {
-  const response = await api.get("/v1/analytics/progress");
-  return response.data.data;
-};
-
-export const getTopContributors = async () => {
-  const response = await api.get("/v1/analytics/contributors");
-  return response.data.data;
-};
-
-export const getOverdueTasks = async () => {
-  const response = await api.get("/v1/analytics/overdue");
-  return response.data.data;
+export const getAnalytics = async () => {
+  const response = await api.get("/v1/analytics");
+  return response.data;
 };

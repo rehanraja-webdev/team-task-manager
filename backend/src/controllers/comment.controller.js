@@ -5,6 +5,7 @@ import Comment from "../models/comment.model.js";
 import Activity from "../models/activity.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import createNotification from "../utils/createNotification.js";
+import cacheHelper from "../utils/cache.helper.js";
 
 const addComment = asyncHandler(async (req, res) => {
   const { content } = req.body;
@@ -42,10 +43,25 @@ const addComment = asyncHandler(async (req, res) => {
 });
 
 const getTaskComments = asyncHandler(async (req, res) => {
+  const cacheKey = `comments_${req.user._id}`;
+  const cached = cacheHelper.getCache(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, "Task comments fetched from cache", cached.data),
+      );
+  } else {
+    cacheHelper.deleteCache(cacheKey);
+  }
+
   const comments = await Comment.find({ task: req.params.taskId }).populate(
     "user",
     "fullname email",
   );
+
+  cacheHelper.setCache(cacheKey, comments);
 
   res.status(200).json(new ApiResponse(200, "All comments fetched!", comments));
 });

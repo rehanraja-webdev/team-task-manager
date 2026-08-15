@@ -228,10 +228,7 @@ const getProjects = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
   const pageNum = Math.max(1, Number(req.query.page, 10) || 1);
-  const limitNum = Math.min(
-    50,
-    Math.max(1, Number(req.query.limit, 10) || 10),
-  );
+  const limitNum = Math.min(50, Math.max(1, Number(req.query.limit, 10) || 10));
 
   const skip = (pageNum - 1) * limitNum;
 
@@ -243,15 +240,11 @@ const getProjects = asyncHandler(async (req, res) => {
 
   const cached = cacheHelper.getCache(cacheKey);
 
-  if (cached) {
-    if (cached.expiresAt > Date.now()) {
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(200, "Projects fetched from cache!", cached.data),
-        );
-    }
-
+  if (cached && cached.expiresAt > Date.now()) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Projects fetched from cache", cached.data));
+  } else {
     cacheHelper.deleteCache(cacheKey);
   }
 

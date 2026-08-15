@@ -5,10 +5,12 @@ import ApiResponse from "../utils/ApiResponse.js";
 import cache from "../utils/cache.js";
 import cacheHelper from "../utils/cache.helper.js";
 import Activity from "../models/activity.model.js";
+import { cacheKeys } from "../utils/cackeKeys.js";
 
 const getAdminDashboard = asyncHandler(async (req, res) => {
-  //created cache key
-  const cacheKey = `dashboard_${req.user._id}`;
+  const userId = req.user._id;
+
+  const cacheKey = cacheKeys.dashboard(userId);
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
@@ -21,25 +23,13 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
     cacheHelper.deleteCache(cacheKey);
   }
 
-  // if (cache.has(cacheKey)) {
-  //   return res
-  //     .status(200)
-  //     .json(
-  //       new ApiResponse(
-  //         200,
-  //         "Dashboard fetched from cache",
-  //         cache.get(cacheKey),
-  //       ),
-  //     );
-  // }
-
   //number of project user own
   const totalProjects = await Project.countDocuments({
-    owner: req.user._id,
+    owner: userId,
   });
 
   const projects = await Project.find({
-    owner: req.user._id,
+    owner: userId,
   }).select("_id");
 
   //store project ids in array
@@ -91,7 +81,7 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
     totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
 
   const myAssignedTasks = await Task.countDocuments({
-    assignedTo: req.user._id,
+    assignedTo: userId,
   });
 
   const activities = await Activity.find().sort({ createdAt: -1 }).limit(10);
@@ -122,8 +112,7 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
 const getMemberDashboard = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  const cacheKey = `member_dashboard_${userId}`;
-
+  const cacheKey = cacheKeys.dashboard(userId);
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {

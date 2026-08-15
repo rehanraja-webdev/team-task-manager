@@ -25,15 +25,19 @@ const Sidebar = () => {
       {/* Logo */}
       <div className="mb-8">
         <img
+          height={48}
+          width={176}
           src="/logo/teamtask-logo.svg"
           alt="TeamTask"
-          className="h-12 w-auto dark:hidden"
+          className="dark:hidden"
         />
 
         <img
+          height={48}
+          width={176}
           src="/logo/teamtask-logo-white.svg"
           alt="TeamTask"
-          className="hidden h-12 w-auto dark:block"
+          className="hidden dark:block"
         />
 
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">

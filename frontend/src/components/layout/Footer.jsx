@@ -8,24 +8,26 @@ const Footer = () => {
   return (
     <footer className="mt-12 border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
       <div className="mx-auto max-w-7xl px-6 py-10 sm:py-12">
-        {/* Main Footer */}
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/dashboard" className="inline-block">
-              {/* Light */}
-              <img
-                src="/logo/teamtask-logo.svg"
-                alt="TeamTask"
-                className="h-11 w-auto dark:hidden"
-              />
+              <div className="h-11 w-40">
+                <img
+                  src="/logo/teamtask-logo.svg"
+                  alt="TeamTask"
+                  width="160"
+                  height="44"
+                  className="block h-11 w-40 dark:hidden"
+                />
 
-              {/* Dark */}
-              <img
-                src="/logo/teamtask-logo-white.svg"
-                alt="TeamTask"
-                className="hidden h-11 w-auto dark:block"
-              />
+                <img
+                  src="/logo/teamtask-logo-white.svg"
+                  alt="TeamTask"
+                  width="160"
+                  height="44"
+                  className="hidden h-11 w-40 dark:block"
+                />
+              </div>
             </Link>
 
             <p className="mt-4 max-w-xs text-sm leading-6 text-slate-500 dark:text-slate-400">
@@ -34,7 +36,6 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Product */}
           <div>
             <h3 className="mb-4 text-sm font-semibold text-slate-900 dark:text-white">
               Product
@@ -59,7 +60,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Support */}
           <div>
             <h3 className="mb-4 text-sm font-semibold text-slate-900 dark:text-white">
               Support
@@ -96,7 +96,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Connect */}
           <div>
             <h3 className="mb-4 text-sm font-semibold text-slate-900 dark:text-white">
               Connect
@@ -107,7 +106,6 @@ const Footer = () => {
             </p>
 
             <div className="flex items-center gap-2.5">
-              {/* GitHub */}
               <a
                 href="https://github.com/rehanraja-webdev/"
                 target="_blank"
@@ -118,7 +116,6 @@ const Footer = () => {
                 <FaGithub size={18} />
               </a>
 
-              {/* LinkedIn */}
               <a
                 href="https://www.linkedin.com/in/rehan-raja-devs"
                 target="_blank"
@@ -129,7 +126,6 @@ const Footer = () => {
                 <FaLinkedin size={18} />
               </a>
 
-              {/* Email */}
               <a
                 href="mailto:rehanraja.dev@gmail.com"
                 aria-label="Email"
@@ -141,7 +137,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom */}
         <div className="mt-10 flex flex-col gap-3 border-t border-slate-200 pt-6 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-slate-500 dark:text-slate-400">
             © {currentYear} TeamTask. All rights reserved.

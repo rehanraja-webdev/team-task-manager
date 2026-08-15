@@ -9,30 +9,47 @@ import cacheHelper from "../utils/cache.helper.js";
 const getTaskActivities = asyncHandler(async (req, res) => {
   const { taskId } = req.params;
 
-  const task = await Task.findById(taskId).select("project");
+  const cacheKey = `activities_${req.user._id}_${taskId}`;
+  const cached = cacheHelper.getCache(cacheKey);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    console.log("Cache Hit:", cacheKey);
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Activities fetched from cache", cached.data));
+  }
+
+  const task = await Task.findById(taskId)
+    .select("project")
+    .populate({
+      path: "project",
+      select: "owner members.user",
+    })
+    .lean();
 
   if (!task) {
     throw new ApiError(404, "Task not found");
   }
 
-  const project = await Project.findById(task.project).select("owner members");
+  const project = task.project;
 
   if (!project) {
     throw new ApiError(404, "Project not found");
   }
 
+  const userId = req.user._id.toString();
+
   if (req.user.role === "admin") {
-    if (project.owner.toString() !== req.user._id.toString()) {
+    if (project.owner.toString() !== userId) {
       throw new ApiError(
         403,
         "You do not have access to this project's activities",
       );
     }
-  }
-
-  if (req.user.role === "member") {
+  } else if (req.user.role === "member") {
     const isMember = project.members.some(
-      (member) => member.user.toString() === req.user._id.toString(),
+      (member) => member.user.toString() === userId,
     );
 
     if (!isMember) {
@@ -47,8 +64,12 @@ const getTaskActivities = asyncHandler(async (req, res) => {
     task: taskId,
     project: project._id,
   })
+    .select("user action description createdAt")
     .populate("user", "fullname email")
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
+    .lean();
+
+  cacheHelper.setCache(cacheKey, activities);
 
   res
     .status(200)
@@ -65,19 +86,17 @@ const getAllActivities = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
   const cacheKey = `activities_${userId}_${page}_${limit}`;
-
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log("Cache Hit:", cacheKey);
-
     return res
       .status(200)
-      .json(new ApiResponse(200, "Activities fetched from cache", cached.data));
+      .json(
+        new ApiResponse(200, "Task activity fetched from cache", cached.data),
+      );
+  } else {
+    cacheHelper.deleteCache(cacheKey);
   }
-
-  console.log("Cache Miss:", cacheKey);
-  cacheHelper.deleteCache(cacheKey);
 
   let projectFilter;
 

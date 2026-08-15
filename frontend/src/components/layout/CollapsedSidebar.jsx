@@ -13,22 +13,8 @@ const CollapsedSidebar = () => {
   const links = user.role === "admin" ? adminLinks : memberLinks;
 
   return (
-    <aside
-      className="
-        sticky top-6 h-[calc(100vh-3rem)] w-20
-        flex flex-col items-center
-        rounded-3xl border
-        border-slate-200 bg-white
-        py-6
-        shadow-sm
-        dark:border-slate-800 dark:bg-slate-900
-      "
-    >
-      {/* Logo */}
-      <NavLink
-        to="/"
-        className="mb-3"
-      >
+    <aside className="sticky left-6 top-6 z-40 flex h-[calc(100vh-3rem)] w-20 flex-col items-center rounded-3xl border border-slate-200 bg-white py-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <NavLink to="/" className="mb-8">
         <img
           src="/logo/teamtask-icon.svg"
           alt="TeamTask"

@@ -212,18 +212,10 @@ const CreateTask = () => {
             name="dueDate"
             value={formData.dueDate}
             onChange={handleChange}
-            className="
-              w-full rounded-xl px-4 py-3 outline-none
-              bg-slate-50 dark:bg-slate-950
-              border border-slate-200 dark:border-slate-700
-              text-slate-900 dark:text-white
-              focus:border-purple-500
-              focus:ring-2 focus:ring-purple-500/20
-            "
+            className="w-full rounded-xl px-4 py-3 outline-none bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 dark:scheme-dark"
           />
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-end gap-4 pt-4">
           <button
             type="button"

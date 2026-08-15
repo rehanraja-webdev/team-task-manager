@@ -24,7 +24,7 @@ import swaggerSpec from "./config/swagger.js";
 const app = express();
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL, "http://localhost:4173"],
+    origin: [process.env.CLIENT_URL],
     credentials: true,
   }),
 );
@@ -55,8 +55,8 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/admin", adminRoutes);
 app.use(errorHandler);
 
-app.get("/health", (req, res) => {
-  res.status(200).json({ success: true, message: "Server is running" });
+app.get("team-task/health", (req, res) => {
+  res.status(200).json({ success: true, message: "TeamTask API is running" });
 });
 
 export default app;

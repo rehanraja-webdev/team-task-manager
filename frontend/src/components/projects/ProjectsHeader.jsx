@@ -14,15 +14,8 @@ const ProjectsHeader = ({ navigate, role }) => {
       {role === "admin" && (
         <button
           onClick={() => navigate("create")}
-          className="
-            rounded-xl
-            bg-indigo-500 dark:bg-indigo-600
-            px-5 py-3
-            text-white
-            transition
-            hover:bg-indigo-600 dark:hover:bg-indigo-700
-            cursor-pointer
-          "
+          className="rounded-xl bg-indigo-500 dark:bg-indigo-600 px-5 py-3 text-white transition hover:bg-indigo-600 dark:hover:bg-indigo-700 cursor-pointer"
+          title="Create new project"
         >
           + New Project
         </button>

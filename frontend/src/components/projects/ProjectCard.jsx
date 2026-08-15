@@ -55,6 +55,7 @@ const ProjectCard = ({ project }) => {
               hover:text-white
               active:scale-95
             "
+            title="View project details"
           >
             <span>View</span>
 
@@ -68,25 +69,9 @@ const ProjectCard = ({ project }) => {
           </NavLink>
         </div>
 
-        {/* Stats Row: Owner & Team Members */}
-        <div
-          className="
-            mt-6 grid grid-cols-2 gap-4
-            rounded-xl
-            border border-slate-200 dark:border-slate-800
-            bg-slate-100/70 dark:bg-slate-800/40
-            p-3
-          "
-        >
-          {/* Owner */}
+        <div className="mt-6 grid grid-cols-2 gap-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-800/40 p-3">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div
-              className="
-                rounded-lg
-                bg-slate-200 dark:bg-slate-800
-                p-2
-              "
-            >
+            <div className="rounded-lg bg-slate-200 dark:bg-slate-800 p-2">
               <User className="size-4 text-indigo-500 dark:text-indigo-400" />
             </div>
 
@@ -126,7 +111,6 @@ const ProjectCard = ({ project }) => {
         </div>
       </div>
 
-      {/* Footer: Timeline Info */}
       <div
         className="
           mt-6 flex items-center justify-between

@@ -90,7 +90,7 @@ router.patch(
  */
 router.get("/", authMiddleware, projectController.getProjects);
 
-/**a
+/**
  * @swagger
  * /api/v1/projects/{projectId}:
  *   get:

@@ -226,15 +226,55 @@ const updateProject = asyncHandler(async (req, res) => {
 
 const getProjects = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-
-  const pageNum = Math.max(1, Number(req.query.page, 10) || 1);
-  const limitNum = Math.min(50, Math.max(1, Number(req.query.limit, 10) || 10));
-
-  const skip = (pageNum - 1) * limitNum;
+  const mode = req.query.mode;
 
   const query = {
     $or: [{ owner: userId }, { "members.user": userId }],
   };
+
+  if (mode === "options") {
+    const cacheKey = `project_options_${userId}`;
+
+    const cached = cacheHelper.getCache(cacheKey);
+
+    if (cached && cached.expiresAt > Date.now()) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            "Project options fetched from cache",
+            cached.data,
+          ),
+        );
+    }
+
+    if (cached) {
+      cacheHelper.deleteCache(cacheKey);
+    }
+
+    const projects = await Project.find(query)
+      .select("_id name")
+      .sort({ name: 1 })
+      .lean();
+
+    cacheHelper.setCache(cacheKey, projects);
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, "Project options fetched successfully", projects),
+      );
+  }
+
+  const pageNum = Math.max(1, parseInt(req.query.page, 10) || 1);
+
+  const limitNum = Math.min(
+    50,
+    Math.max(1, parseInt(req.query.limit, 10) || 10),
+  );
+
+  const skip = (pageNum - 1) * limitNum;
 
   const cacheKey = `projects_${userId}_p${pageNum}_l${limitNum}`;
 
@@ -244,7 +284,9 @@ const getProjects = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(new ApiResponse(200, "Projects fetched from cache", cached.data));
-  } else {
+  }
+
+  if (cached) {
     cacheHelper.deleteCache(cacheKey);
   }
 
@@ -261,14 +303,16 @@ const getProjects = asyncHandler(async (req, res) => {
     Project.countDocuments(query),
   ]);
 
+  const totalPages = Math.ceil(totalProjects / limitNum);
+
   const responseData = {
     projects,
     pagination: {
       currentPage: pageNum,
-      totalPages: Math.ceil(totalProjects / limitNum),
+      totalPages,
       totalProjects,
       limit: limitNum,
-      hasNextPage: pageNum < Math.ceil(totalProjects / limitNum),
+      hasNextPage: pageNum < totalPages,
       hasPreviousPage: pageNum > 1,
     },
   };

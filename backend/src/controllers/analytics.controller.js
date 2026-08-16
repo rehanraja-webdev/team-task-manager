@@ -3,12 +3,13 @@ import Task from "../models/task.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import cacheHelper from "../utils/cache.helper.js";
+import cacheKeys from "../utils/cacheKeys.js";
 
 const getAnalytics = asyncHandler(async (req, res) => {
   const adminId = req.user._id;
-  const cacheKey = `admin_analytics_${adminId}`;
+  const key = cacheKeys.analytics(adminId);
 
-  const cached = cacheHelper.getCache(cacheKey);
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
@@ -16,7 +17,7 @@ const getAnalytics = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, "Analytics fetched from cache", cached.data));
   }
 
-  cacheHelper.deleteCache(cacheKey);
+  cacheHelper.deleteCache(key);
 
   const projects = await Project.find({ owner: adminId }).select("_id");
   const projectIds = projects.map((p) => p._id);
@@ -42,7 +43,7 @@ const getAnalytics = asyncHandler(async (req, res) => {
       overdue: [],
     };
 
-    cacheHelper.setCache(cacheKey, emptyData);
+    cacheHelper.setCache(key, emptyData);
 
     return res
       .status(200)
@@ -282,7 +283,7 @@ const getAnalytics = asyncHandler(async (req, res) => {
     overdue,
   };
 
-  cacheHelper.setCache(cacheKey, data);
+  cacheHelper.setCache(key, data);
 
   return res.status(200).json(new ApiResponse(200, "Analytics fetched", data));
 });

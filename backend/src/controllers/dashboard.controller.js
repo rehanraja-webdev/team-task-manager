@@ -5,22 +5,20 @@ import ApiResponse from "../utils/ApiResponse.js";
 import cache from "../utils/cache.js";
 import cacheHelper from "../utils/cache.helper.js";
 import Activity from "../models/activity.model.js";
-import { cacheKeys } from "../utils/cackeKeys.js";
+import cacheKeys from "../utils/cacheKeys.js";
 
 const getAdminDashboard = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  const cacheKey = cacheKeys.dashboard(userId);
-  const cached = cacheHelper.getCache(cacheKey);
+  const key = cacheKeys.dashboard(userId);
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log("Cache Hit:", cacheKey);
     return res
       .status(200)
       .json(new ApiResponse(200, "From cache", cached.data));
   } else {
-    console.log("Cache Miss:", cacheKey);
-    cacheHelper.deleteCache(cacheKey);
+    cacheHelper.deleteCache(key);
   }
 
   //number of project user own
@@ -96,7 +94,7 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
     activities,
   };
 
-  cacheHelper.setCache(cacheKey, dashboardData);
+  cacheHelper.setCache(key, dashboardData);
 
   res
     .status(200)
@@ -112,8 +110,8 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
 const getMemberDashboard = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  const cacheKey = cacheKeys.dashboard(userId);
-  const cached = cacheHelper.getCache(cacheKey);
+  const key = cacheKeys.dashboard(userId);
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
@@ -230,7 +228,7 @@ const getMemberDashboard = asyncHandler(async (req, res) => {
     recentActivities,
   };
 
-  cacheHelper.setCache(cacheKey, dashboardData);
+  cacheHelper.setCache(key, dashboardData);
 
   return res
     .status(200)

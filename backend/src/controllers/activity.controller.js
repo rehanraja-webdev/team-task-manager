@@ -1,23 +1,31 @@
 import Activity from "../models/activity.model.js";
 import Project from "../models/project.model.js";
 import Task from "../models/task.model.js";
+
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+
 import cacheHelper from "../utils/cache.helper.js";
+import cacheKeys from "../utils/cacheKeys.js";
 
 const getTaskActivities = asyncHandler(async (req, res) => {
   const { taskId } = req.params;
+  const userId = req.user._id;
 
-  const cacheKey = `activities_${req.user._id}_${taskId}`;
-  const cached = cacheHelper.getCache(cacheKey);
+  const key = cacheKeys.taskActivities(userId, taskId);
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
-    console.log("Cache Hit:", cacheKey);
-
     return res
       .status(200)
-      .json(new ApiResponse(200, "Activities fetched from cache", cached.data));
+      .json(
+        new ApiResponse(200, "Task Activities fetched from cache", cached.data),
+      );
+  }
+
+  if (cached) {
+    cacheHelper.deleteCache(key);
   }
 
   const task = await Task.findById(taskId)
@@ -38,10 +46,10 @@ const getTaskActivities = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Project not found");
   }
 
-  const userId = req.user._id.toString();
+  const userIdString = userId.toString();
 
   if (req.user.role === "admin") {
-    if (project.owner.toString() !== userId) {
+    if (project.owner.toString() !== userIdString) {
       throw new ApiError(
         403,
         "You do not have access to this project's activities",
@@ -49,7 +57,7 @@ const getTaskActivities = asyncHandler(async (req, res) => {
     }
   } else if (req.user.role === "member") {
     const isMember = project.members.some(
-      (member) => member.user.toString() === userId,
+      (member) => member.user.toString() === userIdString,
     );
 
     if (!isMember) {
@@ -60,18 +68,15 @@ const getTaskActivities = asyncHandler(async (req, res) => {
     }
   }
 
-  const activities = await Activity.find({
-    task: taskId,
-    project: project._id,
-  })
-    .select("user action description createdAt")
+  const activities = await Activity.find({ task: taskId })
+    .select("user action createdAt")
     .populate("user", "fullname email")
     .sort({ createdAt: -1 })
     .lean();
 
-  cacheHelper.setCache(cacheKey, activities);
+  cacheHelper.setCache(key, activities);
 
-  res
+  return res
     .status(200)
     .json(
       new ApiResponse(200, "Task activities fetched successfully!", activities),
@@ -81,12 +86,12 @@ const getTaskActivities = asyncHandler(async (req, res) => {
 const getAllActivities = asyncHandler(async (req, res) => {
   const page = Number(req.query.page) || 1;
   const limit = Math.min(Number(req.query.limit) || 20, 100);
-  const skip = (page - 1) * limit;
 
+  const skip = (page - 1) * limit;
   const userId = req.user._id;
 
-  const cacheKey = `activities_${userId}_${page}_${limit}`;
-  const cached = cacheHelper.getCache(cacheKey);
+  const key = cacheKeys.activities(userId, page, limit);
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
@@ -94,15 +99,17 @@ const getAllActivities = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(200, "Task activity fetched from cache", cached.data),
       );
-  } else {
-    cacheHelper.deleteCache(cacheKey);
+  }
+
+  if (cached) {
+    cacheHelper.deleteCache(key);
   }
 
   let projectFilter;
 
   if (req.user.role === "admin") {
     projectFilter = {
-      createdBy: userId,
+      owner: userId,
     };
   } else {
     projectFilter = {
@@ -115,7 +122,9 @@ const getAllActivities = asyncHandler(async (req, res) => {
   const projectIds = projects.map((project) => project._id);
 
   const activityFilter = {
-    project: { $in: projectIds },
+    project: {
+      $in: projectIds,
+    },
   };
 
   const [activities, total] = await Promise.all([
@@ -123,7 +132,8 @@ const getAllActivities = asyncHandler(async (req, res) => {
       .populate("user", "fullname email")
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit),
+      .limit(limit)
+      .lean(),
 
     Activity.countDocuments(activityFilter),
   ]);
@@ -135,9 +145,9 @@ const getAllActivities = asyncHandler(async (req, res) => {
     hasMore: skip + activities.length < total,
   };
 
-  cacheHelper.setCache(cacheKey, data);
+  cacheHelper.setCache(key, data);
 
-  res
+  return res
     .status(200)
     .json(new ApiResponse(200, "Activities fetched successfully!", data));
 });

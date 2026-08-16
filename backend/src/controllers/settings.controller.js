@@ -5,6 +5,8 @@ import UserSettings from "../models/userSettings.model.js";
 import cacheHelper from "../utils/cache.helper.js";
 import cacheKeys from "../utils/cacheKeys.js";
 
+const TTL = 5 * 60 * 60;
+
 const getSettings = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
@@ -31,7 +33,7 @@ const getSettings = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, "Currently settings are empty!", []));
   }
 
-  await cacheHelper.setCache(key, settings, (ttl = 5 * 60 * 1000));
+  await cacheHelper.setCache(key, settings, TTL);
 
   return res
     .status(200)

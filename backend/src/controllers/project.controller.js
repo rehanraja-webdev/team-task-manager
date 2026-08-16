@@ -52,9 +52,11 @@ const createProject = asyncHandler(async (req, res) => {
       { session },
     );
 
-    await cacheInvalidation.projectCreated(req.user._id);
-
-    await session.commitTransaction();
+    await Promise.all([
+      cacheInvalidation.activities(req.user._id),
+      cacheInvalidation.projectCreated(req.user._id),
+      session.commitTransaction(),
+    ]);
 
     return res
       .status(201)
@@ -132,9 +134,11 @@ const deleteProject = asyncHandler(async (req, res) => {
     ),
   );
 
-  await project.deleteOne();
-
-  await cacheInvalidation.projectDeleted(projectId, req.user._id);
+  await Promise.all([
+    project.deleteOne(),
+    cacheInvalidation.activities(req.user._id),
+    cacheInvalidation.projectDeleted(projectId, req.user._id),
+  ]);
 
   res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
 });
@@ -197,7 +201,10 @@ const updateProject = asyncHandler(async (req, res) => {
     );
   }
 
-  await cacheInvalidation.projectUpdated(projectId, req.user._id);
+  await Promise.all([
+    cacheInvalidation.activities(req.user._id),
+    cacheInvalidation.projectUpdated(projectId, req.user._id),
+  ]);
 
   res
     .status(200)
@@ -352,7 +359,10 @@ const addMember = asyncHandler(async (req, res) => {
     type: "project",
   });
 
-  await cacheInvalidation.memberAdded(projectId, [req.user._id, member._id]);
+  await Promise.all([
+    cacheInvalidation.activities(userId),
+    cacheInvalidation.memberAdded(projectId, [req.user._id, member._id]),
+  ]);
 
   res.status(200).json(new ApiResponse(200, "Member added successfully!"));
 });
@@ -420,7 +430,10 @@ const removeMember = asyncHandler(async (req, res) => {
     type: "project",
   });
 
-  await cacheInvalidation.memberRemoved(projectId, [req.user._id, memberId]);
+  await Promise.all([
+    await cacheInvalidation.memberRemoved(projectId, [req.user._id, memberId]),
+    cacheInvalidation.activities(userId),
+  ]);
 
   res.status(200).json(new ApiResponse(200, "Member removed successfully!"));
 });

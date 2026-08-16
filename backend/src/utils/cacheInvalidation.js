@@ -269,6 +269,22 @@ const cacheInvalidation = {
     await cacheHelper.deleteByPrefix(cacheKeys.dashboardPrefix());
   },
 
+  //Activities
+  activity: async (userId, taskId) => {
+    await Promise.all([
+      cacheHelper.deleteCache(cacheKeys.taskActivities(userId, taskId)),
+      cacheHelper.deleteByPrefix(cacheKeys.activitiesPrefix(userId)),
+    ]);
+  },
+
+  taskActivities: async (userId, taskId) => {
+    await cacheHelper.deleteCache(cacheKeys.taskActivities(userId, taskId));
+  },
+
+  activities: async (userId) => {
+    await cacheHelper.deleteByPrefix(cacheKeys.activitiesPrefix(userId));
+  },
+
   // =========================================================
   // ANALYTICS
   // =========================================================

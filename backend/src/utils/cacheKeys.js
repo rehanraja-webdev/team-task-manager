@@ -18,6 +18,11 @@ const cacheKeys = {
 
   user: (userId) => `user_${userId}`,
 
+  //Activitties
+  taskActivities: (userId, taskId) => `activities_${userId}_${taskId}`,
+  activities: (userId, page, limit) => `activities_${userId}_${page}_${limit}`,
+  activitiesPrefix: (userId) => `activities_${userId}_`,
+
   analytics: (userId) => `analytics_${userId}`,
   analyticsPrefix: () => `analytics_`,
 

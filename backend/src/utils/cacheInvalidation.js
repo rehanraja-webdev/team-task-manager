@@ -2,6 +2,10 @@ import cacheHelper from "./cache.helper.js";
 import cacheKeys from "./cacheKeys.js";
 
 const cacheInvalidation = {
+  comment: async (userId, taskId) => {
+    await cacheHelper.deleteCache(cacheKeys.comments(userId, taskId));
+  },
+
   // =========================================================
   // PROJECT
   // =========================================================
@@ -96,6 +100,7 @@ const cacheInvalidation = {
         cacheHelper.deleteCache(cacheKeys.members(userId, projectId)),
         cacheHelper.deleteCache(cacheKeys.dashboard(userId)),
         cacheHelper.deleteCache(cacheKeys.analytics(userId)),
+        cacheHelper.deleteCache(cacheKeys.projectUsers(userId)),
       ]),
     ]);
   },
@@ -111,6 +116,7 @@ const cacheInvalidation = {
         cacheHelper.deleteCache(cacheKeys.members(userId, projectId)),
         cacheHelper.deleteCache(cacheKeys.dashboard(userId)),
         cacheHelper.deleteCache(cacheKeys.analytics(userId)),
+        cacheHelper.deleteCache(cacheKeys.projectUsers(userId)),
       ]),
 
       cacheHelper.deleteByPrefix(cacheKeys.tasks(projectId)),
@@ -301,6 +307,10 @@ const cacheInvalidation = {
         cacheHelper.deleteCache(cacheKeys.analytics(userId)),
       ),
     );
+  },
+
+  projectUsers: async (userId) => {
+    await cacheHelper.deleteCache(cacheKeys.projectUsers(userId));
   },
 };
 

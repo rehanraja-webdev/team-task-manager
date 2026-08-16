@@ -26,6 +26,12 @@ const cacheKeys = {
   analytics: (userId) => `analytics_${userId}`,
   analyticsPrefix: () => `analytics_`,
 
+  //Comments
+  comments: (userId, taskId) => `comments_${userId}_${taskId}`,
+  commentsPrefix: (userId) => `comments_${userId}_`,
+
+  projectUsers: (userId) => `project_users_${userId}`,
+
   userSettings: (userId) => `user_settings_${userId}`,
 };
 

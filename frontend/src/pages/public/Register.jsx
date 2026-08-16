@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
-import SEO from "../components/SEO";
+import useAuth from "../../hooks/useAuth";
+import SEO from "../../components/SEO";
 
 const Register = () => {
   const { register, loading } = useAuth();

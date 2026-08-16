@@ -2,14 +2,15 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/public/HomePage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import PublicLayout from "./layouts/PublicLayout";
 import NotFound from "./components/common/NotFound";
 
-const Login = lazy(() => import("./pages/Login"));
-const Register = lazy(() => import("./pages/Register"));
+const Login = lazy(() => import("./pages/public/Login"));
+const Register = lazy(() => import("./pages/public/Register"));
+
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Projects = lazy(() => import("./pages/Projects"));
 const CreateProject = lazy(() => import("./pages/CreateProject"));

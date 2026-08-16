@@ -1,9 +1,9 @@
-import Navbar from "../components/landing/Navbar";
-import Hero from "../components/landing/Hero";
-import Features from "../components/landing/Features";
-import WorkProcess from "../components/landing/WorkProcess";
-import Actions from "../components/landing/Actions";
-import SEO from "../components/SEO";
+import Navbar from "../../components/landing/Navbar";
+import Hero from "../../components/landing/Hero";
+import Features from "../../components/landing/Features";
+import WorkProcess from "../../components/landing/WorkProcess";
+import Actions from "../../components/landing/Actions";
+import SEO from "../../components/SEO";
 
 const HomePage = () => {
   return (

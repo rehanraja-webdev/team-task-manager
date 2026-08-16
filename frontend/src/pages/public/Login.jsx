@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import useAuth from "../hooks/useAuth";
-import SEO from "../components/SEO";
+import useAuth from "../../hooks/useAuth";
+import SEO from "../../components/SEO";
 
 const Login = () => {
   const { login, user, loading } = useAuth();

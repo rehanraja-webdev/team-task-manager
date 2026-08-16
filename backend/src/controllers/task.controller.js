@@ -10,8 +10,12 @@ import cache from "../utils/cache.js";
 import { getIO } from "../socket/socket.js";
 import cacheHelper from "../utils/cache.helper.js";
 import createNotification from "../utils/createNotification.js";
+import cacheInvalidation from "../utils/cacheInvalidation.js";
+import cacheKeys from "../utils/cacheKeys.js";
 
 const createTask = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
   const { title, description, projectId, assignedTo, priority, dueDate } =
     req.body;
 
@@ -22,7 +26,7 @@ const createTask = asyncHandler(async (req, res) => {
   }
 
   const isMember = project.members.some((member) => {
-    return member.user.equals(req.user._id);
+    return member.user.equals(userId);
   });
 
   if (!isMember) {
@@ -44,12 +48,12 @@ const createTask = asyncHandler(async (req, res) => {
     assignedTo,
     priority,
     dueDate,
-    createdBy: req.user._id,
+    createdBy: userId,
   });
 
   await Activity.create({
     task: task._id,
-    user: req.user._id,
+    user: userId,
     action: "Task Created",
   });
 
@@ -62,14 +66,11 @@ const createTask = asyncHandler(async (req, res) => {
     project: projectId,
   });
 
-  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteCache(`dashboard_${assignedTo}`);
-
-  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`tasks_${assignedTo}`);
-
-  cacheHelper.deleteByPrefix(`project_tasks_${projectId}`);
-  cacheHelper.deleteByPrefix(`project_${req.user._id}`);
+  await cacheInvalidation.taskCreated(projectId, [
+    userId,
+    project.owner,
+    assignedTo,
+  ]);
 
   res
     .status(201)
@@ -78,15 +79,16 @@ const createTask = asyncHandler(async (req, res) => {
 
 const getTasks = asyncHandler(async (req, res) => {
   const { view } = req.query;
-  const cacheKey = `tasks_${req.user._id}_${view || "default"}`;
-  const cached = cacheHelper.getCache(cacheKey);
+
+  const key = cacheKeys.userTasks(req.user._id, view || "default");
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
       .status(200)
       .json(new ApiResponse(200, "All tasks fetched from cache", cached.data));
   } else {
-    cacheHelper.deleteCache(cacheKey);
+    cacheHelper.deleteCache(key);
   }
 
   let filter = {};
@@ -102,7 +104,6 @@ const getTasks = asyncHandler(async (req, res) => {
 
     filter = {};
   } else {
-    // Default behavior
     filter = req.user.role === "admin" ? {} : { assignedTo: req.user._id };
   }
 
@@ -111,7 +112,8 @@ const getTasks = asyncHandler(async (req, res) => {
     .populate("assignedTo", "fullname email")
     .populate("project", "name");
 
-  cacheHelper.setCache(cacheKey, tasks);
+  cacheHelper.setCache(key, tasks);
+
   return res
     .status(200)
     .json(new ApiResponse(200, "Tasks fetched successfully.", tasks));
@@ -131,19 +133,19 @@ const deleteTask = asyncHandler(async (req, res) => {
   await task.deleteOne();
 
   createNotification({
-    user: assignedTo,
+    user: req.user._id,
     type: "task",
     title: "Task deleted",
-    message: `Task has been deleted "${task.title}"`,
+    message: `Task has been deleted ${task.title}`,
     task: task._id,
-    project: projectId,
+    project: task.project,
   });
 
-  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteCache(`project_${req.user._id}_${req.params.projectId}`);
-  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
-  cacheHelper.deleteCache(`task_${req.user._id}_${task._id}`);
-  cacheHelper.deleteByPrefix(`project_tasks_${task.project}`);
+  await cacheInvalidation.taskDeleted(task.project, [
+    req.user._id,
+    task.createdBy,
+    task.assignedTo,
+  ]);
 
   return res
     .status(200)
@@ -151,8 +153,11 @@ const deleteTask = asyncHandler(async (req, res) => {
 });
 
 const getProjectTasks = asyncHandler(async (req, res) => {
-  const cacheKey = `project_tasks_${req.params.projectId}_${JSON.stringify(req.query)}`;
-  const cached = cacheHelper.getCache(cacheKey);
+  const key = cacheKeys.projectTasks(
+    req.params.projectId,
+    JSON.stringify(req.query),
+  );
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
@@ -161,7 +166,7 @@ const getProjectTasks = asyncHandler(async (req, res) => {
         new ApiResponse(200, "Project tasks fetched from cache", cached.data),
       );
   } else {
-    cacheHelper.deleteCache(cacheKey);
+    cacheHelper.deleteCache(key);
   }
 
   //It will get the variable from the url search query (eg: ..?status = done)
@@ -227,7 +232,7 @@ const getProjectTasks = asyncHandler(async (req, res) => {
 
   const totalTasks = await Task.countDocuments(filter);
 
-  cacheHelper.setCache(cacheKey, {
+  cacheHelper.setCache(key, {
     tasks,
     totalTasks,
     currentPage: Number(page),
@@ -283,12 +288,11 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     project: task.project,
   });
 
-  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`project_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
-  cacheHelper.deleteCache(`task_${req.user._id}_${task._id}`);
-  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`project_tasks_${task.project}`);
+  await cacheInvalidation.taskUpdated(task.project, [
+    req.user._id,
+    task.createdBy,
+    task.assignedTo,
+  ]);
 
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
 });
@@ -363,12 +367,11 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
     });
   }
 
-  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`project_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
-  cacheHelper.deleteCache(`task_${req.user._id}_${task._id}`);
-  cacheHelper.deleteByPrefix(`tasks_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`project_tasks_${task.project}`);
+  await cacheInvalidation.taskUpdated(task.project, [
+    req.user._id,
+    task.createdBy,
+    task.assignedTo,
+  ]);
 
   return res
     .status(200)
@@ -378,15 +381,15 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
 });
 
 const getTask = asyncHandler(async (req, res) => {
-  const cacheKey = `task_${req.user._id}_${req.params.taskId}`;
-  const cached = cacheHelper.getCache(cacheKey);
+  const key = cacheKeys.task(req.user._id, req.params.taskId);
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
       .status(200)
       .json(new ApiResponse(200, "Task fetched from cache", cached.data));
   } else {
-    cacheHelper.deleteCache(cacheKey);
+    cacheHelper.deleteCache(key);
   }
 
   const task = await Task.findById(req.params.taskId)
@@ -406,7 +409,7 @@ const getTask = asyncHandler(async (req, res) => {
 
   if (!isMember) throw new ApiError(403, "Access denied");
 
-  cacheHelper.setCache(cacheKey, task);
+  cacheHelper.setCache(key, task);
 
   return res
     .status(200)

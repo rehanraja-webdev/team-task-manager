@@ -147,50 +147,58 @@ const cacheInvalidation = {
     const uniqueUserIds = [...new Set(userIds.map(String))];
 
     await Promise.all([
-      cacheHelper.deleteByPrefix(cacheKeys.tasks(projectId)),
+      cacheHelper.deleteByPrefix(`project_tasks_${projectId}_`),
 
       ...uniqueUserIds.flatMap((userId) => [
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "default")),
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "assigned")),
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "created")),
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "all")),
+
         cacheHelper.deleteCache(cacheKeys.dashboard(userId)),
         cacheHelper.deleteCache(cacheKeys.analytics(userId)),
       ]),
     ]);
   },
 
-  /**
-   * Task updated
-   */
   taskUpdated: async (projectId, userIds = []) => {
     const uniqueUserIds = [...new Set(userIds.map(String))];
 
     await Promise.all([
-      cacheHelper.deleteByPrefix(cacheKeys.tasks(projectId)),
+      cacheHelper.deleteByPrefix(`project_tasks_${projectId}_`),
 
       ...uniqueUserIds.flatMap((userId) => [
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "default")),
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "assigned")),
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "created")),
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "all")),
+
+        cacheHelper.deleteCache(cacheKeys.task(userId, projectId)),
+
         cacheHelper.deleteCache(cacheKeys.dashboard(userId)),
         cacheHelper.deleteCache(cacheKeys.analytics(userId)),
       ]),
     ]);
   },
 
-  /**
-   * Task deleted
-   */
   taskDeleted: async (projectId, userIds = []) => {
     const uniqueUserIds = [...new Set(userIds.map(String))];
 
     await Promise.all([
-      cacheHelper.deleteByPrefix(cacheKeys.tasks(projectId)),
+      cacheHelper.deleteByPrefix(`project_tasks_${projectId}_`),
 
       ...uniqueUserIds.flatMap((userId) => [
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "default")),
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "assigned")),
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "created")),
+        cacheHelper.deleteCache(cacheKeys.userTasks(userId, "all")),
+
         cacheHelper.deleteCache(cacheKeys.dashboard(userId)),
         cacheHelper.deleteCache(cacheKeys.analytics(userId)),
       ]),
     ]);
   },
 
-  /**
-   * Generic task invalidation
-   */
   task: async (projectId, userIds = []) => {
     const uniqueUserIds = [...new Set(userIds.map(String))];
 

@@ -1,13 +1,17 @@
 const cacheKeys = {
   project: (projectId) => `project_${projectId}`,
   projectPrefix: (projectId) => `project_${projectId}_`,
-
   projects: (userId) => `projects_${userId}`,
-  projectsPrefix: (userId) => `projects_${userId}_`,
+  projectsPrefix: (userId) => `projects_${userId}`,
 
   members: (userId, projectId) => `members_${userId}_${projectId}`,
 
   tasks: (projectId) => `tasks_${projectId}`,
+  userTasks: (userId, view = "default") => `tasks_${userId}_${view}`,
+  task: (userId, taskId) => `task_${userId}_${taskId}`,
+  projectTasks: (projectId, query = "") =>
+    `project_tasks_${projectId}_${query}`,
+  projectTasksPrefix: (projectId) => `project_tasks_${projectId}_`,
 
   dashboard: (userId) => `dashboard_${userId}`,
   dashboardPrefix: () => `dashboard_`,
@@ -15,6 +19,7 @@ const cacheKeys = {
   user: (userId) => `user_${userId}`,
 
   analytics: (userId) => `analytics_${userId}`,
+  analyticsPrefix: () => `analytics_`,
 };
 
 export default cacheKeys;

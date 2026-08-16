@@ -5,10 +5,12 @@ import ApiResponse from "../utils/ApiResponse.js";
 import User from "../models/user.model.js";
 import cache from "../utils/cache.js";
 import cacheHelper from "../utils/cache.helper.js";
+import cacheInvalidation from "../utils/cacheInvalidation.js";
 import Task from "../models/task.model.js";
 import Activity from "../models/activity.model.js";
 import mongoose from "mongoose";
 import createNotification from "../utils/createNotification.js";
+import cacheKeys from "../utils/cacheKeys.js";
 
 const createProject = asyncHandler(async (req, res) => {
   const session = await mongoose.startSession();
@@ -50,8 +52,7 @@ const createProject = asyncHandler(async (req, res) => {
       { session },
     );
 
-    cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
-    cacheHelper.deleteCache(`dashboard_${req.user._id}`);
+    await cacheInvalidation.projectCreated(req.user._id);
 
     await session.commitTransaction();
 
@@ -69,18 +70,20 @@ const createProject = asyncHandler(async (req, res) => {
 });
 
 const getProject = asyncHandler(async (req, res) => {
-  const cacheKey = `project_${req.user._id}_${req.params.projectId}`;
-  const cached = cacheHelper.getCache(cacheKey);
+  const { projectId } = req.params;
+
+  const key = cacheKeys.project(projectId);
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
       .status(200)
       .json(new ApiResponse(200, "Project fetched from cache!", cached.data));
   } else {
-    cacheHelper.deleteCache(cacheKey);
+    cacheHelper.deleteCache(key);
   }
 
-  const project = await Project.findById(req.params?.projectId)
+  const project = await Project.findById(projectId)
     .populate("owner", "fullname role")
     .populate("members.user", "fullname email role");
 
@@ -96,14 +99,15 @@ const getProject = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Access denied");
   }
 
-  cacheHelper.setCache(cacheKey, project);
+  cacheHelper.setCache(key, project);
   return res
     .status(200)
     .json(new ApiResponse(200, "Project Find Successfully", project));
 });
 
 const deleteProject = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params.projectId);
+  const { projectId } = req.params;
+  const project = await Project.findById(projectId);
 
   if (!project) {
     throw new ApiError(404, "No Project found!");
@@ -130,19 +134,7 @@ const deleteProject = asyncHandler(async (req, res) => {
 
   await project.deleteOne();
 
-  cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
-  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`project_${req.user._id}`);
-  cacheHelper.deleteByPrefix(`members_${req.user._id}`);
-
-  await Promise.all(
-    memberIds.map((userId) => {
-      cacheHelper.deleteCache(`dashboard_${userId}`);
-      cacheHelper.deleteByPrefix(`projects_${userId}`);
-      cacheHelper.deleteByPrefix(`project_${userId}`);
-      cacheHelper.deleteByPrefix(`members_${userId}`);
-    }),
-  );
+  await cacheInvalidation.projectDeleted(projectId, req.user._id);
 
   res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
 });
@@ -205,17 +197,7 @@ const updateProject = asyncHandler(async (req, res) => {
     );
   }
 
-  cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
-  cacheHelper.deleteByPrefix(`projects_${req.user._id}`);
-  cacheHelper.deleteCache(`dashboard_${req.user._id}`);
-
-  await Promise.all(
-    memberIds.map((userId) => {
-      cacheHelper.deleteCache(`project_${userId}_${projectId}`);
-      cacheHelper.deleteByPrefix(`projects_${userId}`);
-      cacheHelper.deleteCache(`dashboard_${userId}`);
-    }),
-  );
+  await cacheInvalidation.projectUpdated(projectId, req.user._id);
 
   res
     .status(200)
@@ -233,9 +215,9 @@ const getProjects = asyncHandler(async (req, res) => {
   };
 
   if (mode === "options") {
-    const cacheKey = `project_options_${userId}`;
+    const key = cacheKeys.projects(userId);
 
-    const cached = cacheHelper.getCache(cacheKey);
+    const cached = cacheHelper.getCache(key);
 
     if (cached && cached.expiresAt > Date.now()) {
       return res
@@ -250,7 +232,7 @@ const getProjects = asyncHandler(async (req, res) => {
     }
 
     if (cached) {
-      cacheHelper.deleteCache(cacheKey);
+      cacheHelper.deleteCache(key);
     }
 
     const projects = await Project.find(query)
@@ -258,7 +240,7 @@ const getProjects = asyncHandler(async (req, res) => {
       .sort({ name: 1 })
       .lean();
 
-    cacheHelper.setCache(cacheKey, projects);
+    cacheHelper.setCache(key, projects);
 
     return res
       .status(200)
@@ -276,9 +258,9 @@ const getProjects = asyncHandler(async (req, res) => {
 
   const skip = (pageNum - 1) * limitNum;
 
-  const cacheKey = `projects_${userId}_p${pageNum}_l${limitNum}`;
+  const key = `projects_${userId}_p${pageNum}_l${limitNum}`;
 
-  const cached = cacheHelper.getCache(cacheKey);
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
@@ -317,7 +299,7 @@ const getProjects = asyncHandler(async (req, res) => {
     },
   };
 
-  cacheHelper.setCache(cacheKey, responseData);
+  cacheHelper.setCache(key, responseData);
 
   return res
     .status(200)
@@ -370,15 +352,7 @@ const addMember = asyncHandler(async (req, res) => {
     type: "project",
   });
 
-  cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
-
-  cacheHelper.deleteCache(`members_${req.user._id}_${projectId}`);
-
-  cacheHelper.deleteCache(`dashboard_${member._id}`);
-  cacheHelper.deleteCache(`project_${member._id}_${projectId}`);
-  cacheHelper.deleteCache(`members_${member._id}_${projectId}`);
-
-  cacheHelper.deleteByPrefix(`project_tasks_${projectId}`);
+  await cacheInvalidation.memberAdded(projectId, [req.user._id, member._id]);
 
   res.status(200).json(new ApiResponse(200, "Member added successfully!"));
 });
@@ -446,24 +420,13 @@ const removeMember = asyncHandler(async (req, res) => {
     type: "project",
   });
 
-  cacheHelper.deleteCache(`project_${req.user._id}_${projectId}`);
-
-  cacheHelper.deleteCache(`members_${req.user._id}_${projectId}`);
-
-  cacheHelper.deleteCache(`project_${memberId}_${projectId}`);
-  cacheHelper.deleteCache(`members_${memberId}_${projectId}`);
-
-  cacheHelper.deleteByPrefix(`task_${req.user._id}_`);
-  cacheHelper.deleteByPrefix(`tasks_${memberId}`);
-  cacheHelper.deleteCache(`dashboard_${memberId}`);
-
-  cacheHelper.deleteByPrefix(`project_tasks_${projectId}`);
+  await cacheInvalidation.memberRemoved(projectId, [req.user._id, memberId]);
 
   res.status(200).json(new ApiResponse(200, "Member removed successfully!"));
 });
 
 const getProjectMembers = asyncHandler(async (req, res) => {
-  const cacheKey = `members_${req.user._id}_${req.params.projectId}`;
+  const cacheKey = cacheKeys.members(req.user._id, req.params.projectId);
   const cached = cacheHelper.getCache(cacheKey);
 
   if (cached && cached.expiresAt > Date.now()) {

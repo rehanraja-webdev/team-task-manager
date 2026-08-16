@@ -66,10 +66,13 @@ const createTask = asyncHandler(async (req, res) => {
     project: projectId,
   });
 
-  await cacheInvalidation.taskCreated(projectId, [
-    userId,
-    project.owner,
-    assignedTo,
+  await Promise.all([
+    cacheInvalidation.taskCreated(projectId, [
+      userId,
+      project.owner,
+      assignedTo,
+    ]),
+    cacheInvalidation.activities(userId),
   ]);
 
   res
@@ -120,20 +123,22 @@ const getTasks = asyncHandler(async (req, res) => {
 });
 
 const deleteTask = asyncHandler(async (req, res) => {
-  const task = await Task.findById(req.params.taskId);
+  const userId = req.user._id;
+  const { taskId } = req.params;
+  const task = await Task.findById(taskId);
 
   if (!task) {
     throw new ApiError(400, "Invalid task ID!");
   }
 
-  if (!task.createdBy.equals(req.user._id) && req.user.role !== "admin") {
+  if (!task.createdBy.equals(userId) && req.user.role !== "admin") {
     throw new ApiError(403, "You are not allowed to delete the task!");
   }
 
   await task.deleteOne();
 
-  createNotification({
-    user: req.user._id,
+  await createNotification({
+    user: userId,
     type: "task",
     title: "Task deleted",
     message: `Task has been deleted ${task.title}`,
@@ -141,10 +146,19 @@ const deleteTask = asyncHandler(async (req, res) => {
     project: task.project,
   });
 
-  await cacheInvalidation.taskDeleted(task.project, [
-    req.user._id,
-    task.createdBy,
-    task.assignedTo,
+  await Activity.create({
+    task: task._id,
+    user: req.user._id,
+    action: `${task.title} has been deleted!`,
+  });
+
+  await Promise.all([
+    cacheInvalidation.taskDeleted(task.project, [
+      userId,
+      task.createdBy,
+      task.assignedTo,
+    ]),
+    cacheInvalidation.activities(userId),
   ]);
 
   return res
@@ -250,12 +264,13 @@ const getProjectTasks = asyncHandler(async (req, res) => {
 });
 
 const updateTaskStatus = asyncHandler(async (req, res) => {
-  if (!validateObjectId(req.params.taskId)) {
+  const { taskId } = req.params;
+  if (!validateObjectId(taskId)) {
     throw new ApiError(400, "Invalid task ID!");
   }
 
   const { status } = req.body;
-  const task = await Task.findById(req.params.taskId);
+  const task = await Task.findById(taskId);
 
   if (!task) {
     throw new ApiError(404, "No task found!");
@@ -288,10 +303,13 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     project: task.project,
   });
 
-  await cacheInvalidation.taskUpdated(task.project, [
-    req.user._id,
-    task.createdBy,
-    task.assignedTo,
+  await Promise.all([
+    cacheInvalidation.activity(req.user._id, taskId),
+    cacheInvalidation.taskUpdated(task.project, [
+      req.user._id,
+      task.createdBy,
+      task.assignedTo,
+    ]),
   ]);
 
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
@@ -299,6 +317,7 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
 
 const updateTaskDetails = asyncHandler(async (req, res) => {
   const { taskId } = req.params;
+  const userId = req.user._id;
   const { title, description, priority, assignedTo, dueDate } = req.body;
 
   const task = await Task.findById(taskId);
@@ -308,7 +327,7 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
   }
 
   if (
-    task.createdBy.toString() !== req.user._id.toString() &&
+    task.createdBy.toString() !== userId.toString() &&
     req.user.role !== "admin"
   ) {
     throw new ApiError(403, "You can't update task details!");
@@ -350,13 +369,7 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
 
   const updatedTask = await task.save();
 
-  await Activity.create({
-    task: task._id,
-    user: req.user._id,
-    action: "Task details updated!",
-  });
-
-  if (!task.assignedTo.equals(req.user._id)) {
+  if (!task.assignedTo.equals(userId)) {
     await createNotification({
       user: task.assignedTo,
       type: "task",
@@ -367,10 +380,18 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
     });
   }
 
-  await cacheInvalidation.taskUpdated(task.project, [
-    req.user._id,
-    task.createdBy,
-    task.assignedTo,
+  await Promise.all([
+    Activity.create({
+      task: task._id,
+      user: userId,
+      action: "Task details updated!",
+    }),
+    cacheInvalidation.activity(userId, taskId),
+    cacheInvalidation.taskUpdated(task.project, [
+      userId,
+      task.createdBy,
+      task.assignedTo,
+    ]),
   ]);
 
   return res

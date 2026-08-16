@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import LandingPage from "./pages/LandingPage";
+import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import PublicLayout from "./layouts/PublicLayout";
@@ -35,7 +35,7 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
 
           <Route element={<PublicLayout />}>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/help" element={<Help />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

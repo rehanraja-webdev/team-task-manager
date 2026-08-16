@@ -20,6 +20,8 @@ const cacheKeys = {
 
   analytics: (userId) => `analytics_${userId}`,
   analyticsPrefix: () => `analytics_`,
+
+  userSettings: (userId) => `user_settings_${userId}`,
 };
 
 export default cacheKeys;

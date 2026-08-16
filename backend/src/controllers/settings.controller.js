@@ -1,11 +1,28 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import ApiError from "../utils/ApiError.js";
 import UserSettings from "../models/userSettings.model.js";
 
+import cacheHelper from "../utils/cache.helper.js";
+import cacheKeys from "../utils/cacheKeys.js";
+
 const getSettings = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const key = cacheKeys.userSettings(userId);
+  const cached = await cacheHelper.getCache(key);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Settings fetched from cache", cached.data));
+  }
+
+  if (cached) {
+    await cacheHelper.deleteCache(key);
+  }
+
   const settings = await UserSettings.findOne({
-    user: req.user._id,
+    user: userId,
   });
 
   if (!settings) {
@@ -14,12 +31,16 @@ const getSettings = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, "Currently settings are empty!", []));
   }
 
+  await cacheHelper.setCache(key, settings, (ttl = 5 * 60 * 1000));
+
   return res
     .status(200)
     .json(new ApiResponse(200, "Settings fetched successfully", settings));
 });
 
 const updateSettings = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
   const allowedFields = [
     "theme",
     "emailNotifications",
@@ -38,7 +59,7 @@ const updateSettings = asyncHandler(async (req, res) => {
   });
 
   const settings = await UserSettings.findOneAndUpdate(
-    { user: req.user._id },
+    { user: userId },
     { $set: updates },
     {
       new: true,
@@ -47,6 +68,8 @@ const updateSettings = asyncHandler(async (req, res) => {
       setDefaultsOnInsert: true,
     },
   );
+
+  await cacheHelper.deleteCache(cacheKeys.userSettings(userId));
 
   return res
     .status(200)

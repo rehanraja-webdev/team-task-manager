@@ -142,6 +142,10 @@ const cacheInvalidation = {
     ]);
   },
 
+  notifications: async (userId) => {
+    await cacheHelper.deleteCache(cacheKeys.notifications(userId));
+  },
+
   // =========================================================
   // TASK
   // =========================================================

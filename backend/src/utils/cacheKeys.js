@@ -30,6 +30,8 @@ const cacheKeys = {
   comments: (userId, taskId) => `comments_${userId}_${taskId}`,
   commentsPrefix: (userId) => `comments_${userId}_`,
 
+  notifications: (userId) => `notifications_${userId}`,
+
   projectUsers: (userId) => `project_users_${userId}`,
 
   userSettings: (userId) => `user_settings_${userId}`,

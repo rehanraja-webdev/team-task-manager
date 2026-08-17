@@ -5,6 +5,7 @@ import UpcomingDeadlines from "./UpcomingDeadlines";
 import RecentActivities from "./RecentActivities";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import useMemberDashboard from "../../../hooks/useMemberDashboard";
+import EmptyDashboard from "../../common/EmptyDashboard";
 
 const MemberDashboard = ({ fullname }) => {
   const { dashboard, fetching } = useMemberDashboard();
@@ -19,11 +20,14 @@ const MemberDashboard = ({ fullname }) => {
     return "Good Evening";
   };
 
+  const firstName = fullname?.split(" ")[0] || "there";
+
   return (
     <div className="space-y-8">
+      {/* Greeting - Always visible */}
       <div>
         <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-          {greeting()}, {fullname.split(" ")[0]} 👋
+          {greeting()}, {firstName} 👋
         </h1>
 
         <p className="mt-2 text-slate-600 dark:text-slate-400">
@@ -31,14 +35,24 @@ const MemberDashboard = ({ fullname }) => {
         </p>
       </div>
 
-      <MemberStats dashboard={dashboard} />
+      {/* Empty state */}
+      {dashboard?.isEmpty ? (
+        <EmptyDashboard role="member" fullname={fullname} />
+      ) : (
+        <>
+          <MemberStats dashboard={dashboard} />
 
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <MyTasks tasks={dashboard.upcomingTasks} />
-        <UpcomingDeadlines tasks={dashboard.upcomingTasks} />
-        <MyProjects projects={dashboard.projects} />
-        <RecentActivities activities={dashboard.recentActivities} />
-      </div>
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <MyTasks tasks={dashboard.upcomingTasks} />
+
+            <UpcomingDeadlines tasks={dashboard.upcomingTasks} />
+
+            <MyProjects projects={dashboard.projects} />
+
+            <RecentActivities activities={dashboard.recentActivities} />
+          </div>
+        </>
+      )}
     </div>
   );
 };

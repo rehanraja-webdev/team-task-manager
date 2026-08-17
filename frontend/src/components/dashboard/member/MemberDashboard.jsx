@@ -22,11 +22,11 @@ const MemberDashboard = ({ fullname }) => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
           {greeting()}, {fullname.split(" ")[0]} 👋
         </h1>
 
-        <p className="mt-2 text-slate-400">
+        <p className="mt-2 text-slate-600 dark:text-slate-400">
           Here's your work summary for today.
         </p>
       </div>

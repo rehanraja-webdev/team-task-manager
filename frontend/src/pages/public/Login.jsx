@@ -84,7 +84,7 @@ const Login = () => {
               type="submit"
               className="w-full bg-indigo-600 hover:bg-indigo-700 transition rounded-lg py-3 text-white font-medium"
             >
-              Sign In
+              {loading ? "Signining..." : "Sign In"}
             </button>
           </form>
 

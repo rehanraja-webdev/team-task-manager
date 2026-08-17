@@ -12,7 +12,7 @@ const options = {
 
     server: [
       {
-        url: "http://localhost:/5000",
+        url: "https://team-task-api-tu6j.onrender.com",
       },
     ],
   },

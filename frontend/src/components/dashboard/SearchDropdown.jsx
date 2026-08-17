@@ -35,10 +35,10 @@ const SearchDropdown = ({ query, results, loading, onClose }) => {
   }
 
   return (
-    <div className="absolute top-14 left-0 w-full overflow-hidden text-slate-900 dark:text-white rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl z-50">
+    <div className="absolute top-14 left-0 w-full max-h-80 overflow-y-auto text-slate-900 dark:text-white rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl z-50">
       {projects.length > 0 && (
         <>
-          <p className="px-4 py-2 text-xs uppercase text-slate-500 font-bold">
+          <p className="px-4 py-2 text-xs uppercase text-slate-500 font-bold sticky top-0 bg-white dark:bg-slate-900">
             Projects
           </p>
 
@@ -47,7 +47,7 @@ const SearchDropdown = ({ query, results, loading, onClose }) => {
               key={project._id}
               to={`/dashboard/projects/${project._id}`}
               onClick={onClose}
-              className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800  transition"
+              className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
             >
               <FolderOpen size={18} />
               <span>{project.name}</span>
@@ -58,7 +58,7 @@ const SearchDropdown = ({ query, results, loading, onClose }) => {
 
       {tasks.length > 0 && (
         <>
-          <p className="px-4 py-2 text-xs uppercase text-slate-500 font-bold">
+          <p className="px-4 py-2 text-xs uppercase text-slate-500 font-bold sticky top-0 bg-white dark:bg-slate-900">
             Tasks
           </p>
 
@@ -78,7 +78,7 @@ const SearchDropdown = ({ query, results, loading, onClose }) => {
 
       {users.length > 0 && (
         <>
-          <p className="px-4 py-2 text-xs uppercase text-slate-500 font-bold">
+          <p className="px-4 py-2 text-xs uppercase text-slate-500 font-bold sticky top-0 bg-white dark:bg-slate-900">
             Users
           </p>
 

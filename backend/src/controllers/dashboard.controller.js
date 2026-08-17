@@ -2,7 +2,6 @@ import asyncHandler from "../utils/asyncHandler.js";
 import Project from "../models/project.model.js";
 import Task from "../models/task.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import cache from "../utils/cache.js";
 import cacheHelper from "../utils/cache.helper.js";
 import Activity from "../models/activity.model.js";
 import cacheKeys from "../utils/cacheKeys.js";
@@ -16,53 +15,75 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
   if (cached && cached.expiresAt > Date.now()) {
     return res
       .status(200)
-      .json(new ApiResponse(200, "From cache", cached.data));
-  } else {
-    cacheHelper.deleteCache(key);
+      .json(new ApiResponse(200, "Dashboard fetched from cache", cached.data));
   }
 
-  //number of project user own
-  const totalProjects = await Project.countDocuments({
-    owner: userId,
-  });
-
+  // Only fetch projects first.
   const projects = await Project.find({
     owner: userId,
   }).select("_id");
 
-  //store project ids in array
-  const projectIds = await projects.map((project) => project._id);
+  // New admin / no projects yet
+  if (projects.length === 0) {
+    const dashboardData = {
+      isEmpty: true,
+    };
 
-  const totalTasks = await Task.countDocuments({
-    //$in will find all task whose project is any of these ids
-    project: {
-      $in: projectIds,
-    },
-  });
+    cacheHelper.setCache(key, dashboardData);
 
-  const taskStats = await Task.aggregate([
-    {
-      //$match"-> Only keep tasks whose project id exists in projectIds array
-      $match: {
-        project: {
-          $in: projectIds,
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          "Welcome to TeamTask! Create your first project.",
+          dashboardData,
+        ),
+      );
+  }
+
+  const projectIds = projects.map((project) => project._id);
+
+  const totalProjects = projects.length;
+
+  const [totalTasks, taskStats, myAssignedTasks, activities] =
+    await Promise.all([
+      Task.countDocuments({
+        project: { $in: projectIds },
+      }),
+
+      Task.aggregate([
+        {
+          $match: {
+            project: { $in: projectIds },
+          },
         },
-      },
-    },
-    {
-      //Group all tasks by status(eg:- todo: 4, in-progress: 2, done: 5) and count how many tasks exist in each group.
-      $group: {
-        _id: "$status",
-        count: { $sum: 1 },
-      },
-    },
-  ]);
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
+        },
+      ]),
+
+      Task.countDocuments({
+        assignedTo: userId,
+        project: { $in: projectIds },
+      }),
+
+      Activity.find({
+        project: { $in: projectIds },
+      })
+        .populate("user", "fullname email")
+        .sort({ createdAt: -1 })
+        .limit(10),
+    ]);
 
   let todoTasks = 0;
   let inProgressTasks = 0;
   let doneTasks = 0;
 
-  taskStats.map((item) => {
+  taskStats.forEach((item) => {
     if (item._id === "todo") {
       todoTasks = item.count;
     }
@@ -70,6 +91,7 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
     if (item._id === "in-progress") {
       inProgressTasks = item.count;
     }
+
     if (item._id === "done") {
       doneTasks = item.count;
     }
@@ -78,12 +100,8 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
   const completionRate =
     totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
 
-  const myAssignedTasks = await Task.countDocuments({
-    assignedTo: userId,
-  });
-
-  const activities = await Activity.find().sort({ createdAt: -1 }).limit(10);
   const dashboardData = {
+    isEmpty: false,
     totalProjects,
     totalTasks,
     todoTasks,
@@ -96,7 +114,7 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
 
   cacheHelper.setCache(key, dashboardData);
 
-  res
+  return res
     .status(200)
     .json(
       new ApiResponse(
@@ -121,6 +139,59 @@ const getMemberDashboard = asyncHandler(async (req, res) => {
           200,
           "Member dashboard fetched from cache",
           cached.data,
+        ),
+      );
+  }
+
+  const hasTasks = await Task.exists({
+    assignedTo: userId,
+  });
+
+  const hasProjects = await Project.exists({
+    "members.user": userId,
+  });
+
+  if (!hasTasks && !hasProjects) {
+    const dashboardData = {
+      isEmpty: true,
+    };
+
+    cacheHelper.setCache(key, dashboardData);
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          "Welcome to TeamTask! You don't have any assigned work yet.",
+          dashboardData,
+        ),
+      );
+  }
+
+  // Check membership FIRST.
+  // This prevents expensive task queries for a new member.
+  const projects = await Project.find({
+    "members.user": userId,
+  })
+    .select("name status createdAt")
+    .sort({ createdAt: -1 });
+
+  // New member / not part of any project
+  if (projects.length === 0) {
+    const dashboardData = {
+      isEmpty: true,
+    };
+
+    cacheHelper.setCache(key, dashboardData);
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          "Welcome to TeamTask! You are not part of any project yet.",
+          dashboardData,
         ),
       );
   }
@@ -181,7 +252,7 @@ const getMemberDashboard = asyncHandler(async (req, res) => {
     }
   });
 
-  if (taskStats[0].dueToday.length) {
+  if (taskStats[0].dueToday.length > 0) {
     dueToday = taskStats[0].dueToday[0].count;
   }
 
@@ -190,33 +261,23 @@ const getMemberDashboard = asyncHandler(async (req, res) => {
       ? 0
       : Math.round((completedTasks / assignedTasks) * 100);
 
-  const projects = await Project.find({
-    "members.user": userId,
-  })
-    .select("name status createdAt")
-    .sort({ createdAt: -1 });
-
   const upcomingTasks = await Task.find({
     assignedTo: userId,
-    status: {
-      $ne: "done",
-    },
+    status: { $ne: "done" },
   })
     .select("title priority dueDate status")
-    .sort({
-      dueDate: 1,
-    })
+    .sort({ dueDate: 1 })
     .limit(5);
 
   const recentActivities = await Activity.find({
     user: userId,
   })
-    .sort({
-      createdAt: -1,
-    })
+    .populate("user", "fullname email")
+    .sort({ createdAt: -1 })
     .limit(8);
 
   const dashboardData = {
+    isEmpty: false,
     assignedTasks,
     completedTasks,
     inProgressTasks,

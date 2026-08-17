@@ -1,4 +1,4 @@
-import { Bell } from "lucide-react";
+import { Bell, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useNotifications from "../../hooks/useNotifications";
 import NotificationItem from "./NotificationItem";
@@ -52,7 +52,7 @@ const NotificationDropdown = () => {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-3 w-96 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl">
+        <div className="fixed inset-x-4 top-24 sm:absolute sm:inset-auto sm:right-0 sm:top-full z-50 mt-3 w-auto sm:w-96 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl">
           <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 p-4">
             <h3 className="font-semibold text-slate-900 dark:text-white">
               Notifications
@@ -68,7 +68,7 @@ const NotificationDropdown = () => {
             )}
           </div>
 
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-[60vh] sm:max-h-96 overflow-y-auto">
             {loading ? (
               <p className="p-6 text-center text-slate-600 dark:text-slate-400">
                 Loading...
@@ -88,9 +88,15 @@ const NotificationDropdown = () => {
             )}
           </div>
 
-          <button className="w-full border-t border-slate-200 dark:border-slate-800 p-3 text-indigo-600 dark:text-indigo-400 transition hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">
-            View All Notifications
-          </button>
+          <div className="border-t border-slate-200 dark:border-slate-800 p-2">
+            <button
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 cursor-pointer"
+            >
+              <X className="h-4 w-4" />
+              Close Notification
+            </button>
+          </div>
         </div>
       )}
     </div>

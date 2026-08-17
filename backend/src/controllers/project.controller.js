@@ -276,7 +276,7 @@ const getProjects = asyncHandler(async (req, res) => {
   }
 
   if (cached) {
-    cacheHelper.deleteCache(cacheKey);
+    cacheHelper.deleteCache(key);
   }
 
   const [projects, totalProjects] = await Promise.all([
@@ -439,8 +439,8 @@ const removeMember = asyncHandler(async (req, res) => {
 });
 
 const getProjectMembers = asyncHandler(async (req, res) => {
-  const cacheKey = cacheKeys.members(req.user._id, req.params.projectId);
-  const cached = cacheHelper.getCache(cacheKey);
+  const key = cacheKeys.members(req.user._id, req.params.projectId);
+  const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
     return res
@@ -449,7 +449,7 @@ const getProjectMembers = asyncHandler(async (req, res) => {
         new ApiResponse(200, "Project members fetched from cache", cached.data),
       );
   } else {
-    cacheHelper.deleteCache(cacheKey);
+    cacheHelper.deleteCache(key);
   }
 
   //.populate({})  in obj,  it's a nested schema to get all details of a user based on (members.user => id)
@@ -462,7 +462,7 @@ const getProjectMembers = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Project not found!");
   }
 
-  cacheHelper.setCache(cacheKey, project.members);
+  cacheHelper.setCache(key, project.members);
 
   res
     .status(200)

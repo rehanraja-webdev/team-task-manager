@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import SEO from "../../components/SEO";
 
@@ -21,12 +20,8 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
-      await login(formData);
-      navigate("/dashboard");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed!");
-    }
+    await login(formData);
+    navigate("/dashboard");
   };
 
   const handleChange = (e) => {

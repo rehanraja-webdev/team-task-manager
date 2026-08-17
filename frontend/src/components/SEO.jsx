@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-const SITE_URL = "https://your-teamtask-url.netlify.app";
+const SITE_URL = "https://teamtask-app.netlify.app/";
 
 const SEO = ({
   title = "TeamTask - Project & Task Management for Teams",

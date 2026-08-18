@@ -5,7 +5,7 @@ import UpcomingDeadlines from "./UpcomingDeadlines";
 import RecentActivities from "./RecentActivities";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import useMemberDashboard from "../../../hooks/useMemberDashboard";
-import EmptyDashboard from "../../common/EmptyDashboard";
+import EmptyDashboard from "../../dashboard/EmptyDashboard";
 
 const MemberDashboard = ({ fullname }) => {
   const { dashboard, fetching } = useMemberDashboard();

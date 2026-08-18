@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import useAdminDashboard from "../../../hooks/useAdminDashboard";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import ChartSkeleton from "../../common/ChartSkeleton";
-import EmptyDashboard from "../../common/EmptyDashboard";
+import EmptyDashboard from "../../dashboard/EmptyDashboard";
 
 import DashboardStats from "./DashboardStats";
 import DashboardOverview from "./DashboardOverview";

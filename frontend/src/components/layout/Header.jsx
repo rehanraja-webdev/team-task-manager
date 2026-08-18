@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link, NavLink } from "react-router-dom";
 import { Menu, X, Sun, Moon, ChevronRight, LogOut, User } from "lucide-react";
 
@@ -78,7 +78,7 @@ const Header = () => {
   const getInitials = (name = "") => {
     return name
       .trim()
-      .split(" ")
+      .split(/\s+/)
       .slice(0, 2)
       .map((word) => word[0])
       .join("")
@@ -88,6 +88,22 @@ const Header = () => {
   const closeMenu = () => {
     setMenuOpen(false);
   };
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <>
@@ -154,7 +170,6 @@ const Header = () => {
 
           {/* RIGHT */}
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-            {/* Search */}
             <SearchBox />
 
             {/* Theme */}
@@ -186,7 +201,8 @@ const Header = () => {
               to="/dashboard/profile"
               className="
                 hidden h-10 w-10 items-center justify-center
-                rounded-full bg-indigo-600
+                rounded-full
+                bg-indigo-600
                 text-xs font-semibold text-white
                 sm:flex
               "
@@ -212,7 +228,8 @@ const Header = () => {
           {/* Drawer */}
           <aside
             className="
-              absolute left-0 top-0 flex h-full w-[min(85vw,320px)]
+              absolute left-0 top-0
+              flex h-full w-[min(85vw,320px)]
               flex-col
               border-r border-slate-200
               bg-white
@@ -222,7 +239,7 @@ const Header = () => {
             "
           >
             {/* Drawer Header */}
-            <div className="flex h-20 items-center justify-between border-b border-slate-200 px-5 dark:border-slate-800">
+            <div className="flex h-20 shrink-0 items-center justify-between border-b border-slate-200 px-5 dark:border-slate-800">
               <Link
                 to="/dashboard"
                 onClick={closeMenu}
@@ -250,10 +267,14 @@ const Header = () => {
                 onClick={closeMenu}
                 aria-label="Close navigation menu"
                 className="
-                  flex h-9 w-9 items-center justify-center rounded-xl
-                  text-slate-500 transition
-                  hover:bg-slate-100 hover:text-slate-900
-                  dark:text-slate-400 dark:hover:bg-slate-800
+                  flex h-9 w-9 items-center justify-center
+                  rounded-xl
+                  text-slate-500
+                  transition
+                  hover:bg-slate-100
+                  hover:text-slate-900
+                  dark:text-slate-400
+                  dark:hover:bg-slate-800
                   dark:hover:text-white
                 "
               >
@@ -266,10 +287,17 @@ const Header = () => {
               to="/dashboard/profile"
               onClick={closeMenu}
               className="
-                mx-4 mt-5 flex items-center gap-3 rounded-2xl
-                border border-slate-200 bg-slate-50 p-3
-                transition hover:border-indigo-300 hover:bg-indigo-50
-                dark:border-slate-800 dark:bg-slate-950
+                mx-4 mt-5 shrink-0
+                flex items-center gap-3
+                rounded-2xl
+                border border-slate-200
+                bg-slate-50
+                p-3
+                transition
+                hover:border-indigo-300
+                hover:bg-indigo-50
+                dark:border-slate-800
+                dark:bg-slate-950
                 dark:hover:border-indigo-500/40
                 dark:hover:bg-indigo-500/10
               "
@@ -294,7 +322,7 @@ const Header = () => {
             </Link>
 
             {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto px-4 py-6">
+            <nav className="custom-scrollbar min-h-0 flex-1 overflow-y-auto px-4 py-6">
               <p className="mb-3 px-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 Menu
               </p>
@@ -352,16 +380,21 @@ const Header = () => {
                 })}
               </div>
 
-              {/* Mobile-only actions */}
+              {/* Theme */}
               <div className="mt-7 border-t border-slate-200 pt-5 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={toggleTheme}
                   className="
-                    flex w-full items-center gap-3 rounded-xl px-3 py-3
-                    text-sm font-medium text-slate-600 transition
-                    hover:bg-slate-100 hover:text-slate-900
-                    dark:text-slate-400 dark:hover:bg-slate-800
+                    flex w-full items-center gap-3
+                    rounded-xl px-3 py-3
+                    text-sm font-medium
+                    text-slate-600
+                    transition
+                    hover:bg-slate-100
+                    hover:text-slate-900
+                    dark:text-slate-400
+                    dark:hover:bg-slate-800
                     dark:hover:text-white
                   "
                 >
@@ -373,15 +406,20 @@ const Header = () => {
             </nav>
 
             {/* Logout */}
-            <div className="border-t border-slate-200 p-4 dark:border-slate-800">
+            <div className="shrink-0 border-t border-slate-200 p-4 dark:border-slate-800">
               <button
                 type="button"
                 onClick={logout}
                 className="
-                  flex w-full items-center gap-3 rounded-xl px-3 py-3
-                  text-sm font-medium text-red-500 transition
-                  hover:bg-red-50 hover:text-red-600
-                  dark:text-red-400 dark:hover:bg-red-500/10
+                  flex w-full items-center gap-3
+                  rounded-xl px-3 py-3
+                  text-sm font-medium
+                  text-red-500
+                  transition
+                  hover:bg-red-50
+                  hover:text-red-600
+                  dark:text-red-400
+                  dark:hover:bg-red-500/10
                 "
               >
                 <LogOut size={19} />

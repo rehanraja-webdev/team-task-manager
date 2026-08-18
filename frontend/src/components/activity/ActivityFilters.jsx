@@ -16,7 +16,7 @@ const ActivityFilters = ({ filter, setFilter }) => {
             setFilter((prev) => ({ ...prev, search: e.target.value }))
           }
           placeholder="Search activities..."
-          className="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 outline-none focus:border-purple-500"
+          className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-slate-900 dark:text-white placeholder-slate-500 outline-none focus:border-purple-500"
         />
       </div>
 
@@ -24,7 +24,7 @@ const ActivityFilters = ({ filter, setFilter }) => {
         onChange={(e) =>
           setFilter((prev) => ({ ...prev, selected: e.target.value }))
         }
-        className="bg-slate-900 lg:w-[25%] border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-purple-500"
+        className="bg-white dark:bg-slate-900 lg:w-[25%] border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white outline-none focus:border-purple-500"
       >
         <option value="all">All</option>
         <option value="project">Project</option>

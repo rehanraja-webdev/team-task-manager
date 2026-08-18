@@ -4,14 +4,8 @@ import useNotifications from "../../hooks/useNotifications";
 import NotificationItem from "./NotificationItem";
 
 const NotificationDropdown = () => {
-  const {
-    notifications,
-    unreadCount,
-    loading,
-    fetchNotifications,
-    markAsRead,
-    markAllRead,
-  } = useNotifications();
+  const { notifications, unreadCount, loading, markAsRead, markAllRead } =
+    useNotifications();
 
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -25,58 +19,101 @@ const NotificationDropdown = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
-  const handleToggle = async () => {
-    if (!open && notifications.length === 0) {
-      await fetchNotifications();
-    }
-
+  const handleToggle = () => {
     setOpen((prev) => !prev);
   };
 
   return (
     <div className="relative" ref={ref}>
       <button
+        type="button"
         onClick={handleToggle}
-        className="relative rounded-full bg-slate-50 dark:bg-slate-950 p-3 transition hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+        aria-label="Notifications"
+        className="
+          relative cursor-pointer rounded-full
+          bg-slate-50 p-3
+          transition hover:bg-slate-100
+          dark:bg-slate-950 dark:hover:bg-slate-800
+        "
       >
         <Bell className="text-slate-700 dark:text-slate-300" />
 
         {unreadCount > 0 && (
-          <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-slate-900 dark:text-white">
-            {unreadCount}
+          <span
+            className="
+              absolute -right-1 -top-1
+              flex h-5 min-w-5 items-center justify-center
+              rounded-full bg-red-500 px-1
+              text-[10px] font-semibold text-white
+            "
+          >
+            {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="fixed inset-x-4 top-24 sm:absolute sm:inset-auto sm:right-0 sm:top-full z-50 mt-3 w-auto sm:w-96 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl">
-          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 p-4">
-            <h3 className="font-semibold text-slate-900 dark:text-white">
-              Notifications
-            </h3>
+        <div
+          className="
+            fixed inset-x-4 top-24 z-50
+            mt-3 overflow-hidden
+            rounded-2xl
+            border border-slate-200
+            bg-white shadow-2xl
+            dark:border-slate-800
+            dark:bg-slate-900
+            sm:absolute sm:inset-auto sm:right-0 sm:top-full
+            sm:w-96
+          "
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-slate-200 p-4 dark:border-slate-800">
+            <div>
+              <h3 className="font-semibold text-slate-900 dark:text-white">
+                Notifications
+              </h3>
 
-            {!!notifications.length && (
+              {unreadCount > 0 && (
+                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                  {unreadCount} unread
+                </p>
+              )}
+            </div>
+
+            {!!notifications.length && unreadCount > 0 && (
               <button
+                type="button"
                 onClick={markAllRead}
-                className="cursor-pointer text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
+                className="
+                  cursor-pointer text-sm text-indigo-600
+                  hover:text-indigo-700
+                  dark:text-indigo-400 dark:hover:text-indigo-300
+                "
               >
                 Mark all read
               </button>
             )}
           </div>
 
-          <div className="max-h-[60vh] sm:max-h-96 overflow-y-auto">
+          {/* Content */}
+          <div className="max-h-[60vh] overflow-y-auto sm:max-h-96">
             {loading ? (
-              <p className="p-6 text-center text-slate-600 dark:text-slate-400">
-                Loading...
-              </p>
+              <div className="p-6 text-center">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Loading notifications...
+                </p>
+              </div>
             ) : notifications.length === 0 ? (
-              <p className="p-6 text-center text-slate-600 dark:text-slate-400">
-                No notifications
-              </p>
+              <div className="p-6 text-center">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  No notifications
+                </p>
+              </div>
             ) : (
               notifications.map((notification) => (
                 <NotificationItem
@@ -88,13 +125,23 @@ const NotificationDropdown = () => {
             )}
           </div>
 
-          <div className="border-t border-slate-200 dark:border-slate-800 p-2">
+          {/* Footer */}
+          <div className="border-t border-slate-200 p-2 dark:border-slate-800">
             <button
+              type="button"
               onClick={() => setOpen(false)}
-              className="flex w-full items-center justify-center gap-2 rounded-xl py-2 text-xs font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 cursor-pointer"
+              className="
+                flex w-full cursor-pointer items-center justify-center
+                gap-2 rounded-xl py-2
+                text-xs font-semibold
+                text-slate-500 transition
+                hover:bg-slate-100 hover:text-slate-700
+                dark:text-slate-400
+                dark:hover:bg-slate-800 dark:hover:text-slate-200
+              "
             >
               <X className="h-4 w-4" />
-              Close Notification
+              Close Notifications
             </button>
           </div>
         </div>

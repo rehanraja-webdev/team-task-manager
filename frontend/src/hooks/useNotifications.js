@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import {
@@ -11,21 +11,24 @@ const useNotifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchNotifications = async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setLoading(true);
 
-      const data = await getNotifications();
+        const data = await getNotifications();
 
-      setNotifications(data);
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to load notifications",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+        setNotifications(data);
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || "Failed to load notifications",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNotifications();
+  }, []);
 
   const markAsRead = async (id) => {
     try {
@@ -66,7 +69,6 @@ const useNotifications = () => {
     notifications,
     unreadCount,
     loading,
-    fetchNotifications,
     markAsRead,
     markAllRead,
   };

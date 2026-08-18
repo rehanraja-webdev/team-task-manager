@@ -129,7 +129,7 @@ const Header = () => {
             {/* Page information */}
             <div className="min-w-0">
               {/* Breadcrumb */}
-              <div className="hidden items-center gap-1.5 text-xs text-slate-400 sm:flex dark:text-slate-500">
+              <div className="hidden items-center gap-1.5 text-xs text-slate-500 sm:flex dark:text-slate-400">
                 <Link
                   to="/dashboard"
                   className="transition hover:text-indigo-500"

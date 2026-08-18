@@ -7,6 +7,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import PublicLayout from "./layouts/PublicLayout";
 import NotFound from "./components/common/NotFound";
+import LoadingSpinner from "./components/common/LoadingSpinner";
 
 const Login = lazy(() => import("./pages/public/Login"));
 const Register = lazy(() => import("./pages/public/Register"));
@@ -31,7 +32,13 @@ const App = () => {
   return (
     <BrowserRouter>
       <Toaster />
-      <Suspense fallback={<div className="loading-spinner">Loading...</div>}>
+      <Suspense
+        fallback={
+          <div className="loading-spinner">
+            <LoadingSpinner />
+          </div>
+        }
+      >
         <Routes>
           <Route path="*" element={<NotFound />} />
 

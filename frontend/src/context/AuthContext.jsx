@@ -7,6 +7,7 @@ import {
   loginUser,
   logoutUser,
   registerUser,
+  changePasswordService,
 } from "../services/auth.service";
 
 import LoadingSpinner from "../components/common/LoadingSpinner";
@@ -77,6 +78,24 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const changePassword = async (formData) => {
+    try {
+      await changePasswordService(formData);
+
+      setUser(null);
+
+      toast.success("Password Changed successfully!");
+      return true;
+    } catch (error) {
+      const message =
+        error?.response?.data?.message || "Password change failed!";
+
+      toast.error(message);
+
+      throw error;
+    }
+  };
+
   const checkAuth = async () => {
     try {
       const res = await getUser();
@@ -97,6 +116,7 @@ const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    changePassword,
     checkAuth,
   };
 

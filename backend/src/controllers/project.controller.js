@@ -360,7 +360,7 @@ const addMember = asyncHandler(async (req, res) => {
   });
 
   await Promise.all([
-    cacheInvalidation.activities(userId),
+    cacheInvalidation.activities(req.user._id),
     cacheInvalidation.memberAdded(projectId, [req.user._id, member._id]),
   ]);
 

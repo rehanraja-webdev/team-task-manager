@@ -4,10 +4,13 @@ import CollapsedSidebar from "../components/layout/CollapsedSidebar";
 import MobileNavbar from "../components/layout/MobileNavbar";
 import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
+import ScrollToTop from "../components/common/ScrollToTop";
 
 const MainLayout = () => {
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950">
+      <ScrollToTop />
+      
       <div className="flex min-h-screen gap-8">
         {/* Desktop Sidebar */}
         <aside className="hidden w-64 shrink-0 lg:block">

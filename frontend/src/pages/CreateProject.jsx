@@ -11,7 +11,7 @@ const CreateProject = () => {
   if (user.role !== "admin") {
     navigate(-1);
   }
-  
+
   const nameRef = useRef(null);
   const descriptionRef = useRef(null);
 
@@ -28,7 +28,7 @@ const CreateProject = () => {
   return (
     <div
       className="
-        mx-auto max-w-2xl rounded-3xl border p-8 shadow-xl
+        mx-auto max-w-2xl rounded-3xl border p-6 md:p-8 shadow-xl
         border-slate-200 bg-white
         dark:border-slate-800 dark:bg-slate-900
       "
@@ -118,7 +118,7 @@ const CreateProject = () => {
             onClick={() => navigate(-1)}
             disabled={loading}
             className="
-              w-full rounded-xl border px-6 py-3
+              w-full rounded-xl border px-4 sm:px-6 py-3
               transition-colors duration-200
               sm:w-auto
               border-slate-300
@@ -140,7 +140,7 @@ const CreateProject = () => {
             type="submit"
             disabled={loading}
             className="
-              w-full rounded-xl px-6 py-3
+              w-full rounded-xl px-4 sm:px-6 py-3
               bg-purple-600 text-white
               shadow-lg shadow-purple-600/25
               transition-all duration-200

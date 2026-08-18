@@ -25,7 +25,7 @@ export const updateProfileService = async () => {
   return response.data;
 };
 
-export const changePasswordService = async () => {
-  const response = await api.patch("/v1/auth/change-password");
+export const changePasswordService = async (formData) => {
+  const response = await api.patch("/v1/auth/change-password", formData);
   return response.data;
 };

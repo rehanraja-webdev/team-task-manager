@@ -8,6 +8,7 @@ import jobQueue from "../utils/jobQueue.js";
 import Project from "../models/project.model.js";
 import Task from "../models/task.model.js";
 import UserSettings from "../models/userSettings.model.js";
+import createNotification from "../utils/createNotification.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   const { fullname, email, password } = req.body;
@@ -24,12 +25,19 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const user = await User.create({
     fullname,
-    email,
+    email: email.toLowerCase(),
     password: hashPassword,
   });
 
   await UserSettings.create({
     user: user._id,
+  });
+
+  await createNotification({
+    user: user._id,
+    title: "Welcome to TeamTask! 🎉",
+    message: `Hi ${fullname.split(" ")[0]}, we're glad to have you here. Start by creating a project, joining your team, or exploring your dashboard.`,
+    type: "system",
   });
 
   jobQueue.addJob({
@@ -40,7 +48,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const token = generateToken(user._id);
 
-  const secure = process.env.NODE_ENV === "production" ? true : false;
+  const secure = process.env.NODE_ENV === "production";
 
   res.cookie("token", token, {
     httpOnly: true,

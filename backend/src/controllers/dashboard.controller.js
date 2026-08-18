@@ -159,11 +159,7 @@ const getMemberDashboard = asyncHandler(async (req, res) => {
     assignedTo: userId,
   });
 
-  const hasProjects = await Project.exists({
-    "members.user": userId,
-  });
-
-  if (!hasTasks && !hasProjects) {
+  if (!hasTasks) {
     const dashboardData = {
       isEmpty: true,
     };

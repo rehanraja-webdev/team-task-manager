@@ -184,6 +184,7 @@ const cacheInvalidation = {
         cacheHelper.deleteCache(cacheKeys.userTasks(userId, "all")),
 
         cacheHelper.deleteCache(cacheKeys.task(userId, projectId)),
+        cacheHelper.deleteByPrefix(`task_${userId}`),
 
         cacheHelper.deleteCache(cacheKeys.dashboard(userId)),
         cacheHelper.deleteCache(cacheKeys.analytics(userId)),

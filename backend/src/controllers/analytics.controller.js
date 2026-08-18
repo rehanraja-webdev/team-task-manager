@@ -17,38 +17,37 @@ const getAnalytics = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, "Analytics fetched from cache", cached.data));
   }
 
-  cacheHelper.deleteCache(key);
+  if (cached) {
+    cacheHelper.deleteCache(key);
+  }
 
-  const projects = await Project.find({ owner: adminId }).select("_id");
-  const projectIds = projects.map((p) => p._id);
+  // Check projects first.
+  // A new admin has no analytics to calculate.
+  const projects = await Project.find({
+    owner: adminId,
+  })
+    .select("_id")
+    .lean();
 
-  if (!projectIds.length) {
+  if (projects.length === 0) {
     const emptyData = {
-      overview: {
-        totalProjects: 0,
-        totalMembers: 0,
-        totalTasks: 0,
-        todoTasks: 0,
-        inProgressTasks: 0,
-        doneTasks: 0,
-        completionRate: 0,
-        overdueTasks: 0,
-        lowPriority: 0,
-        mediumPriority: 0,
-        highPriority: 0,
-      },
-      monthTasks: [],
-      projectAnalytics: [],
-      contributors: [],
-      overdue: [],
+      isEmpty: true,
     };
 
     cacheHelper.setCache(key, emptyData);
 
     return res
       .status(200)
-      .json(new ApiResponse(200, "Analytics fetched", emptyData));
+      .json(
+        new ApiResponse(
+          200,
+          "Welcome to TeamTask! Create your first project to view analytics.",
+          emptyData,
+        ),
+      );
   }
+
+  const projectIds = projects.map((project) => project._id);
 
   const [
     taskStats,
@@ -58,8 +57,13 @@ const getAnalytics = asyncHandler(async (req, res) => {
     contributors,
     overdue,
   ] = await Promise.all([
+    // Task overview
     Task.aggregate([
-      { $match: { project: { $in: projectIds } } },
+      {
+        $match: {
+          project: { $in: projectIds },
+        },
+      },
       {
         $facet: {
           overview: [
@@ -84,21 +88,55 @@ const getAnalytics = asyncHandler(async (req, res) => {
               },
             },
           ],
-          byStatus: [{ $group: { _id: "$status", count: { $sum: 1 } } }],
-          byPriority: [{ $group: { _id: "$priority", count: { $sum: 1 } } }],
+
+          byStatus: [
+            {
+              $group: {
+                _id: "$status",
+                count: { $sum: 1 },
+              },
+            },
+          ],
+
+          byPriority: [
+            {
+              $group: {
+                _id: "$priority",
+                count: { $sum: 1 },
+              },
+            },
+          ],
         },
       },
     ]),
 
+    // Unique members across admin's projects
     Project.aggregate([
-      { $match: { owner: adminId } },
-      { $unwind: "$members" },
-      { $group: { _id: "$members.user" } },
-      { $count: "totalMembers" },
+      {
+        $match: {
+          owner: adminId,
+        },
+      },
+      {
+        $unwind: "$members",
+      },
+      {
+        $group: {
+          _id: "$members.user",
+        },
+      },
+      {
+        $count: "totalMembers",
+      },
     ]),
 
+    // Tasks created per month
     Task.aggregate([
-      { $match: { project: { $in: projectIds } } },
+      {
+        $match: {
+          project: { $in: projectIds },
+        },
+      },
       {
         $group: {
           _id: {
@@ -108,11 +146,21 @@ const getAnalytics = asyncHandler(async (req, res) => {
           tasks: { $sum: 1 },
         },
       },
-      { $sort: { "_id.year": 1, "_id.month": 1 } },
+      {
+        $sort: {
+          "_id.year": 1,
+          "_id.month": 1,
+        },
+      },
     ]),
 
+    // Top projects
     Task.aggregate([
-      { $match: { project: { $in: projectIds } } },
+      {
+        $match: {
+          project: { $in: projectIds },
+        },
+      },
       {
         $lookup: {
           from: "projects",
@@ -121,7 +169,9 @@ const getAnalytics = asyncHandler(async (req, res) => {
           as: "project",
         },
       },
-      { $unwind: "$project" },
+      {
+        $unwind: "$project",
+      },
       {
         $group: {
           _id: "$project._id",
@@ -142,19 +192,35 @@ const getAnalytics = asyncHandler(async (req, res) => {
           completionRate: {
             $round: [
               {
-                $multiply: [{ $divide: ["$completed", "$tasks"] }, 100],
+                $multiply: [
+                  {
+                    $divide: ["$completed", "$tasks"],
+                  },
+                  100,
+                ],
               },
               0,
             ],
           },
         },
       },
-      { $sort: { tasks: -1 } },
-      { $limit: 3 },
+      {
+        $sort: {
+          tasks: -1,
+        },
+      },
+      {
+        $limit: 3,
+      },
     ]),
 
+    // Top contributors
     Task.aggregate([
-      { $match: { project: { $in: projectIds } } },
+      {
+        $match: {
+          project: { $in: projectIds },
+        },
+      },
       {
         $group: {
           _id: "$assignedTo",
@@ -166,8 +232,14 @@ const getAnalytics = asyncHandler(async (req, res) => {
           },
         },
       },
-      { $sort: { completedTasks: -1 } },
-      { $limit: 10 },
+      {
+        $sort: {
+          completedTasks: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
       {
         $lookup: {
           from: "users",
@@ -176,7 +248,9 @@ const getAnalytics = asyncHandler(async (req, res) => {
           as: "user",
         },
       },
-      { $unwind: "$user" },
+      {
+        $unwind: "$user",
+      },
       {
         $project: {
           _id: 0,
@@ -188,6 +262,7 @@ const getAnalytics = asyncHandler(async (req, res) => {
       },
     ]),
 
+    // Overdue tasks
     Task.aggregate([
       {
         $match: {
@@ -204,7 +279,9 @@ const getAnalytics = asyncHandler(async (req, res) => {
           as: "project",
         },
       },
-      { $unwind: "$project" },
+      {
+        $unwind: "$project",
+      },
       {
         $lookup: {
           from: "users",
@@ -213,8 +290,14 @@ const getAnalytics = asyncHandler(async (req, res) => {
           as: "user",
         },
       },
-      { $unwind: "$user" },
-      { $sort: { dueDate: 1 } },
+      {
+        $unwind: "$user",
+      },
+      {
+        $sort: {
+          dueDate: 1,
+        },
+      },
       {
         $project: {
           _id: 1,
@@ -230,14 +313,15 @@ const getAnalytics = asyncHandler(async (req, res) => {
   ]);
 
   const stats = taskStats[0];
+
   const overview = stats.overview[0] || {};
 
   const status = Object.fromEntries(
-    stats.byStatus.map((i) => [i._id, i.count]),
+    stats.byStatus.map((item) => [item._id, item.count]),
   );
 
   const priority = Object.fromEntries(
-    stats.byPriority.map((i) => [i._id, i.count]),
+    stats.byPriority.map((item) => [item._id, item.count]),
   );
 
   const monthNames = [
@@ -256,6 +340,8 @@ const getAnalytics = asyncHandler(async (req, res) => {
   ];
 
   const data = {
+    isEmpty: false,
+
     overview: {
       totalProjects: projectIds.length,
       totalMembers: memberStats[0]?.totalMembers || 0,
@@ -263,19 +349,21 @@ const getAnalytics = asyncHandler(async (req, res) => {
       todoTasks: status.todo || 0,
       inProgressTasks: status["in-progress"] || 0,
       doneTasks: status.done || 0,
+
       completionRate:
         overview.totalTasks > 0
           ? Math.round(((status.done || 0) / overview.totalTasks) * 100)
           : 0,
+
       overdueTasks: overview.overdueTasks || 0,
       lowPriority: priority.low || 0,
       mediumPriority: priority.medium || 0,
       highPriority: priority.high || 0,
     },
 
-    monthTasks: monthlyTasks.map((m) => ({
-      month: `${monthNames[m._id.month - 1]} ${m._id.year}`,
-      tasks: m.tasks,
+    monthTasks: monthlyTasks.map((item) => ({
+      month: `${monthNames[item._id.month - 1]} ${item._id.year}`,
+      tasks: item.tasks,
     })),
 
     projectAnalytics,

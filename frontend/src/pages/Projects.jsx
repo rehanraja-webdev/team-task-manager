@@ -30,6 +30,7 @@ const Projects = () => {
   const currentPage = pagination?.currentPage || page;
   const totalPages = pagination?.totalPages || 1;
   const projects = projectList || [];
+  const isAdmin = user?.role === "admin";
 
   const filterProjects = projects.filter(
     (project) =>
@@ -73,7 +74,9 @@ const Projects = () => {
           <p className="mt-1.5 max-w-sm text-sm text-slate-500 dark:text-slate-400">
             {isFiltering
               ? `No projects match "${filter}". Try adjusting your search term or clearing the filter.`
-              : "Get started by creating your first project to organize tasks and manage team work."}
+              : isAdmin
+                ? "Get started by creating your first project to organize tasks and manage team work."
+                : "There are currently no active projects assigned to you or your team."}
           </p>
 
           <div className="mt-6 flex items-center gap-3">
@@ -86,15 +89,17 @@ const Projects = () => {
                 Clear Search
               </button>
             ) : (
-              <button
-                type="button"
-                onClick={() => navigate("create")}
-                title="Create New Project"
-                className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700"
-              >
-                <Plus size={16} />
-                Create Project
-              </button>
+              isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => navigate("create")}
+                  title="Create New Project"
+                  className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700"
+                >
+                  <Plus size={16} />
+                  Create Project
+                </button>
+              )
             )}
           </div>
         </div>

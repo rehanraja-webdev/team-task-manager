@@ -149,45 +149,6 @@ const changePassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "Password updated successfully"));
 });
 
-const getUserStatistics = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
-
-  let projectsCount;
-
-  if (req.user.role === "admin") {
-    projectsCount = await Project.countDocuments({
-      owner: userId,
-    });
-  } else {
-    projectsCount = await Project.countDocuments({
-      "members.user": userId,
-    });
-  }
-
-  const assignedTasks = await Task.countDocuments({
-    assignedTo: userId,
-  });
-
-  const completedTasks = await Task.countDocuments({
-    assignedTo: userId,
-    status: "done",
-  });
-
-  const completionRate =
-    assignedTasks === 0
-      ? 0
-      : Math.round((completedTasks / assignedTasks) * 100);
-
-  res.status(200).json(
-    new ApiResponse(200, "Statistics fetched successfully", {
-      projectsCount,
-      assignedTasks,
-      completedTasks,
-      completionRate,
-    }),
-  );
-});
-
 export default {
   registerUser,
   loginUser,
@@ -195,5 +156,4 @@ export default {
   getCurrentUser,
   updateProfile,
   changePassword,
-  getUserStatistics,
 };

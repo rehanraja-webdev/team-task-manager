@@ -82,24 +82,14 @@ const createTask = asyncHandler(async (req, res) => {
 
 const getTasks = asyncHandler(async (req, res) => {
   const { view } = req.query;
-
-  const key = cacheKeys.userTasks(req.user._id, view || "default");
-  const cached = cacheHelper.getCache(key);
-
-  if (cached && cached.expiresAt > Date.now()) {
-    return res
-      .status(200)
-      .json(new ApiResponse(200, "All tasks fetched from cache", cached.data));
-  } else {
-    cacheHelper.deleteCache(key);
-  }
+  const userId = req.user._id;
 
   let filter = {};
 
   if (view === "assigned") {
-    filter = { assignedTo: req.user._id };
+    filter = { assignedTo: userId };
   } else if (view === "created") {
-    filter = { createdBy: req.user._id };
+    filter = { createdBy: userId };
   } else if (view === "all") {
     if (req.user.role !== "admin") {
       throw new ApiError(403, "Only admins can view all tasks.");
@@ -107,7 +97,31 @@ const getTasks = asyncHandler(async (req, res) => {
 
     filter = {};
   } else {
-    filter = req.user.role === "admin" ? {} : { assignedTo: req.user._id };
+    filter = req.user.role === "admin" ? {} : { assignedTo: userId };
+  }
+
+  const hasTasks = await Task.exists(filter);
+
+  if (!hasTasks) {
+    return res.status(200).json(
+      new ApiResponse(200, "No tasks found.", {
+        isEmpty: true,
+      }),
+    );
+  }
+
+  const key = cacheKeys.userTasks(userId, view || "default");
+
+  const cached = cacheHelper.getCache(key);
+
+  if (cached && cached.expiresAt > Date.now()) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "All tasks fetched from cache", cached.data));
+  }
+
+  if (cached) {
+    cacheHelper.deleteCache(key);
   }
 
   const tasks = await Task.find(filter)

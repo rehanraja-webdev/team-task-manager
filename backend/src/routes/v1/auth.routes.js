@@ -110,6 +110,4 @@ router.patch("/profile", authMiddleware, authController.updateProfile);
 
 router.patch("/change-password", authMiddleware, authController.changePassword);
 
-router.get("/statistics", authMiddleware, authController.getUserStatistics);
-
 export default router;

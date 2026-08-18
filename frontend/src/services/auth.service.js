@@ -29,8 +29,3 @@ export const changePasswordService = async () => {
   const response = await api.patch("/v1/auth/change-password");
   return response.data;
 };
-
-export const getStatistics = async () => {
-  const response = await api.get("/v1/auth/statistics");
-  return response.data.data;
-};

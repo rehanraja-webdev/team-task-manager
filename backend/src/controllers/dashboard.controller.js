@@ -46,38 +46,50 @@ const getAdminDashboard = asyncHandler(async (req, res) => {
 
   const totalProjects = projects.length;
 
-  const [totalTasks, taskStats, myAssignedTasks, activities] =
-    await Promise.all([
-      Task.countDocuments({
-        project: { $in: projectIds },
-      }),
+  const [totalTasks, taskStats, myAssignedTasks] = await Promise.all([
+    Task.countDocuments({
+      project: { $in: projectIds },
+    }),
 
-      Task.aggregate([
-        {
-          $match: {
-            project: { $in: projectIds },
-          },
+    Task.aggregate([
+      {
+        $match: {
+          project: { $in: projectIds },
         },
-        {
-          $group: {
-            _id: "$status",
-            count: { $sum: 1 },
-          },
+      },
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
         },
-      ]),
+      },
+    ]),
 
-      Task.countDocuments({
-        assignedTo: userId,
-        project: { $in: projectIds },
-      }),
+    Task.countDocuments({
+      assignedTo: userId,
+      project: { $in: projectIds },
+    }),
+  ]);
 
-      Activity.find({
+  // Get task IDs belonging to the admin's projects
+  const projectTaskIds = await Task.find({
+    project: { $in: projectIds },
+  }).distinct("_id");
+
+  // Get both project-level and task-level activities
+  const activities = await Activity.find({
+    $or: [
+      {
         project: { $in: projectIds },
-      })
-        .populate("user", "fullname email")
-        .sort({ createdAt: -1 })
-        .limit(10),
-    ]);
+      },
+      {
+        task: { $in: projectTaskIds },
+      },
+    ],
+  })
+    .populate("user", "fullname email")
+    .sort({ createdAt: -1 })
+    .limit(10);
 
   let todoTasks = 0;
   let inProgressTasks = 0;

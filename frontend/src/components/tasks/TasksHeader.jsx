@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const TasksHeader = ({ role }) => {
   return (
-    <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6">
+    <div className="flex items-center justify-between ">
       <div>
         <h1 className="text-4xl font-bold mb-2 text-slate-900 dark:text-white">
           Tasks

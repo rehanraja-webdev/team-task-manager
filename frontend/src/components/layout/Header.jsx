@@ -186,7 +186,7 @@ const Header = () => {
               to="/dashboard/profile"
               className="
                 hidden h-10 w-10 items-center justify-center
-                rounded-xl bg-indigo-600
+                rounded-full bg-indigo-600
                 text-xs font-semibold text-white
                 sm:flex
               "

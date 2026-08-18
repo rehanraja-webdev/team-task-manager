@@ -1,18 +1,10 @@
 import ProfileHeader from "../components/profile/ProfileHeader";
-import StatisticsCards from "../components/profile/StatisticsCards";
 import PersonalInfoCard from "../components/profile/PersonalInfoCard";
 import SecurityCard from "../components/profile/SecurityCard";
 import useAuth from "../hooks/useAuth";
-import useUserStatistics from "../hooks/useUserStatistics";
-import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const ProfilePage = () => {
   const { user } = useAuth();
-  const { statistics, loading } = useUserStatistics();
-
-  if (!user || loading) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <div className="space-y-6">
@@ -27,8 +19,6 @@ const ProfilePage = () => {
       </div>
 
       <ProfileHeader user={user} />
-
-      <StatisticsCards statistics={statistics} />
 
       <PersonalInfoCard user={user} />
 

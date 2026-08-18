@@ -1,14 +1,19 @@
 import { useRef } from "react";
 import useProjectActions from "../hooks/useProjectActions";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const CreateProject = () => {
   const { createProject, loading } = useProjectActions();
+  const navigate = useNavigate();
 
+  const { user } = useAuth();
+  if (user.role !== "admin") {
+    navigate(-1);
+  }
+  
   const nameRef = useRef(null);
   const descriptionRef = useRef(null);
-
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

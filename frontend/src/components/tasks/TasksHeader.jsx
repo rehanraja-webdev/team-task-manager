@@ -21,7 +21,7 @@ const TasksHeader = ({ role }) => {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-medium text-sm hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/25 active:scale-[0.98] transition-all duration-200"
         >
           <Plus className="size-4 stroke-[2.5]" />
-          <span>Create Task</span>
+          <span className="hidden sm:block">Create Task</span>
         </NavLink>
       )}
     </div>

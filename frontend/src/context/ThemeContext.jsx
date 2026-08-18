@@ -16,6 +16,12 @@ const ThemeProvider = ({ children }) => {
     document.documentElement.classList.add(finalTheme);
   };
 
+  const toggleTheme = () => {
+    const currentTheme = theme === "system" ? getSystemTheme() : theme;
+
+    setTheme(currentTheme === "dark" ? "light" : "dark");
+  };
+
   useEffect(() => {
     applyTheme(theme);
     localStorage.setItem("theme", theme);
@@ -42,6 +48,7 @@ const ThemeProvider = ({ children }) => {
       value={{
         theme,
         setTheme,
+        toggleTheme,
       }}
     >
       {children}

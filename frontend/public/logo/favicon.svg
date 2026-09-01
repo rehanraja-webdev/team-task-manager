@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="TeamTask">
+
+<defs>
+  <linearGradient id="brand" x1="8" y1="8" x2="58" y2="58" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#38BDF8"/>
+    <stop offset="0.48" stop-color="#2563EB"/>
+    <stop offset="1" stop-color="#7C3AED"/>
+  </linearGradient>
+  <linearGradient id="check" x1="20" y1="48" x2="49" y2="19" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFFFFF"/>
+    <stop offset="1" stop-color="#67E8F9"/>
+  </linearGradient>
+</defs>
+
+
+<g>
+  <rect x="3" y="3" width="58" height="58" rx="17" fill="url(#brand)"/>
+  <path d="M17 18.5C17 16.57 18.57 15 20.5 15H44C45.93 15 47.5 16.57 47.5 18.5V21.5C47.5 23.43 45.93 25 44 25H37V35.2L32.1 40.1L26.5 34.5V25H20.5C18.57 25 17 23.43 17 21.5V18.5Z"
+        fill="#FFFFFF"/>
+  <path d="M18.5 38.5L26.7 46.7C28.46 48.46 31.32 48.46 33.08 46.7L49 30.78"
+        fill="none" stroke="url(#check)" stroke-width="6.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+
+</svg>

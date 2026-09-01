@@ -1,0 +1,167 @@
+import User from "../models/user.model.js";
+import bcrypt from "bcryptjs";
+import generateToken from "../utils/generateToken.js";
+import ApiError from "../utils/ApiError.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import jobQueue from "../utils/jobQueue.js";
+import Project from "../models/project.model.js";
+import Task from "../models/task.model.js";
+import UserSettings from "../models/userSettings.model.js";
+import createNotification from "../utils/createNotification.js";
+
+const registerUser = asyncHandler(async (req, res) => {
+  const { fullname, email, password } = req.body;
+
+  const isUserExists = await User.findOne({
+    email: email.toLowerCase(),
+  });
+
+  if (isUserExists) {
+    throw new ApiError(409, "User already exists");
+  }
+
+  const hashPassword = await bcrypt.hash(password, 10);
+
+  const user = await User.create({
+    fullname,
+    email: email.toLowerCase(),
+    password: hashPassword,
+  });
+
+  await UserSettings.create({
+    user: user._id,
+  });
+
+  await createNotification({
+    user: user._id,
+    title: "Welcome to TeamTask! 🎉",
+    message: `Hi ${fullname.split(" ")[0]}, we're glad to have you here. Start by creating a project, joining your team, or exploring your dashboard.`,
+    type: "system",
+  });
+
+  jobQueue.addJob({
+    to: user.email,
+    subject: "Welcome to TeamTask",
+    attempts: 0,
+  });
+
+  const token = generateToken(user._id);
+
+  const secure = process.env.NODE_ENV === "production";
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure,
+    sameSite: secure ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, "User registered successfully!", user));
+});
+
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new ApiError(400, "Email and password are required");
+  }
+
+  const user = await User.findOne({ email: email?.toLowerCase() }).select(
+    "+password",
+  );
+
+  if (!user) {
+    throw new ApiError(404, "User Not Found!");
+  }
+
+  const isPassCorrect = await bcrypt.compare(password, user.password);
+
+  if (!isPassCorrect) {
+    throw new ApiError(401, "Invalid Credentials!");
+  }
+
+  const token = generateToken(user._id);
+
+  const isProduction = process.env.NODE_ENV === "production";
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  user.password = undefined; //Is will not send the password while login
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "User logged in successfully!", user));
+});
+
+const logoutUser = async (req, res) => {
+  res.clearCookie("token");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "User logged out successfully!"));
+};
+
+const getCurrentUser = async (req, res) => {
+  const user = req.user;
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "User details fetched successfully!", user));
+};
+
+const updateProfile = asyncHandler(async (req, res) => {
+  const { fullname } = req.body;
+  const user = req.user;
+
+  if (fullname) user.fullname = fullname;
+
+  await user.save();
+
+  res.json(new ApiResponse(200, "Profile Updated", user));
+});
+
+const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    throw new ApiError(400, "Both current and new passwords are required");
+  }
+
+  const user = await User.findById(req.user._id).select("+password");
+
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+  if (!isMatch) {
+    throw new ApiError(400, "Current password incorrect");
+  }
+
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedNewPassword;
+
+  await user.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Password updated successfully"));
+});
+
+export default {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+  updateProfile,
+  changePassword,
+};

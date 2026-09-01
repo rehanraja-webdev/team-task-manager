@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+html {
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --chart-grid: #e2e8f0;
+  --chart-text: #475569;
+  --chart-axis: #cbd5e1;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #e2e8f0;
+}
+
+.dark {
+  --chart-grid: #334155;
+  --chart-text: #cbd5e1;
+  --chart-axis: #475569;
+  --chart-tooltip-bg: #1e293b;
+  --chart-tooltip-border: #334155;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.dark .custom-scrollbar {
+  scrollbar-color: #475569 transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #475569;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b;
+}

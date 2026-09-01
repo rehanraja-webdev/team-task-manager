@@ -16,17 +16,19 @@ const MemberCard = ({ role, onDelete, member, loading }) => {
         )}
       </div>
 
-      {role === "admin" && (
-        <button
-          type="button"
-          onClick={() => onDelete(member.user._id)}
-          disabled={loading}
-          className="cursor-pointer text-red-500 transition-all hover:-translate-y-0.5 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
-          title="Remove Member"
-        >
-          <Trash2 className="size-5" />
-        </button>
-      )}
+      {role === "admin" &&
+        member.user.role !==
+          "admin" &&(
+            <button
+              type="button"
+              onClick={() => onDelete(member.user._id)}
+              disabled={loading}
+              className="cursor-pointer text-red-500 transition-all hover:-translate-y-0.5 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+              title="Remove Member"
+            >
+              <Trash2 className="size-5" />
+            </button>
+          )}
     </div>
   );
 };

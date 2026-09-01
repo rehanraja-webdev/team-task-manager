@@ -133,11 +133,11 @@ const deleteProject = asyncHandler(async (req, res) => {
       }),
     ),
   );
+  await project.deleteOne();
 
   await Promise.all([
-    project.deleteOne(),
-    cacheInvalidation.activities(req.user._id),
     cacheInvalidation.projectDeleted(projectId, req.user._id),
+    cacheInvalidation.activities(req.user._id),
   ]);
 
   res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
@@ -432,7 +432,7 @@ const removeMember = asyncHandler(async (req, res) => {
 
   await Promise.all([
     await cacheInvalidation.memberRemoved(projectId, [req.user._id, memberId]),
-    cacheInvalidation.activities(userId),
+    cacheInvalidation.activities(req.user._id),
   ]);
 
   res.status(200).json(new ApiResponse(200, "Member removed successfully!"));

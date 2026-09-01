@@ -7,7 +7,6 @@ const useProject = (projectId) => {
   const [fetching, setFetching] = useState(true);
   const [project, setProject] = useState(null);
   const [members, setMembers] = useState([]);
-
   const fetchProject = async () => {
     try {
       const projectRes = await getProject(projectId);

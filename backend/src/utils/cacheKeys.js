@@ -2,7 +2,7 @@ const cacheKeys = {
   project: (projectId) => `project_${projectId}`,
   projectPrefix: (projectId) => `project_${projectId}_`,
   projects: (userId) => `projects_${userId}`,
-  projectsPrefix: (userId) => `projects_${userId}`,
+  projectsPrefix: (userId) => `projects_${userId}_`,
 
   members: (userId, projectId) => `members_${userId}_${projectId}`,
 

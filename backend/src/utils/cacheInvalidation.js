@@ -36,6 +36,7 @@ const cacheInvalidation = {
     await Promise.all([
       cacheHelper.deleteCache(cacheKeys.project(projectId)),
       cacheHelper.deleteCache(cacheKeys.projects(userId)),
+      cacheHelper.deleteByPrefix(cacheKeys.projectsPrefix(userId)),
       cacheHelper.deleteCache(cacheKeys.dashboard(userId)),
       cacheHelper.deleteCache(cacheKeys.analytics(userId)),
     ]);
@@ -54,6 +55,7 @@ const cacheInvalidation = {
     await Promise.all([
       cacheHelper.deleteCache(cacheKeys.project(projectId)),
       cacheHelper.deleteCache(cacheKeys.projects(userId)),
+      cacheHelper.deleteByPrefix(cacheKeys.projectsPrefix(userId)),
       cacheHelper.deleteByPrefix(cacheKeys.projectPrefix(projectId)),
       cacheHelper.deleteByPrefix(cacheKeys.tasks(projectId)),
       cacheHelper.deleteCache(cacheKeys.dashboard(userId)),

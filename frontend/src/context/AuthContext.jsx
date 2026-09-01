@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
   const register = async (formData) => {
     try {
       const res = await registerUser(formData);
-
+      setUser(res.data);
       toast.success("Account created successfully!");
 
       return res;
@@ -81,8 +81,6 @@ const AuthProvider = ({ children }) => {
   const changePassword = async (formData) => {
     try {
       await changePasswordService(formData);
-
-      setUser(null);
 
       toast.success("Password Changed successfully!");
       return true;

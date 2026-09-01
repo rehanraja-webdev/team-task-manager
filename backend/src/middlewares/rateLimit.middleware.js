@@ -2,26 +2,19 @@ import rateLimit from "express-rate-limit";
 
 const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
+  max: 100,
 
-  max: (req) => {
-    return req.user?.role === "admin" ? 500 : 100;
-  },
-
-  //no limit for admin
-  // skip: (req) => {
-  //   return req.user?.role === "admin";
-  // },
-
-  handler: (req, res, next, options) => {
-    console.warn(`Rate limit exceeded by IP: ${req.ip}`);
-
-    res.status(429).json({
-      success: false,
-      message: "Rate limit exceedeed",
-    });
-  },
   standardHeaders: true,
   legacyHeaders: false,
+
+  handler: (req, res) => {
+    console.warn(`Rate limit exceeded by IP: ${req.ip}`);
+
+    return res.status(429).json({
+      success: false,
+      message: "Too many requests. Please try again later.",
+    });
+  },
 });
 
 export const loginLimiter = rateLimit({

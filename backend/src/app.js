@@ -62,7 +62,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/admin", adminRoutes);
 app.use(errorHandler);
 
-app.get("team-task/health", (req, res) => {
+app.get("/team-task/health", (req, res) => {
   res.status(200).json({ success: true, message: "TeamTask API is running" });
 });
 

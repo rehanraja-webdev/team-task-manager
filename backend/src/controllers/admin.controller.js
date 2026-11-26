@@ -51,7 +51,7 @@ const getQueueStats = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json(
-      new ApiResponse(200, "Queue Stats", { pending: jobQueue.getQueueSize }),
+      new ApiResponse(200, "Queue Stats", { pending: jobQueue.getQueueSize() }),
     );
 });
 export default { getAllUsers, getQueueStats };

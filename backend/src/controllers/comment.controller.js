@@ -13,7 +13,11 @@ import cacheInvalidation from "../utils/cacheInvalidation.js";
 const addComment = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const { content } = req.body;
-  const { projectId, taskId } = req.params;
+  const { taskId } = req.params;
+
+  if (!content || !content.trim()) {
+    throw new ApiError(400, "Comment content is required!");
+  }
 
   const task = await Task.findById(taskId);
 
@@ -24,11 +28,12 @@ const addComment = asyncHandler(async (req, res) => {
   const comment = await Comment.create({
     task: task._id,
     user: userId,
-    content,
+    content: content.trim(),
   });
 
   await Activity.create({
     task: task._id,
+    project: task.project,
     user: userId,
     action: "Added Comment",
   });
@@ -38,13 +43,14 @@ const addComment = asyncHandler(async (req, res) => {
     type: "comment",
     title: "New Comment Added!",
     message: `${req.user.fullname} commented on ${task.title}`,
-    task: task._id,
-    project: projectId,
+    referenceId: task._id,
+    project: task.project,
   });
 
   await Promise.all([
     cacheInvalidation.comment(userId, taskId),
-    cacheInvalidation.activity(userId),
+    cacheInvalidation.activity(userId, taskId),
+    cacheInvalidation.notifications(task.createdBy),
   ]);
 
   return res

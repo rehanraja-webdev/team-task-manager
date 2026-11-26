@@ -2,7 +2,7 @@ import dotenv from "dotenv/config";
 import connectDB from "../src/config/db.js";
 import request from "supertest";
 import mongoose from "mongoose";
-import app from "../src/app";
+import app from "../src/app.js";
 import User from "../src/models/user.model.js";
 
 beforeAll(async () => {

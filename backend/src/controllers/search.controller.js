@@ -18,7 +18,8 @@ export const globalSearch = asyncHandler(async (req, res) => {
     );
   }
 
-  const regex = new RegExp(q, "i");
+  const escapedQuery = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(escapedQuery, "i");
 
   let projectQuery;
 
@@ -61,7 +62,9 @@ export const globalSearch = asyncHandler(async (req, res) => {
     const memberIds = [
       ...new Set(
         accessibleProjects.flatMap((project) =>
-          project.members.map((member) => member.user?.toString()),
+          project.members
+            .map((member) => member.user?.toString())
+            .filter(Boolean),
         ),
       ),
     ];

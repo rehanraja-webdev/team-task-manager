@@ -17,7 +17,7 @@ const ActivityList = ({ setPage, activities, filter }) => {
       const matchesSearch =
         !search || actionText.includes(search) || userName.includes(search);
 
-      let matchesSelected = false;
+      let matchesSelected;
 
       if (selected === "all") {
         matchesSelected = true;

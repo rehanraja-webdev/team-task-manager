@@ -52,10 +52,11 @@ const createProject = asyncHandler(async (req, res) => {
       { session },
     );
 
+    await session.commitTransaction();
+
     await Promise.all([
       cacheInvalidation.activities(req.user._id),
       cacheInvalidation.projectCreated(req.user._id),
-      session.commitTransaction(),
     ]);
 
     return res
@@ -64,7 +65,9 @@ const createProject = asyncHandler(async (req, res) => {
         new ApiResponse(201, "Project created successfully!", createdProject),
       );
   } catch (error) {
-    await session.abortTransaction();
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
     throw error;
   } finally {
     session.endSession();
@@ -78,9 +81,23 @@ const getProject = asyncHandler(async (req, res) => {
   const cached = cacheHelper.getCache(key);
 
   if (cached && cached.expiresAt > Date.now()) {
+    const cachedProject = cached.data;
+    const isCachedMember =
+      cachedProject.owner?._id?.equals?.(req.user._id) ||
+      cachedProject.owner?._id?.toString() === req.user._id.toString() ||
+      cachedProject.members?.some(
+        (member) =>
+          member.user?._id?.equals?.(req.user._id) ||
+          member.user?._id?.toString() === req.user._id.toString(),
+      );
+
+    if (!isCachedMember) {
+      throw new ApiError(403, "Access denied");
+    }
+
     return res
       .status(200)
-      .json(new ApiResponse(200, "Project fetched from cache!", cached.data));
+      .json(new ApiResponse(200, "Project fetched from cache!", cachedProject));
   } else {
     cacheHelper.deleteCache(key);
   }
@@ -138,6 +155,10 @@ const deleteProject = asyncHandler(async (req, res) => {
   await Promise.all([
     cacheInvalidation.projectDeleted(projectId, req.user._id),
     cacheInvalidation.activities(req.user._id),
+    ...memberIds.flatMap((userId) => [
+      cacheInvalidation.projectDeleted(projectId, userId),
+      cacheInvalidation.notifications(userId),
+    ]),
   ]);
 
   res.status(200).json(new ApiResponse(200, "Project deleted successfully!"));
@@ -204,6 +225,10 @@ const updateProject = asyncHandler(async (req, res) => {
   await Promise.all([
     cacheInvalidation.activities(req.user._id),
     cacheInvalidation.projectUpdated(projectId, req.user._id),
+    ...memberIds.flatMap((userId) => [
+      cacheInvalidation.projectUpdated(projectId, userId),
+      cacheInvalidation.notifications(userId),
+    ]),
   ]);
 
   res
@@ -319,6 +344,10 @@ const addMember = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
   const { email } = req.body;
 
+  if (!email || !email.trim()) {
+    throw new ApiError(400, "Email is required!");
+  }
+
   const project = await Project.findById(projectId);
 
   if (!project) {
@@ -326,7 +355,7 @@ const addMember = asyncHandler(async (req, res) => {
   }
 
   const member = await User.findOne({
-    email: email.toLowerCase(),
+    email: email.trim().toLowerCase(),
   });
 
   if (!member) {
@@ -359,9 +388,15 @@ const addMember = asyncHandler(async (req, res) => {
     type: "project",
   });
 
+  const affectedUserIds = project.members.map((m) => m.user);
+
   await Promise.all([
     cacheInvalidation.activities(req.user._id),
-    cacheInvalidation.memberAdded(projectId, [req.user._id, member._id]),
+    cacheInvalidation.memberAdded(projectId, [
+      req.user._id,
+      ...affectedUserIds,
+    ]),
+    cacheInvalidation.notifications(member._id),
   ]);
 
   res.status(200).json(new ApiResponse(200, "Member added successfully!"));
@@ -430,9 +465,16 @@ const removeMember = asyncHandler(async (req, res) => {
     type: "project",
   });
 
+  const remainingMemberIds = project.members.map((m) => m.user);
+
   await Promise.all([
-    await cacheInvalidation.memberRemoved(projectId, [req.user._id, memberId]),
+    cacheInvalidation.memberRemoved(projectId, [
+      req.user._id,
+      memberId,
+      ...remainingMemberIds,
+    ]),
     cacheInvalidation.activities(req.user._id),
+    cacheInvalidation.notifications(member._id),
   ]);
 
   res.status(200).json(new ApiResponse(200, "Member removed successfully!"));

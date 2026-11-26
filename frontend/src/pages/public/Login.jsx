@@ -20,8 +20,12 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    await login(formData);
-    navigate("/dashboard");
+    try {
+      await login(formData);
+      navigate("/dashboard");
+    } catch {
+      // Error toast is already handled in AuthContext
+    }
   };
 
   const handleChange = (e) => {
@@ -82,9 +86,10 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 transition rounded-lg py-3 text-white font-medium"
+              disabled={loading}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 transition rounded-lg py-3 text-white font-medium disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? "Signining..." : "Sign In"}
+              {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 

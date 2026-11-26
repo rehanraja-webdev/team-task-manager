@@ -1,8 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import {
-  updateProfile as updateProfileService,
-  changePassword as changePasswordService,
+  updateProfileService,
+  changePasswordService,
 } from "../services/auth.service";
 import useAuth from "./useAuth";
 

@@ -59,8 +59,18 @@ const TaskInfoCard = ({ task, reloadTask }) => {
     },
   };
 
-  const status = statusConfig[task.status];
-  const priority = priorityConfig[task.priority];
+  const status = statusConfig[task.status] || {
+    icon: <Circle size={18} />,
+    className:
+      "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200",
+    label: task.status || "Unknown",
+  };
+  const priority = priorityConfig[task.priority] || {
+    icon: <Flag size={18} />,
+    className:
+      "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-200",
+    label: task.priority || "Unknown",
+  };
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">

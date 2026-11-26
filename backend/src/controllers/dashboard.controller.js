@@ -273,7 +273,8 @@ const getMemberDashboard = asyncHandler(async (req, res) => {
     assignedTo: userId,
     status: { $ne: "done" },
   })
-    .select("title priority dueDate status")
+    .select("title priority dueDate status project")
+    .populate("project", "name")
     .sort({ dueDate: 1 })
     .limit(5);
 

@@ -85,7 +85,7 @@ const SearchDropdown = ({ query, results, loading, onClose }) => {
           {users.map((user) => (
             <Link
               key={user._id}
-              to={`/dashboard/users/${user._id}`}
+              to="/dashboard/users"
               onClick={onClose}
               className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
             >

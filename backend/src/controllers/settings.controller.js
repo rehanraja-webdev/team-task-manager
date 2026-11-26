@@ -5,7 +5,7 @@ import UserSettings from "../models/userSettings.model.js";
 import cacheHelper from "../utils/cache.helper.js";
 import cacheKeys from "../utils/cacheKeys.js";
 
-const TTL = 5 * 60 * 60;
+const TTL = 5 * 60 * 60 * 1000;
 
 const getSettings = asyncHandler(async (req, res) => {
   const userId = req.user._id;
@@ -23,14 +23,14 @@ const getSettings = asyncHandler(async (req, res) => {
     await cacheHelper.deleteCache(key);
   }
 
-  const settings = await UserSettings.findOne({
+  let settings = await UserSettings.findOne({
     user: userId,
   });
 
   if (!settings) {
-    return res
-      .status(200)
-      .json(new ApiResponse(200, "Currently settings are empty!", []));
+    settings = await UserSettings.create({
+      user: userId,
+    });
   }
 
   await cacheHelper.setCache(key, settings, TTL);

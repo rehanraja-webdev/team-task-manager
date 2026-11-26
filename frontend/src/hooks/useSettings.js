@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import { getSettings, updateSettings } from "../services/settings.service";
@@ -10,7 +10,7 @@ const useSettings = () => {
 
   const [saving, setSaving] = useState(false);
 
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -22,7 +22,7 @@ const useSettings = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const saveSettings = async (payload) => {
     try {
@@ -41,7 +41,32 @@ const useSettings = () => {
   };
 
   useEffect(() => {
-    fetchSettings();
+    let cancelled = false;
+
+    const loadSettings = async () => {
+      try {
+        const data = await getSettings();
+        if (!cancelled) {
+          setSettings(data);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          toast.error(
+            error.response?.data?.message || "Failed to load settings",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadSettings();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return {

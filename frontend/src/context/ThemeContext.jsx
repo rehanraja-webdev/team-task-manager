@@ -1,6 +1,5 @@
-import { createContext, useEffect, useState } from "react";
-
-export const ThemeContext = createContext();
+import { useEffect, useState } from "react";
+import { ThemeContext } from "./themeContextInstance";
 
 const getSystemTheme = () =>
   window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";

@@ -52,8 +52,10 @@ const ProjectInfoCard = ({
     if (!confirmed) return;
 
     try {
-      await deleteProject(project._id);
-      navigate(-1);
+      const ok = await deleteProject(project._id);
+      if (ok) {
+        navigate(-1);
+      }
     } catch (error) {
       console.error("Failed to delete project:", error);
     }
@@ -63,9 +65,11 @@ const ProjectInfoCard = ({
     e.preventDefault();
 
     try {
-      await updateProject(project._id, formData);
-      setModalActive(false);
-      await reloadProject();
+      const ok = await updateProject(project._id, formData);
+      if (ok) {
+        setModalActive(false);
+        await reloadProject();
+      }
     } catch (error) {
       console.error("Failed to update project:", error);
     }

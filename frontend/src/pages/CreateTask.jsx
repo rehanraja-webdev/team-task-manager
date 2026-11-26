@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { HelpCircle, X, FolderPlus } from "lucide-react";
 
@@ -26,31 +26,24 @@ const CreateTask = () => {
     dueDate: "",
   });
 
-  const { members, reloadMembers } = useProject(formData.projectId);
-
-  useEffect(() => {
-    if (!formData.projectId) return;
-
-    const fetchMembers = async () => {
-      await reloadMembers(formData.projectId);
-    };
-
-    fetchMembers();
-    // eslint-disable-next-line
-  }, [formData.projectId]);
+  const { members } = useProject(formData.projectId);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
+      ...(name === "projectId" ? { assignedTo: "" } : {}),
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await createTask(formData);
-    navigate(-1);
+    const ok = await createTask(formData);
+    if (ok) {
+      navigate(-1);
+    }
   };
 
   if (projectList.length === 0) {

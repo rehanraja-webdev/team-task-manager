@@ -3,7 +3,10 @@ import cacheKeys from "./cacheKeys.js";
 
 const cacheInvalidation = {
   comment: async (userId, taskId) => {
-    await cacheHelper.deleteCache(cacheKeys.comments(userId, taskId));
+    await Promise.all([
+      cacheHelper.deleteCache(cacheKeys.comments(userId, taskId)),
+      ...(taskId ? [cacheHelper.deleteBySuffix(`_${taskId}`)] : []),
+    ]);
   },
 
   // =========================================================
@@ -285,6 +288,7 @@ const cacheInvalidation = {
   //Activities
   activity: async (userId, taskId) => {
     await Promise.all([
+      ...(taskId ? [cacheHelper.deleteBySuffix(`_${taskId}`)] : []),
       cacheHelper.deleteCache(cacheKeys.taskActivities(userId, taskId)),
       cacheHelper.deleteByPrefix(cacheKeys.activitiesPrefix(userId)),
     ]);

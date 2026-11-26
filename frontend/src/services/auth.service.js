@@ -20,8 +20,8 @@ export const getUser = async () => {
   return response.data;
 };
 
-export const updateProfileService = async () => {
-  const response = await api.patch("/v1/auth/profile");
+export const updateProfileService = async (formData) => {
+  const response = await api.patch("/v1/auth/profile", formData);
   return response.data;
 };
 

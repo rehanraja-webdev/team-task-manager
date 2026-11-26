@@ -56,7 +56,13 @@ const deleteAttachment = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Forbidden!");
   }
 
-  await fs.promises.unlink(attachment.filePath);
+  try {
+    await fs.promises.unlink(attachment.filePath);
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      throw err;
+    }
+  }
   await attachment.deleteOne();
 
   res.status(200).json(new ApiResponse(200, "File deleted successfully!"));

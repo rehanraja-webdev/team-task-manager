@@ -3,12 +3,12 @@ import crypto from "crypto";
 const logger = (req, res, next) => {
   const start = Date.now(); //get the current date
 
-  const userId = req.user?._id || "Guest";
   req.requestId = crypto.randomUUID();
 
   res.setHeader("X-Request-Id", req.requestId);
   res.on("finish", () => {
     const duration = Date.now() - start; //time taken to execute the request
+    const userId = req.user?._id || "Guest";
 
     if (duration > 1000) {
       console.warn("Slow Request");

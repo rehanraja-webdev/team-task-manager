@@ -102,7 +102,13 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = async (req, res) => {
-  res.clearCookie("token");
+  const isProduction = process.env.NODE_ENV === "production";
+
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
 
   return res
     .status(200)
@@ -121,7 +127,11 @@ const updateProfile = asyncHandler(async (req, res) => {
   const { fullname } = req.body;
   const user = req.user;
 
-  if (fullname) user.fullname = fullname;
+  if (!fullname || fullname.trim().length < 3) {
+    throw new ApiError(400, "Fullname must be at least 3 characters");
+  }
+
+  user.fullname = fullname.trim();
 
   await user.save();
 
@@ -133,6 +143,10 @@ const changePassword = asyncHandler(async (req, res) => {
 
   if (!currentPassword || !newPassword) {
     throw new ApiError(400, "Both current and new passwords are required");
+  }
+
+  if (newPassword.length < 6) {
+    throw new ApiError(400, "New password must be at least 6 characters");
   }
 
   const user = await User.findById(req.user._id).select("+password");

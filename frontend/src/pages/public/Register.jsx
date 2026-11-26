@@ -23,8 +23,12 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await register(formData);
-    navigate("/dashboard");
+    try {
+      await register(formData);
+      navigate("/dashboard");
+    } catch {
+      // Error toast is already handled in AuthContext
+    }
   };
 
   return (

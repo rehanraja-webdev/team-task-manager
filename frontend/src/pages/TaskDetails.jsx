@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import NotFound from "../components/common/NotFound";
 import TaskHeader from "../components/taskDetails/TaskHeader";
 import TaskInfoCard from "../components/taskDetails/TaskInfoCard";
 import ActivityTimeline from "../components/taskDetails/ActivityTimeline";
@@ -16,6 +17,7 @@ const TaskDetails = () => {
   const { deleteTask, loading } = useTaskActions();
 
   if (fetchingTaskDetails) return <LoadingSpinner />;
+  if (!task) return <NotFound />;
 
   return (
     <div className="space-y-6">

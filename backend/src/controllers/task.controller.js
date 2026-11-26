@@ -53,6 +53,7 @@ const createTask = asyncHandler(async (req, res) => {
 
   await Activity.create({
     task: task._id,
+    project: projectId,
     user: userId,
     action: "Task Created",
   });
@@ -62,7 +63,7 @@ const createTask = asyncHandler(async (req, res) => {
     type: "task",
     title: "New Task Assigned",
     message: `You have been assigned the task "${task.title}"`,
-    task: task._id,
+    referenceId: task._id,
     project: projectId,
   });
 
@@ -73,6 +74,7 @@ const createTask = asyncHandler(async (req, res) => {
       assignedTo,
     ]),
     cacheInvalidation.activities(userId),
+    cacheInvalidation.notifications(assignedTo),
   ]);
 
   res
@@ -156,12 +158,13 @@ const deleteTask = asyncHandler(async (req, res) => {
     type: "task",
     title: "Task deleted",
     message: `Task has been deleted ${task.title}`,
-    task: task._id,
+    referenceId: task._id,
     project: task.project,
   });
 
   await Activity.create({
     task: task._id,
+    project: task.project,
     user: req.user._id,
     action: `${task.title} has been deleted!`,
   });
@@ -171,8 +174,9 @@ const deleteTask = asyncHandler(async (req, res) => {
       userId,
       task.createdBy,
       task.assignedTo,
-    ]),
+    ].filter(Boolean)),
     cacheInvalidation.activities(userId),
+    cacheInvalidation.notifications(userId),
   ]);
 
   return res
@@ -223,8 +227,9 @@ const getProjectTasks = asyncHandler(async (req, res) => {
   }
 
   if (search) {
+    const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     filter.title = {
-      $regex: search,
+      $regex: escapedSearch,
       $options: "i",
     };
   }
@@ -233,7 +238,9 @@ const getProjectTasks = asyncHandler(async (req, res) => {
     filter.assignedTo = assignedTo;
   }
 
-  const skip = (Number(page) - 1) * Number(limit);
+  const pageNum = Math.max(1, Number(page) || 1);
+  const limitNum = Math.min(50, Math.max(1, Number(limit) || 5));
+  const skip = (pageNum - 1) * limitNum;
 
   let sortOption = { createdAt: -1 };
 
@@ -252,7 +259,7 @@ const getProjectTasks = asyncHandler(async (req, res) => {
     .populate("project", "name")
     .sort(sortOption)
     .skip(skip)
-    .limit(Number(limit));
+    .limit(limitNum);
 
   if (tasks.length === 0) {
     return res.json({ message: "No tasks available", totalTasks: 0 });
@@ -263,16 +270,16 @@ const getProjectTasks = asyncHandler(async (req, res) => {
   cacheHelper.setCache(key, {
     tasks,
     totalTasks,
-    currentPage: Number(page),
-    totalPages: Math.ceil(totalTasks / limit),
+    currentPage: pageNum,
+    totalPages: Math.ceil(totalTasks / limitNum),
   });
 
   res.status(200).json(
     new ApiResponse(200, "All Task Fetched!", {
       tasks,
       totalTasks,
-      currentPage: Number(page),
-      totalPages: Math.ceil(totalTasks / limit),
+      currentPage: pageNum,
+      totalPages: Math.ceil(totalTasks / limitNum),
     }),
   );
 });
@@ -290,20 +297,21 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     throw new ApiError(404, "No task found!");
   }
 
-  if (task.assignedTo.toString() !== req.user._id.toString()) {
+  if (task.assignedTo?.toString() !== req.user._id.toString()) {
     throw new ApiError(403, "You can't update the task status!");
   }
 
   task.status = status;
   await task.save();
 
-  getIO().to(task.project.toString()).emit("taskUpdated", {
+  getIO()?.to(task.project.toString()).emit("taskUpdated", {
     taskId: task._id,
     status: task.status,
   });
 
   await Activity.create({
     task: task._id,
+    project: task.project,
     user: req.user._id,
     action: `Changed status to ${status}`,
   });
@@ -313,17 +321,17 @@ const updateTaskStatus = asyncHandler(async (req, res) => {
     type: "task",
     title: "Task status updated!",
     message: `Task status updated to "${task.status}"`,
-    task: task._id,
+    referenceId: task._id,
     project: task.project,
   });
 
   await Promise.all([
     cacheInvalidation.activity(req.user._id, taskId),
-    cacheInvalidation.taskUpdated(task.project, [
-      req.user._id,
-      task.createdBy,
-      task.assignedTo,
-    ]),
+    cacheInvalidation.taskUpdated(
+      task.project,
+      [req.user._id, task.createdBy, task.assignedTo].filter(Boolean),
+    ),
+    cacheInvalidation.notifications(task.createdBy),
   ]);
 
   res.status(200).json(new ApiResponse(200, "Task updated successfully", task));
@@ -383,13 +391,13 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
 
   const updatedTask = await task.save();
 
-  if (!task.assignedTo.equals(userId)) {
+  if (task.assignedTo && !task.assignedTo.equals(userId)) {
     await createNotification({
       user: task.assignedTo,
       type: "task",
       title: "Task details updated",
-      message: `${req.user.fullname} updates "${task}"`,
-      task: task._id,
+      message: `${req.user.fullname} updated "${updatedTask.title}"`,
+      referenceId: task._id,
       project: task.project,
     });
   }
@@ -397,15 +405,18 @@ const updateTaskDetails = asyncHandler(async (req, res) => {
   await Promise.all([
     Activity.create({
       task: task._id,
+      project: task.project,
       user: userId,
       action: "Task details updated!",
     }),
     cacheInvalidation.activity(userId, taskId),
-    cacheInvalidation.taskUpdated(task.project, [
-      userId,
-      task.createdBy,
-      task.assignedTo,
-    ]),
+    cacheInvalidation.taskUpdated(
+      task.project,
+      [userId, task.createdBy, task.assignedTo].filter(Boolean),
+    ),
+    ...(task.assignedTo && !task.assignedTo.equals(userId)
+      ? [cacheInvalidation.notifications(task.assignedTo)]
+      : []),
   ]);
 
   return res
@@ -437,6 +448,10 @@ const getTask = asyncHandler(async (req, res) => {
   }
 
   const project = await Project.findById(task.project);
+
+  if (!project) {
+    throw new ApiError(404, "Project not found");
+  }
 
   const isMember =
     project.owner.equals(req.user._id) ||

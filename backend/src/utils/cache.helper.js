@@ -23,4 +23,12 @@ const deleteByPrefix = (prefix) => {
   }
 };
 
-export default { setCache, getCache, deleteCache, deleteByPrefix };
+const deleteBySuffix = (suffix) => {
+  for (const key of cache.keys()) {
+    if (key.endsWith(suffix)) {
+      cache.delete(key);
+    }
+  }
+};
+
+export default { setCache, getCache, deleteCache, deleteByPrefix, deleteBySuffix };

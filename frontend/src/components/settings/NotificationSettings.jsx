@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import ToggleSwitch from "./ToggleSwitch";
 
 const notificationOptions = [
@@ -30,29 +30,25 @@ const notificationOptions = [
 ];
 
 const NotificationSettings = ({ settings, saveSettings, saving }) => {
-  const [notificationSettings, setNotificationSettings] = useState({
-    emailNotifications: false,
-    browserNotifications: false,
-    taskAssigned: false,
-    dueReminder: false,
-    projectUpdates: false,
-  });
+  const [draft, setDraft] = useState(null);
 
-  useEffect(() => {
-    if (!settings) return;
-
-    setNotificationSettings({
-      emailNotifications: settings.emailNotifications,
-      browserNotifications: settings.browserNotifications,
-      taskAssigned: settings.taskAssigned,
-      dueReminder: settings.dueReminder,
-      projectUpdates: settings.projectUpdates,
-    });
-  }, [settings]);
+  const notificationSettings = useMemo(
+    () => ({
+      emailNotifications:
+        draft?.emailNotifications ?? settings?.emailNotifications ?? false,
+      browserNotifications:
+        draft?.browserNotifications ?? settings?.browserNotifications ?? false,
+      taskAssigned: draft?.taskAssigned ?? settings?.taskAssigned ?? false,
+      dueReminder: draft?.dueReminder ?? settings?.dueReminder ?? false,
+      projectUpdates:
+        draft?.projectUpdates ?? settings?.projectUpdates ?? false,
+    }),
+    [draft, settings],
+  );
 
   const handleToggle = (field, value) => {
-    setNotificationSettings((prev) => ({
-      ...prev,
+    setDraft((prev) => ({
+      ...(prev ?? notificationSettings),
       [field]: value,
     }));
   };
@@ -69,6 +65,7 @@ const NotificationSettings = ({ settings, saveSettings, saving }) => {
     if (!hasChanges) return;
 
     await saveSettings(notificationSettings);
+    setDraft(null);
   };
 
   return (

@@ -1,5 +1,11 @@
+import fs from "fs";
 import multer from "multer";
 import ApiError from "../utils/ApiError.js";
+
+const uploadDir = "uploads";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -25,8 +31,8 @@ const upload = multer({
       cb(null, true);
     } else {
       cb(
-        null,
         new ApiError(400, "Only jpg, jpeg, png and pdf files are allowed"),
+        false,
       );
     }
   },

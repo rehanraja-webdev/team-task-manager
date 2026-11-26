@@ -10,7 +10,7 @@ const RecentActivity = ({ stats }) => {
       </h2>
 
       <div className="space-y-5 max-h-64 overflow-y-auto scroll-smooth p-1 scrollbar-none">
-        {stats?.activities.map((activity) => (
+        {stats?.activities?.map((activity) => (
           <ActivityItem
             key={activity._id}
             text={activity.action}

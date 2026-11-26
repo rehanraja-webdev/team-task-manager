@@ -13,8 +13,10 @@ const AddProjectMember = () => {
 
     const email = emailRef.current.value;
 
-    await addMember(projectId, email);
-    navigate(-1);
+    const ok = await addMember(projectId, email);
+    if (ok) {
+      navigate(-1);
+    }
   };
 
   return (

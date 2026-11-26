@@ -4,11 +4,7 @@ import toast from "react-hot-toast";
 
 const useAnalytics = () => {
   const [data, setData] = useState({
-    overview: null,
-    monthTasks: [],
-    projectAnalytics: [],
-    contributors: [],
-    overdue: [],
+    data: null,
   });
 
   const [fetching, setFetching] = useState(true);

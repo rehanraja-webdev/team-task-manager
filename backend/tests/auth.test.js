@@ -10,7 +10,7 @@ beforeAll(async () => {
 
 describe("Health Route", () => {
   test("Health Route Works", async () => {
-    const res = await request(app).get("/health");
+    const res = await request(app).get("/team-task/health");
 
     expect(res.statusCode).toBe(200);
     expect(res.body.success).toBe(true);

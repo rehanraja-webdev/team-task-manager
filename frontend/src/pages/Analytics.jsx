@@ -40,7 +40,7 @@ const Analytics = () => {
       <AnalyticsHeader />
 
       {/* Empty state */}
-      {data?.isEmpty ? (
+      {!data || data.isEmpty ? (
         <EmptyAnalytics
           onCreate={() => navigate("/dashboard/projects/create")}
         />

@@ -17,8 +17,10 @@ const useProjectActions = () => {
       await createAProject(formData);
 
       toast.success("Project created!");
+      return true;
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to create project!");
+      return false;
     } finally {
       setLoading(false);
     }
@@ -30,8 +32,10 @@ const useProjectActions = () => {
       await deleteProjectById(id);
 
       toast.success("Project deleted!");
+      return true;
     } catch (error) {
-      toast.error(error.response?.data?.message || "Project deleted!");
+      toast.error(error.response?.data?.message || "Failed to delete project!");
+      return false;
     } finally {
       setLoading(false);
     }
@@ -42,8 +46,10 @@ const useProjectActions = () => {
       setLoading(true);
       await updateProjectById(projectId, formData);
       toast.success("Project updated successfully!");
+      return true;
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to update project!");
+      return false;
     } finally {
       setLoading(false);
     }
@@ -54,8 +60,10 @@ const useProjectActions = () => {
       setLoading(true);
       await addNewMember(id, email);
       toast.success("Member added!");
+      return true;
     } catch (error) {
       toast.error(error.response?.data?.message || "Member addition failed!");
+      return false;
     } finally {
       setLoading(false);
     }
@@ -66,8 +74,10 @@ const useProjectActions = () => {
       setLoading(true);
       await removeMember(projectId, memberId);
       toast.success("Member removed successfully!");
+      return true;
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Failed to remove member!");
+      return false;
     } finally {
       setLoading(false);
     }

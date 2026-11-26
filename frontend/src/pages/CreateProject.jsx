@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import useProjectActions from "../hooks/useProjectActions";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
@@ -8,12 +8,18 @@ const CreateProject = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
-  if (user.role !== "admin") {
-    navigate(-1);
-  }
+  const isAuthorized = user?.role === "admin" || user?.role === "super-admin";
+
+  useEffect(() => {
+    if (!isAuthorized) {
+      navigate(-1);
+    }
+  }, [isAuthorized, navigate]);
 
   const nameRef = useRef(null);
   const descriptionRef = useRef(null);
+
+  if (!isAuthorized) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,8 +27,10 @@ const CreateProject = () => {
     const name = nameRef.current.value;
     const description = descriptionRef.current.value;
 
-    await createProject({ name, description });
-    navigate(-1);
+    const ok = await createProject({ name, description });
+    if (ok) {
+      navigate(-1);
+    }
   };
 
   return (

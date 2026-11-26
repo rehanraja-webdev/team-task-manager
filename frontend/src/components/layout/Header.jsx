@@ -19,7 +19,8 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
 
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [openPath, setOpenPath] = useState(null);
+  const menuOpen = openPath === location.pathname;
 
   const getPageInfo = () => {
     const path = location.pathname;
@@ -86,7 +87,7 @@ const Header = () => {
   };
 
   const closeMenu = () => {
-    setMenuOpen(false);
+    setOpenPath(null);
   };
 
   useEffect(() => {
@@ -100,10 +101,6 @@ const Header = () => {
       document.body.style.overflow = originalOverflow;
     };
   }, [menuOpen]);
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [location.pathname]);
 
   return (
     <>
@@ -123,7 +120,7 @@ const Header = () => {
             {/* Mobile menu */}
             <button
               type="button"
-              onClick={() => setMenuOpen(true)}
+              onClick={() => setOpenPath(location.pathname)}
               aria-label="Open navigation menu"
               aria-expanded={menuOpen}
               className="

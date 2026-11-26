@@ -20,8 +20,10 @@ const TaskHeader = ({
     const confirmed = confirm("Do you want to delete the task?");
     if (!confirmed) return;
 
-    await deleteTask(task._id);
-    navigate(-1);
+    const ok = await deleteTask(task._id);
+    if (ok) {
+      navigate(-1);
+    }
   };
 
   return (

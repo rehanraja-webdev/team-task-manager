@@ -1,25 +1,17 @@
-import { useEffect, useState } from "react";
-import useAuth from "../../hooks/useAuth";
+import { useState } from "react";
+import useProfile from "../../hooks/useProfile";
 
-const EditProfileModal = ({ open, onClose, user }) => {
-  const { updateProfile, loading } = useAuth();
+const EditProfileForm = ({ onClose, user }) => {
+  const { updateProfile, loading } = useProfile();
 
-  const [fullname, setFullname] = useState("");
-
-  useEffect(() => {
-    if (user) {
-      setFullname(user.fullname);
-    }
-  }, [user]);
-
-  if (!open) return null;
+  const [fullname, setFullname] = useState(user?.fullname || "");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const trimmedName = fullname.trim();
 
-    if (trimmedName === user.fullname) {
+    if (trimmedName === user?.fullname) {
       onClose();
       return;
     }
@@ -111,6 +103,18 @@ const EditProfileModal = ({ open, onClose, user }) => {
         </div>
       </div>
     </>
+  );
+};
+
+const EditProfileModal = ({ open, onClose, user }) => {
+  if (!open) return null;
+
+  return (
+    <EditProfileForm
+      key={user?.fullname || "edit-profile"}
+      onClose={onClose}
+      user={user}
+    />
   );
 };
 
